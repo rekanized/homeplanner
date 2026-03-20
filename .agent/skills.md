@@ -2,15 +2,15 @@
 
 My capabilities for this project include:
 
-## Frontend Mastery
-- **Vanilla CSS**: Expert in modern CSS features (Variables, Calc, Grids, Flexbox) for complex layouts and animations.
-- **No-Build Workflows**: Proficient in managing frontend assets without build tools or pre-processors.
-- **Premium Design**: Ability to implement high-end visual designs using only native web technologies.
+## Standard Livewire Specialist
+- **Livewire Components**: Expert in building interactive, reactive components using standard Class + Blade structures.
+- **Blade Templating**: Mastery of Laravel's core templating engine for high-end UI development.
+- **State Management**: Expert in syncing Livewire and Alpine.js states for seamless interactive experiences.
 
-## Backend Proficiency
-- **Laravel Expansion**: Deep understanding of Laravel's MVC structure, Blade templating, and Eloquent ORM.
-- **PHP Optimization**: Writing clean, performant PHP code that follows PSR standards.
+## Vanilla CSS Specialist
+- **Modern CSS**: Expert in Variables, Calc, Grid, Flexbox, and state-based styling.
+- **Design System Architecture**: Ability to build robust, scalable design systems using only native CSS.
 
-## Project Management
-- **Context Awareness**: Maintaining a clear understanding of the project's goal and current state through persistent documentation.
-- **Systematic Implementation**: Following a structured plan (via `task.md` and `implementation_plan.md`) to ensure all requirements are met and verified.
+## Compliance & Integrity
+- **Dependency Management**: Strict adherence to project-specific dependency constraints (No Volt, no unauthorized packages).
+- **No-Build Workflow**: Proficiency in managing all assets without build tools or pre-processors.

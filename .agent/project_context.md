@@ -1,20 +1,22 @@
 # Project Context: Home Planner
 
-A platform for planning and managing home-related tasks, possibly including layout design, budgeting, or maintenance scheduling.
+A platform for planning and managing home-related tasks, including economy tracking, shopping lists, and kids points systems.
 
 ## Technical Stack
-- **Backend**: Laravel (PHP)
-- **Frontend**: Standard CSS (No Build)
-- **Database**: SQLite (indicated by previous conversations)
-- **Deployment**: Traditional web server (No Node/NPM required on server)
+- **Backend**: Laravel (PHP 8.x)
+- **Frontend**: Livewire (Standard Class + View), Alpine.js, Blade
+- **Styling**: Strictly Vanilla CSS (No Tailwind, Bootstrap, or build tools).
+- **Database**: SQLite
+- **Architecture**: Standard Livewire components for interactivity, styled with semantic CSS classes.
 
 ## Constraints & Requirements
-- **NO BUILD**: Remove and avoid using TAILWIND, BOOTSTRAP, VITE, NODE, and NPM.
-- **Standard CSS**: All styling must be done using standard CSS files linked from `public/css/`.
-- **Vanilla JS**: If JavaScript is required, use standard scripts linked from `public/js/`.
-- **Premium Aesthetics**: The absence of build tools must not compromise visual quality. Leverage CSS's full power for a premium feel.
+- **NO BUILD**: Strictly avoid Node/NPM/Vite in the workflow. Rely on CDNs and native browser capabilities.
+- **NO TAILWIND**: Do not use Tailwind CSS in any form.
+- **NO VOLT**: Do not use Livewire Volt (Bolt). All components must be standard Livewire classes.
+- **PACKAGE INTEGRITY**: **NEVER** install or use any new packages or dependencies without explicit user permission.
+- **Premium Aesthetics**: High-end visual design using modern Vanilla CSS.
 
 ## Architecture Philosophy
-- **Simplicity**: Minimize abstraction layers and dependencies.
-- **Directness**: Use native browser features whenever possible.
-- **Maintainability**: Keep styles and scripts organized within the `public/` directory for direct serving.
+- **Standardization**: Using core Laravel/Livewire patterns to ensure long-term stability and ease of manual maintenance.
+- **Vanilla Mastery**: Leveraging the full power of native web technologies for maximum performance and simplicity.
+- **Directness**: Direct deployment and maintenance without complex build pipelines.
