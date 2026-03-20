@@ -1,18 +1,33 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-      x-init="
-        $watch('darkMode', val => {
-            localStorage.setItem('darkMode', val);
-        });
-        window.addEventListener('dark-mode-toggled', e => {
-            darkMode = e.detail.darkMode;
-        });
-      "
-      :class="{ 'dark': darkMode }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ config('app.name', 'Homeplanner') }}</title>
+
+        <!-- Dark Mode Detection -->
+        <script>
+            // Single source of truth for the 'dark' class
+            function applyTheme(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('darkMode', 'true');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('darkMode', 'false');
+                }
+            }
+
+            // Initial load - instant to prevent flicker
+            const savedTheme = localStorage.getItem('darkMode');
+            if (savedTheme === 'true' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Global listener for theme changes
+            window.addEventListener('apply-theme', e => {
+                applyTheme(e.detail.darkMode);
+            });
+        </script>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,11 +38,11 @@
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         @livewireStyles
     </head>
-    <body class="antialiased animate-in">
+    <body class="antialiased">
         <div class="layout-container">
-            <livewire:sidebar />
+            <livewire:sidebar wire:persist="sidebar" />
 
-            <main class="main-content">
+            <main class="main-content animate-in">
                 {{ $slot }}
             </main>
         </div>

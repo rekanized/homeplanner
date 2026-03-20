@@ -13,9 +13,8 @@ class Sidebar extends Component
     public function toggleDarkMode()
     {
         $this->darkMode = !$this->darkMode;
-        $this->dispatch('dark-mode-toggled', [
-            'darkMode' => $this->darkMode
-        ]);
+        // No longer dispatching from here to prevent flickering.
+        // The client handles the immediate UI change.
     }
 
     public function render()

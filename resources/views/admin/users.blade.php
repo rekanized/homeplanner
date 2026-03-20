@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold font-outfit text-slate-900 dark:text-white mb-6">User List</h1>
-        <div class="bg-white dark:bg-slate-800 shadow rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-            <p class="text-slate-600 dark:text-slate-400">Manage your application users here.</p>
+    <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; font-family: var(--font-heading); color: var(--text-main); margin-bottom: 24px;">User List</h1>
+        <div class="card" style="padding: 24px;">
+            <p style="color: var(--text-muted);">Manage your application users here.</p>
             <!-- User table placeholder -->
         </div>
     </div>
