@@ -1,0 +1,218 @@
+:root {
+    --bg-color: #fdfdfc;
+    --text-color: #1b1b18;
+    --accent-color: #f53003;
+    --secondary-text: #706f6c;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --border-color: rgba(25, 20, 0, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ededec;
+        --accent-color: #ff4433;
+        --secondary-text: #a1a09a;
+        --card-bg: rgba(22, 22, 21, 0.8);
+        --border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+header {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+.btn-ghost {
+    color: var(--text-color);
+    border-color: transparent;
+}
+
+.btn-ghost:hover {
+    border-color: var(--border-color);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.btn-outline {
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-outline:hover {
+    border-color: var(--text-color);
+}
+
+.btn-primary {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border-color: var(--text-color);
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+main {
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+}
+
+.content-section {
+    flex: 1;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.visual-section {
+    flex: 0 0 400px;
+    background: #fff2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+    .visual-section {
+        background: #1d0002;
+    }
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    color: var(--secondary-text);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+ul {
+    list-style: none;
+    margin-bottom: 2rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    position: relative;
+}
+
+.step-item::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 24px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border-color);
+}
+
+.step-item:last-child::before {
+    display: none;
+}
+
+.dot-outer {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    z-index: 1;
+    margin-top: 4px;
+}
+
+.dot-inner {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #dbdbd7;
+}
+
+@media (prefers-color-scheme: dark) {
+    .dot-inner {
+        background: #3e3e3a;
+    }
+}
+
+.link-accent {
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 500;
+}
+
+.footer-text {
+    margin-top: auto;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column-reverse;
+    }
+    .visual-section {
+        flex: 0 0 200px;
+    }
+    .content-section {
+        padding: 2rem;
+    }
+}
