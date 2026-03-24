@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('savings', function (Blueprint $table) {
-            $table->dropColumn('handling');
+        Schema::create('settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('key')->unique();
+            $table->text('value')->nullable();
+            $table->string('group')->default('general');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('savings', function (Blueprint $table) {
-            // Re-add as default 'Manuellt' if rolled back
-            $table->string('handling')->default('Manuellt');
-        });
+        Schema::dropIfExists('settings');
     }
 };

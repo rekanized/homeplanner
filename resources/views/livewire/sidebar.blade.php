@@ -52,8 +52,9 @@
                         </button>
                         
                         <div x-show="open" class="nav-sub-container">
-                            <a href="/admin/users" wire:navigate class="nav-sub-link {{ request()->is('admin/users') ? 'active' : '' }}">User list</a>
+                            <a href="{{ route('admin.users') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">User list</a>
                             <a href="/admin/settings" wire:navigate class="nav-sub-link {{ request()->is('admin/settings') ? 'active' : '' }}">Application settings</a>
+                            <a href="/admin/settings#auth" wire:navigate class="nav-sub-link">Authentication</a>
                             <a href="/admin/logs" wire:navigate class="nav-sub-link {{ request()->is('admin/logs') ? 'active' : '' }}">Change log</a>
                         </div>
                     </div>
@@ -91,23 +92,28 @@
 
         <!-- Footer / User Profile -->
         <div class="sidebar-footer">
+            @auth
             <div style="padding: 16px; border-radius: 24px; background: var(--bg-sidebar); border: 1px solid var(--border-color); box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px;">
                 <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px;">
-                    AA
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </div>
                 <div style="flex: 1; min-width: 0;">
                     <p style="font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; margin-bottom: 2px;">Signed in as</p>
-                    <h4 style="font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Albin Andersson</h4>
-                    <p style="font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">albin@homeplanner.app</p>
+                    <h4 style="font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ auth()->user()->name }}</h4>
+                    <p style="font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ auth()->user()->email }}</p>
                 </div>
             </div>
 
             <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
-                <a href="#" class="nav-link" style="color: var(--danger); font-weight: 800; font-size: 13px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    Sign out
-                </a>
+                <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                    @csrf
+                    <button type="submit" class="nav-link" style="width: 100%; text-align: left; background: transparent; border: none; color: var(--danger); font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                        Sign out
+                    </button>
+                </form>
             </div>
+            @endauth
         </div>
     </aside>
 </div>

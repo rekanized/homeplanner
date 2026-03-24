@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('amount', 12, 2);
             $table->string('category');
-            $table->string('payer');
-            $table->integer('month');
-            $table->integer('year');
+            $table->json('payer');
+            $table->string('handling')->nullable();
             $table->boolean('split')->default(false);
             $table->boolean('delayed')->default(false);
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
 

@@ -17,8 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 2);
             $table->string('saver');
             $table->string('location');
-            $table->integer('month');
-            $table->integer('year');
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
 

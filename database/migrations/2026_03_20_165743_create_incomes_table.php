@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('amount', 12, 2);
             $table->string('recipient');
-            $table->integer('month');
-            $table->integer('year');
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
 
