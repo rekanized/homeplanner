@@ -264,11 +264,11 @@ a {
     border: 1px solid var(--border-color);
     border-radius: 24px;
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .card-header {
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-4) var(--space-6);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -276,7 +276,7 @@ a {
 }
 
 .card-body {
-    padding: var(--space-8);
+    padding: var(--space-4) var(--space-6);
 }
 
 /* Summary Grid */
@@ -288,8 +288,8 @@ a {
 }
 
 .summary-card {
-    padding: var(--space-6);
-    border-radius: 24px;
+    padding: var(--space-4) var(--space-5);
+    border-radius: 20px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     position: relative;
@@ -353,6 +353,246 @@ a {
     box-shadow: 0 0 0 2px var(--primary-soft);
 }
 
+/* ── Economy: Inline Editing ── */
+
+.eco-inline-input {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    width: 100%;
+    min-width: 60px;
+    transition: all 0.2s ease;
+}
+
+.eco-inline-input:hover {
+    border-color: var(--border-color);
+    background: var(--bg-input);
+}
+
+.eco-inline-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.eco-inline-amount {
+    text-align: right;
+    font-weight: 900;
+    font-family: var(--font-heading);
+    width: 100px;
+}
+
+.eco-inline-select {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.eco-inline-select:hover {
+    border-color: var(--border-color);
+    background: var(--bg-input);
+}
+
+.eco-inline-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.eco-inline-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: var(--bg-main);
+    transition: background 0.2s ease;
+}
+
+.eco-inline-row:hover {
+    background: var(--bg-input);
+}
+
+/* ── Economy: Add / Delete Buttons ── */
+
+.eco-add-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.eco-add-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.eco-delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--slate-300);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.eco-delete-btn:hover {
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+/* ── Economy: Toggle Labels ── */
+
+.eco-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.eco-toggle-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--primary);
+}
+
+.eco-toggle-text {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--slate-400);
+    letter-spacing: 0.05em;
+}
+
+.eco-toggle-warn {
+    color: var(--warning);
+}
+
+/* ── Economy: Custom Payer Dropdown ── */
+
+.eco-payer-dropdown {
+    position: relative;
+}
+
+.eco-payer-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 5px 8px;
+    cursor: pointer;
+    min-width: 100px;
+    min-height: 32px;
+    transition: all 0.2s ease;
+}
+
+.eco-payer-trigger:hover {
+    border-color: var(--border-color);
+    background: var(--bg-input);
+}
+
+.eco-payer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+}
+
+.eco-payer-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.eco-payer-placeholder {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate-400);
+    flex: 1;
+}
+
+.eco-payer-chevron {
+    flex-shrink: 0;
+    color: var(--slate-400);
+    transition: transform 0.2s ease;
+}
+
+.eco-payer-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    padding: 6px;
+    z-index: 100;
+}
+
+.eco-payer-menu.eco-drop-up {
+    top: auto;
+    bottom: calc(100% + 4px);
+}
+
+.eco-payer-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    transition: background 0.15s ease;
+}
+
+.eco-payer-option:hover {
+    background: var(--bg-input);
+}
+
+.eco-payer-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    border-radius: 4px;
+}
+
 .btn {
     padding: var(--space-3) var(--space-6);
     border-radius: 12px;
@@ -381,9 +621,62 @@ a {
     color: white;
 }
 
-/* Tables */
+/* Tables & Grid Tables */
 .table-container {
-    overflow-x: auto;
+    overflow: visible;
+}
+
+.eco-grid-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.eco-grid-header {
+    display: grid;
+    /* Generic row layout will be overridden by specific classes */
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-input);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    align-items: center;
+}
+
+/* Specific Grid Layouts */
+.expenses-grid { grid-template-columns: 32px 2fr 1.5fr minmax(140px, 2fr) 1.5fr minmax(130px, 1.5fr) 100px 40px; }
+.income-grid   { grid-template-columns: 32px 12px 2fr 1fr 100px 40px; }
+.savings-grid  { grid-template-columns: 32px 2fr 1fr 1fr 100px 40px; }
+.categories-grid { grid-template-columns: 32px 12px 1fr 100px 40px; }
+
+.eco-grid-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.eco-grid-row {
+    display: grid;
+    /* Generic row layout will be overridden by specific classes */
+    gap: 8px;
+    align-items: center;
+    padding: 4px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    transition: background 0.2s ease;
+}
+
+.eco-grid-row:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+.eco-grid-row:last-child {
+    border-bottom: none;
+}
+
+.eco-grid-row:hover {
+    background: var(--bg-main);
 }
 
 table {

@@ -10,4 +10,6 @@ I am Antigravity, a professional agentic AI coding assistant. My focus is on del
 ## Guidelines
 - Avoid heavy build tools (Vite, NPM, Node) in this project.
 - Leverage modern CSS (Grids, Flexbox, Variables, `@keyframes`) to achieve premium UI/UX.
+- **Pattern: Smart Dropdowns**: Use Alpine.js to detect viewport space and toggle "drop-up" modes for menus near the screen edge.
+- **Pattern: Unified Grids**: Use structured CSS Grid templates (`.eco-grid-table`) to align headers and data rows perfectly across different modules.
 - Ensure all code is well-documented and follows consistent naming conventions.
