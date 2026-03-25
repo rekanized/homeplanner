@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/img/logo.png" width="180" alt="Homeplanner Logo">
+  <img src="public/favicon.svg" width="128" alt="Homeplanner Logo">
 </p>
 
 # 🏡 Homeplanner
@@ -25,6 +25,41 @@ Take control of your finances. Track incomes, savings, and expenses with inline 
 
 ### 👨‍👩‍👧‍👦 Kids Points System (Coming Soon)
 A dedicated module to engage children in household chores through a points-based reward system.
+
+## 🚀 Quick Deploy
+
+Create a `docker-compose.yml` and run `docker compose up -d`:
+
+```yaml
+services:
+  app:
+    image: rekanized/homeplanner-app:latest
+    restart: unless-stopped
+    environment:
+      - APP_NAME=Homeplanner
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=${APP_URL:-http://localhost:8080}
+      - DB_CONNECTION=sqlite
+      - SESSION_DRIVER=database
+      - CACHE_STORE=database
+      - QUEUE_CONNECTION=database
+    volumes:
+      - db-data:/home/site/wwwroot/database
+      - app-storage:/home/site/wwwroot/storage
+
+  nginx:
+    image: rekanized/homeplanner-nginx:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - app
+
+volumes:
+  db-data:
+  app-storage:
+```
 
 ---
 Powered by [Rekanized](https://github.com/rekanized)
