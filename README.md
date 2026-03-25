@@ -53,7 +53,7 @@ services:
     image: rekanized/homeplanner-nginx:latest
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - app
 
