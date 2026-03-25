@@ -67,20 +67,31 @@
                     @forelse($this->incomes as $income)
                     <div class="eco-grid-row income-grid" wire:key="income-{{ $income->id }}">
                         <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                         </div>
-                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); justify-self: center;"></div>
-                        <input type="text" class="eco-inline-input" value="{{ $income->name }}" placeholder="Income name"
-                            wire:change="updateIncome({{ $income->id }}, 'name', $event.target.value)">
-                        <select class="eco-inline-select" style="width: 100%;"
-                            wire:change="updateIncome({{ $income->id }}, 'recipient', $event.target.value)">
-                            <option value="" @if(!$income->recipient) selected @endif>Recipient</option>
-                            @foreach($this->users as $user)
-                                <option value="{{ $user->name }}" @if($income->recipient === $user->name) selected @endif>{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                        <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $income->amount }}" placeholder="0" style="width: 100%;"
-                            wire:change="updateIncome({{ $income->id }}, 'amount', $event.target.value)">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); justify-self: center;" class="desktop-only"></div>
+                        <div class="eco-mobile-stack">
+                            <div class="eco-field">
+                                <span class="mobile-label">Name</span>
+                                <input type="text" class="eco-inline-input" value="{{ $income->name }}" placeholder="Income name"
+                                    wire:change="updateIncome({{ $income->id }}, 'name', $event.target.value)">
+                            </div>
+                            <div class="eco-field">
+                                <span class="mobile-label">Recipient</span>
+                                <select class="eco-inline-select" style="width: 100%;"
+                                    wire:change="updateIncome({{ $income->id }}, 'recipient', $event.target.value)">
+                                    <option value="" @if(!$income->recipient) selected @endif>Recipient</option>
+                                    @foreach($this->users as $user)
+                                        <option value="{{ $user->name }}" @if($income->recipient === $user->name) selected @endif>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="eco-field">
+                            <span class="mobile-label">Amount</span>
+                            <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $income->amount }}" placeholder="0" style="width: 100%;"
+                                wire:change="updateIncome({{ $income->id }}, 'amount', $event.target.value)">
+                        </div>
                         <div style="display: flex; justify-content: flex-end;">
                             <button wire:click="deleteIncome({{ $income->id }})" class="eco-delete-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -125,19 +136,35 @@
                         <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                         </div>
-                        <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="Purpose"
-                            wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)">
-                        <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="Bank/App"
-                            wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)">
-                        <select class="eco-inline-select" style="width: 100%;"
-                            wire:change="updateSaving({{ $saving->id }}, 'saver', $event.target.value)">
-                            <option value="" @if(!$saving->saver) selected @endif>Saver</option>
-                            @foreach($this->users as $user)
-                                <option value="{{ $user->name }}" @if($saving->saver === $user->name) selected @endif>{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                        <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
-                            wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
+                        <div class="eco-mobile-stack">
+                            <div class="eco-field">
+                                <span class="mobile-label">Purpose</span>
+                                <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="Purpose"
+                                    wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)">
+                            </div>
+                            <div class="eco-field">
+                                <span class="mobile-label">Bank/App</span>
+                                <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="Bank/App"
+                                    wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)">
+                            </div>
+                        </div>
+                        <div class="eco-mobile-stack">
+                            <div class="eco-field">
+                                <span class="mobile-label">Saver</span>
+                                <select class="eco-inline-select" style="width: 100%;"
+                                    wire:change="updateSaving({{ $saving->id }}, 'saver', $event.target.value)">
+                                    <option value="" @if(!$saving->saver) selected @endif>Saver</option>
+                                    @foreach($this->users as $user)
+                                        <option value="{{ $user->name }}" @if($saving->saver === $user->name) selected @endif>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="eco-field">
+                                <span class="mobile-label">Amount</span>
+                                <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
+                                    wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
+                            </div>
+                        </div>
                         <div style="display: flex; justify-content: flex-end;">
                             <button wire:click="deleteSaving({{ $saving->id }})" class="eco-delete-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -253,23 +280,33 @@
                 })">
                 @forelse($this->expenses as $expense)
                 <div class="eco-grid-row expenses-grid" wire:key="expense-{{ $expense->id }}">
-                    <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                    <div class="eco-row-header">
+                        <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                        </div>
+                        <button wire:click="deleteExpense({{ $expense->id }})" class="eco-delete-btn mobile-only">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        </button>
                     </div>
-                    <div>
-                        <input type="text" class="eco-inline-input" value="{{ $expense->name }}" placeholder="Expense name"
-                            wire:change="updateExpense({{ $expense->id }}, 'name', $event.target.value)">
+                    <div class="eco-mobile-row">
+                        <div class="eco-field">
+                            <span class="mobile-label">Name</span>
+                            <input type="text" class="eco-inline-input" value="{{ $expense->name }}" placeholder="Expense name"
+                                wire:change="updateExpense({{ $expense->id }}, 'name', $event.target.value)">
+                        </div>
+                        <div class="eco-field">
+                            <span class="mobile-label">Category</span>
+                            <select class="eco-inline-select" style="width: 100%;"
+                                wire:change="updateExpense({{ $expense->id }}, 'category', $event.target.value)">
+                                <option value="" @if(!$expense->category) selected @endif>—</option>
+                                @foreach($this->expenseCategories as $cat)
+                                    <option value="{{ $cat->name }}" @if($expense->category === $cat->name) selected @endif>{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <select class="eco-inline-select" style="width: 100%;"
-                            wire:change="updateExpense({{ $expense->id }}, 'category', $event.target.value)">
-                            <option value="" @if(!$expense->category) selected @endif>—</option>
-                            @foreach($this->expenseCategories as $cat)
-                                <option value="{{ $cat->name }}" @if($expense->category === $cat->name) selected @endif>{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div style="overflow: visible;">
+                    <div class="eco-field" style="overflow: visible;">
+                        <span class="mobile-label">Payer(s)</span>
                         <div class="eco-payer-dropdown" x-data="{ open: false, dropUp: false }" @click.outside="open = false" style="width: 100%;">
                             <button type="button" class="eco-payer-trigger"
                                 @click="open = !open; if(open) dropUp = (window.innerHeight - $el.getBoundingClientRect().bottom) < 220"
@@ -297,34 +334,39 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <select class="eco-inline-select" style="width: 100%;"
-                            wire:change="updateExpense({{ $expense->id }}, 'handling', $event.target.value)">
-                            <option value="Autogiro" @if($expense->handling === 'Autogiro') selected @endif>Autogiro</option>
-                            <option value="Manuellt" @if($expense->handling === 'Manuellt') selected @endif>Manuellt</option>
-                            <option value="E-faktura" @if($expense->handling === 'E-faktura') selected @endif>E-faktura</option>
-                            <option value="Swish" @if($expense->handling === 'Swish') selected @endif>Swish</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div style="display: flex; gap: 8px; align-items: center; height: 100%;">
-                            <label class="eco-toggle-label" title="Split cost">
-                                <input type="checkbox" @if($expense->split) checked @endif
-                                    wire:change="updateExpense({{ $expense->id }}, 'split', $event.target.checked ? 1 : 0)">
-                                <span class="eco-toggle-text">Split</span>
-                            </label>
-                            <label class="eco-toggle-label" title="Delayed payment">
-                                <input type="checkbox" @if($expense->delayed) checked @endif
-                                    wire:change="updateExpense({{ $expense->id }}, 'delayed', $event.target.checked ? 1 : 0)">
-                                <span class="eco-toggle-text eco-toggle-warn">Delay</span>
-                            </label>
+                    <div class="eco-mobile-row">
+                        <div class="eco-field">
+                            <span class="mobile-label">Handling</span>
+                            <select class="eco-inline-select" style="width: 100%;"
+                                wire:change="updateExpense({{ $expense->id }}, 'handling', $event.target.value)">
+                                <option value="Autogiro" @if($expense->handling === 'Autogiro') selected @endif>Autogiro</option>
+                                <option value="Manuellt" @if($expense->handling === 'Manuellt') selected @endif>Manuellt</option>
+                                <option value="E-faktura" @if($expense->handling === 'E-faktura') selected @endif>E-faktura</option>
+                                <option value="Swish" @if($expense->handling === 'Swish') selected @endif>Swish</option>
+                            </select>
+                        </div>
+                        <div class="eco-field">
+                            <span class="mobile-label">Options</span>
+                            <div style="display: flex; gap: 8px; align-items: center; height: 100%;">
+                                <label class="eco-toggle-label" title="Split cost">
+                                    <input type="checkbox" @if($expense->split) checked @endif
+                                        wire:change="updateExpense({{ $expense->id }}, 'split', $event.target.checked ? 1 : 0)">
+                                    <span class="eco-toggle-text">Split</span>
+                                </label>
+                                <label class="eco-toggle-label" title="Delayed payment">
+                                    <input type="checkbox" @if($expense->delayed) checked @endif
+                                        wire:change="updateExpense({{ $expense->id }}, 'delayed', $event.target.checked ? 1 : 0)">
+                                    <span class="eco-toggle-text eco-toggle-warn">Delay</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    <div style="text-align: right;">
+                    <div class="eco-field" style="text-align: right;">
+                        <span class="mobile-label">Amount</span>
                         <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $expense->amount }}" placeholder="0" style="width: 100%;"
                             wire:change="updateExpense({{ $expense->id }}, 'amount', $event.target.value)">
                     </div>
-                    <div style="text-align: right; display: flex; justify-content: flex-end; align-items: center; height: 100%;">
+                    <div style="text-align: right; display: flex; justify-content: flex-end; align-items: center; height: 100%;" class="desktop-only">
                         <button wire:click="deleteExpense({{ $expense->id }})" class="eco-delete-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                         </button>
