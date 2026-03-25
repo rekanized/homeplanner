@@ -41,18 +41,19 @@ services:
       - APP_DEBUG=false
       - APP_URL=${APP_URL:-http://localhost:8080}
       - DB_CONNECTION=sqlite
+      - DB_DATABASE=/data/database.sqlite
       - SESSION_DRIVER=database
       - CACHE_STORE=database
       - QUEUE_CONNECTION=database
     volumes:
-      - db-data:/var/www/html/database
-      - app-storage:/var/www/html/storage
+      - db-data:/data
+      - app-storage:/app/storage
 
   nginx:
     image: rekanized/homeplanner-nginx:latest
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - app
 
