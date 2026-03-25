@@ -8,6 +8,7 @@ RUN apk add --no-cache \
     zip \
     unzip \
     curl \
+    bash \
     && docker-php-ext-install pdo pdo_sqlite zip bcmath
 
 # Install Composer
@@ -31,10 +32,10 @@ RUN mkdir -p database \
     && touch database/database.sqlite \
     && chown www-data:www-data database/database.sqlite
 
-# Copy startup script and make executable
-COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+# Copy entrypoint script and make executable
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 9000
 
-CMD ["/usr/local/bin/startup.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
