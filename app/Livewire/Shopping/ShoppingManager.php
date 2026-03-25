@@ -1,0 +1,172 @@
+<?php
+
+namespace App\Livewire\Shopping;
+
+use Livewire\Component;
+use App\Models\ShoppingList;
+use App\Models\ShoppingItem;
+use Livewire\Attributes\Computed;
+
+class ShoppingManager extends Component
+{
+    public $activeListId;
+    public $newListNames = []; // For inline editing of list names
+    public $selectedItems = [];
+
+    protected $listeners = ['reorder' => 'handleReorder'];
+
+    public function mount()
+    {
+        $firstList = ShoppingList::orderBy('sort_order')->first();
+        if (!$firstList) {
+            $firstList = ShoppingList::create(['name' => 'General Shopping']);
+        }
+        $this->activeListId = $firstList->id;
+    }
+
+    #[Computed]
+    public function lists()
+    {
+        return ShoppingList::orderBy('sort_order')->get();
+    }
+
+    #[Computed]
+    public function activeList()
+    {
+        return ShoppingList::find($this->activeListId);
+    }
+
+    #[Computed]
+    public function items()
+    {
+        return $this->activeList ? $this->activeList->items : collect();
+    }
+
+    public function selectList($id)
+    {
+        $this->activeListId = $id;
+        $this->selectedItems = [];
+    }
+
+    public function addList()
+    {
+        $newList = ShoppingList::create([
+            'name' => 'New List',
+            'sort_order' => ShoppingList::max('sort_order') + 1
+        ]);
+        $this->activeListId = $newList->id;
+    }
+
+    public function updateListName($id, $name)
+    {
+        $list = ShoppingList::find($id);
+        if ($list && trim($name) !== '') {
+            $list->update(['name' => trim($name)]);
+        }
+    }
+
+    public function deleteList($id)
+    {
+        $list = ShoppingList::find($id);
+        if ($list) {
+            $list->delete();
+            $this->mount(); // Reset to first available list
+        }
+    }
+
+    public function addItem()
+    {
+        if (!$this->activeListId) return;
+
+        ShoppingItem::create([
+            'shopping_list_id' => $this->activeListId,
+            'name' => '',
+            'quantity' => 1,
+            'sort_order' => ShoppingItem::where('shopping_list_id', $this->activeListId)->max('sort_order') + 1
+        ]);
+    }
+
+    public function updateItem($id, $field, $value)
+    {
+        $item = ShoppingItem::find($id);
+        if ($item) {
+            $item->update([$field => $value]);
+        }
+    }
+
+    public function incrementQuantity($id)
+    {
+        $item = ShoppingItem::find($id);
+        if ($item) {
+            $item->increment('quantity');
+        }
+    }
+
+    public function decrementQuantity($id)
+    {
+        $item = ShoppingItem::find($id);
+        if ($item && $item->quantity > 1) {
+            $item->decrement('quantity');
+        }
+    }
+
+    public function toggleCheck($id)
+    {
+        $item = ShoppingItem::find($id);
+        if ($item) {
+            $item->update(['is_checked' => !$item->is_checked]);
+        }
+    }
+
+    public function deleteItem($id)
+    {
+        $item = ShoppingItem::find($id);
+        if ($item) {
+            $item->delete();
+        }
+    }
+
+    public function bulkDelete()
+    {
+        ShoppingItem::whereIn('id', $this->selectedItems)->delete();
+        $this->selectedItems = [];
+    }
+
+    public function bulkToggleCheck()
+    {
+        $items = ShoppingItem::whereIn('id', $this->selectedItems)->get();
+        $allChecked = $items->every('is_checked', true);
+        
+        ShoppingItem::whereIn('id', $this->selectedItems)->update(['is_checked' => !$allChecked]);
+        $this->selectedItems = [];
+    }
+
+    public function toggleSelectAll()
+    {
+        $itemIds = $this->items->pluck('id')->toArray();
+        
+        if (count($this->selectedItems) === count($itemIds)) {
+            $this->selectedItems = [];
+        } else {
+            $this->selectedItems = $itemIds;
+        }
+    }
+
+    public function handleReorder($type, $ids)
+    {
+        if ($type === 'items') {
+            foreach ($ids as $index => $id) {
+                ShoppingItem::where('id', $id)->update(['sort_order' => $index]);
+            }
+        } elseif ($type === 'lists') {
+            foreach ($ids as $index => $id) {
+                ShoppingList::where('id', $id)->update(['sort_order' => $index]);
+            }
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.shopping.shopping-manager');
+    }
+}

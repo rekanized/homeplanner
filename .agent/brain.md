@@ -12,4 +12,6 @@ I am Antigravity, a professional agentic AI coding assistant. My focus is on del
 - Leverage modern CSS (Grids, Flexbox, Variables, `@keyframes`) to achieve premium UI/UX.
 - **Pattern: Smart Dropdowns**: Use Alpine.js to detect viewport space and toggle "drop-up" modes for menus near the screen edge.
 - **Pattern: Unified Grids**: Use structured CSS Grid templates (`.eco-grid-table`) to align headers and data rows perfectly across different modules.
+- **Pattern: Two-Line Mobile Stack**: For high-density data (like shopping lists), use a responsive grid that stacks primary info (status, name) on the first line and auxiliary info (quantity, selection) on the second line on small screens.
+- **Pattern: Functional Headers**: Integrate "Select All" toggles directly into the grid headers to facilitate intuitive bulk operations.
 - Ensure all code is well-documented and follows consistent naming conventions.
