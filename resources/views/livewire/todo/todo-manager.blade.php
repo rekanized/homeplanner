@@ -16,9 +16,9 @@
     </div>
 
     <!-- Multi-List Tabs & Filters -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-8);">
         <div 
-            style="display: flex; align-items: center; gap: 4px; overflow-x: auto; padding-bottom: 4px; flex: 1;" 
+            style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding-bottom: 4px; flex: 1; min-width: 300px;" 
             id="todo-tabs" 
         data-type="lists"
         x-init="if (typeof Sortable !== 'undefined') new Sortable($el, {
@@ -182,32 +182,33 @@
                                             ></button>
                                         </div>
 
-                                        <div class="cell-name" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 10px;">
-                                            <input type="date" 
-                                                value="{{ $item->due_date ? \Carbon\Carbon::parse($item->due_date)->format('Y-m-d') : '' }}"
-                                                class="date-badge {{ $groupKey === 'overdue' ? 'overdue' : ($groupKey === 'today' ? 'today' : ($item->due_date ? 'upcoming' : 'empty')) }}"
-                                                @change="$wire.updateItemDueDate({{ $item->id }}, $event.target.value)"
-                                                title="Set due date"
-                                            >
-                                            
-                                            <input 
-                                                type="text" 
-                                                value="{{ $item->name }}" 
-                                                class="eco-inline-input"
-                                                style="flex: 1; min-width: 120px;"
-                                                placeholder="Task description..."
-                                                @blur="$wire.updateItemName({{ $item->id }}, $event.target.value)"
-                                                @keydown.enter="$event.target.blur()"
-                                            >
-
-                                            <input 
-                                                type="text" 
-                                                value="{{ $item->category }}" 
-                                                class="category-badge"
-                                                placeholder="+ tag"
-                                                @blur="$wire.updateItemCategory({{ $item->id }}, $event.target.value)"
-                                                @keydown.enter="$event.target.blur()"
-                                            >
+                                        <div class="cell-name">
+                                            <div class="todo-item-content">
+                                                <input 
+                                                    type="text" 
+                                                    value="{{ $item->name }}" 
+                                                    class="eco-inline-input"
+                                                    placeholder="Task description..."
+                                                    @blur="$wire.updateItemName({{ $item->id }}, $event.target.value)"
+                                                    @keydown.enter="$event.target.blur()"
+                                                >
+                                                <div class="todo-item-meta">
+                                                    <input type="date" 
+                                                        value="{{ $item->due_date ? \Carbon\Carbon::parse($item->due_date)->format('Y-m-d') : '' }}"
+                                                        class="date-badge {{ $groupKey === 'overdue' ? 'overdue' : ($groupKey === 'today' ? 'today' : ($item->due_date ? 'upcoming' : 'empty')) }}"
+                                                        @change="$wire.updateItemDueDate({{ $item->id }}, $event.target.value)"
+                                                        title="Set due date"
+                                                    >
+                                                    <input 
+                                                        type="text" 
+                                                        value="{{ $item->category }}" 
+                                                        class="category-badge"
+                                                        placeholder="+ tag"
+                                                        @blur="$wire.updateItemCategory({{ $item->id }}, $event.target.value)"
+                                                        @keydown.enter="$event.target.blur()"
+                                                    >
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="cell-delete">
