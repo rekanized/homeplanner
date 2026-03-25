@@ -6,9 +6,8 @@ Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
 Route::get('/setup', \App\Livewire\Auth\InitialSetup::class)->name('setup.index');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('economy.index');
-    })->name('economy.index');
+    Route::get('/', \App\Livewire\Home\Dashboard::class)->name('home');
+    Route::get('/economy', \App\Livewire\Economy\EconomyManager::class)->name('economy.index');
 
     Route::prefix('admin')->middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
         Route::get('/users', \App\Livewire\Admin\UserList::class)->name('admin.users');

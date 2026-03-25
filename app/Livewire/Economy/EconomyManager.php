@@ -10,7 +10,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 
-class Dashboard extends Component
+class EconomyManager extends Component
 {
     #[Computed]
     public function users()
@@ -240,6 +240,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.economy.dashboard');
+        return view('livewire.economy.economy-manager');
     }
 }

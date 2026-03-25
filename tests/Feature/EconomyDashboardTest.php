@@ -33,7 +33,7 @@ class EconomyDashboardTest extends TestCase
     public function test_can_add_expense_row()
     {
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Economy\Dashboard::class)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
             ->call('addExpenseRow');
 
         $this->assertEquals(1, Expense::count());
@@ -48,7 +48,7 @@ class EconomyDashboardTest extends TestCase
         $expense = Expense::factory()->create(['name' => 'Old Name']);
 
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Economy\Dashboard::class)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
             ->call('updateExpense', $expense->id, 'name', 'New Name');
 
         $this->assertEquals('New Name', $expense->refresh()->name);
@@ -63,7 +63,7 @@ class EconomyDashboardTest extends TestCase
         $expense = Expense::factory()->create(['name' => 'Should Not Change']);
 
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Economy\Dashboard::class)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
             // Empty name should be ignored by our hardened logic
             ->call('updateExpense', $expense->id, 'name', '   ');
 
@@ -76,7 +76,7 @@ class EconomyDashboardTest extends TestCase
         $e2 = Expense::factory()->create(['sort_order' => 2]);
 
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Economy\Dashboard::class)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
             ->call('reorder', 'expense', [$e2->id, $e1->id]);
 
         $this->assertEquals(0, $e2->refresh()->sort_order);
@@ -86,7 +86,7 @@ class EconomyDashboardTest extends TestCase
     public function test_audit_logs_are_generated_for_every_significant_action()
     {
         Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Economy\Dashboard::class)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
             ->call('addExpenseCategoryRow');
 
         $this->assertDatabaseHas('audit_logs', [
