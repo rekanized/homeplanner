@@ -15,14 +15,15 @@ class RedirectToSetup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Allow setup-related and internal Livewire requests to pass through
-        if ($request->is('setup*') || $request->is('livewire*') || $request->is('auth/google*')) {
-            return $next($request);
-        }
-
         $userCount = \App\Models\User::count();
 
-        if ($userCount === 0) {
+        // If users already exist, don't allow access to setup routes
+        if ($userCount > 0 && $request->is('setup*')) {
+            return redirect('/');
+        }
+
+        // If no users exist, force redirect to setup (except for setup routes and essential paths)
+        if ($userCount === 0 && !$request->is('setup*') && !$request->is('livewire*') && !$request->is('auth/google*')) {
             return redirect('/setup');
         }
 
