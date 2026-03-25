@@ -12,6 +12,10 @@ chown www-data:www-data database/database.sqlite
 
 # Auto-generate APP_KEY if not set
 if [ -z "$APP_KEY" ]; then
+    if [ ! -f .env ]; then
+        echo "Creating .env from .env.example..."
+        cp .env.example .env
+    fi
     echo "Generating new APP_KEY..."
     php artisan key:generate --force
 fi

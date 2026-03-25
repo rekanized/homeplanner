@@ -45,8 +45,8 @@ services:
       - CACHE_STORE=database
       - QUEUE_CONNECTION=database
     volumes:
-      - db-data:/home/site/wwwroot/database
-      - app-storage:/home/site/wwwroot/storage
+      - db-data:/var/www/html/database
+      - app-storage:/var/www/html/storage
 
   nginx:
     image: rekanized/homeplanner-nginx:latest
