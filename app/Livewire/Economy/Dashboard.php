@@ -85,7 +85,7 @@ class Dashboard extends Component
         Income::create([
             'name' => '',
             'amount' => 0,
-            'recipient' => '',
+            'recipient_id' => null,
             'sort_order' => Income::max('sort_order') + 1,
         ]);
     }
@@ -96,7 +96,7 @@ class Dashboard extends Component
             'name' => '',
             'amount' => 0,
             'category' => '',
-            'payer' => [],
+            'payer_ids' => [],
             'handling' => 'Autogiro',
             'split' => false,
             'delayed' => false,
@@ -109,7 +109,7 @@ class Dashboard extends Component
         Saving::create([
             'name' => '',
             'amount' => 0,
-            'saver' => '',
+            'saver_id' => null,
             'location' => '',
             'sort_order' => Saving::max('sort_order') + 1,
         ]);
@@ -119,7 +119,7 @@ class Dashboard extends Component
 
     public function updateIncome($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'recipient'];
+        $allowed = ['name', 'amount', 'recipient_id'];
         if (!in_array($field, $allowed)) return;
 
         $income = Income::find($id);
@@ -193,27 +193,27 @@ class Dashboard extends Component
         ExpenseCategory::find($id)?->delete();
     }
 
-    public function toggleExpensePayer($id, $payerName)
+    public function toggleExpensePayer($id, $userId)
     {
         $expense = Expense::find($id);
         if (!$expense) return;
 
-        $payers = $expense->payer ?? [];
+        $payerIds = $expense->payer_ids ?? [];
 
-        if (in_array($payerName, $payers)) {
-            $payers = array_values(array_diff($payers, [$payerName]));
+        if (in_array((int)$userId, $payerIds)) {
+            $payerIds = array_values(array_diff($payerIds, [(int)$userId]));
         } else {
-            $payers[] = $payerName;
+            $payerIds[] = (int)$userId;
         }
 
-        $expense->update(['payer' => $payers]);
+        $expense->update(['payer_ids' => $payerIds]);
     }
 
     // --- Delete Methods ---
 
     public function updateSaving($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'saver', 'location'];
+        $allowed = ['name', 'amount', 'saver_id', 'location'];
         if (!in_array($field, $allowed)) return;
 
         $saving = Saving::find($id);

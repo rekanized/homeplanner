@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Expense extends Model
 {
     use Auditable, HasFactory;
-    protected $fillable = ['name', 'amount', 'category', 'payer', 'split', 'delayed', 'handling', 'sort_order'];
+    protected $fillable = ['name', 'amount', 'category', 'payer_ids', 'split', 'delayed', 'handling', 'sort_order'];
 
     protected $casts = [
-        'payer' => 'array',
+        'payer_ids' => 'array',
         'split' => 'boolean',
         'delayed' => 'boolean',
     ];

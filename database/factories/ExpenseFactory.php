@@ -21,7 +21,7 @@ class ExpenseFactory extends Factory
             'name' => $this->faker->words(3, true),
             'amount' => $this->faker->randomFloat(2, 10, 500),
             'category' => 'Food',
-            'payer' => ['Me'],
+            'payer_ids' => [],
             'split' => false,
             'delayed' => false,
             'handling' => null,

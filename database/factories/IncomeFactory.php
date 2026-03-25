@@ -20,7 +20,7 @@ class IncomeFactory extends Factory
         return [
             'name' => $this->faker->words(2, true),
             'amount' => $this->faker->randomFloat(2, 1000, 5000),
-            'recipient' => 'Me',
+            'recipient_id' => null,
             'sort_order' => 0,
         ];
     }

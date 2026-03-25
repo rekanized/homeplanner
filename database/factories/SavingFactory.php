@@ -20,7 +20,7 @@ class SavingFactory extends Factory
         return [
             'name' => $this->faker->words(3, true),
             'amount' => $this->faker->randomFloat(2, 100, 5000),
-            'saver' => 'Me',
+            'saver_id' => null,
             'location' => 'Bank Account',
             'sort_order' => 0,
         ];

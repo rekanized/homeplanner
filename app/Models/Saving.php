@@ -9,5 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Saving extends Model
 {
     use Auditable, HasFactory;
-    protected $fillable = ['name', 'amount', 'saver', 'location', 'sort_order'];
+    protected $fillable = ['name', 'amount', 'saver_id', 'location', 'sort_order'];
+
+    public function saver()
+    {
+        return $this->belongsTo(User::class, 'saver_id');
+    }
 }

@@ -79,10 +79,10 @@
                             <div class="eco-field">
                                 <span class="mobile-label">Recipient</span>
                                 <select class="eco-inline-select" style="width: 100%;"
-                                    wire:change="updateIncome({{ $income->id }}, 'recipient', $event.target.value)">
-                                    <option value="" @if(!$income->recipient) selected @endif>Recipient</option>
+                                    wire:change="updateIncome({{ $income->id }}, 'recipient_id', $event.target.value)">
+                                    <option value="" @if(!$income->recipient_id) selected @endif>Recipient</option>
                                     @foreach($this->users as $user)
-                                        <option value="{{ $user->name }}" @if($income->recipient === $user->name) selected @endif>{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" @if($income->recipient_id == $user->id) selected @endif>{{ $user->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -152,10 +152,10 @@
                             <div class="eco-field">
                                 <span class="mobile-label">Saver</span>
                                 <select class="eco-inline-select" style="width: 100%;"
-                                    wire:change="updateSaving({{ $saving->id }}, 'saver', $event.target.value)">
-                                    <option value="" @if(!$saving->saver) selected @endif>Saver</option>
+                                    wire:change="updateSaving({{ $saving->id }}, 'saver_id', $event.target.value)">
+                                    <option value="" @if(!$saving->saver_id) selected @endif>Saver</option>
                                     @foreach($this->users as $user)
-                                        <option value="{{ $user->name }}" @if($saving->saver === $user->name) selected @endif>{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" @if($saving->saver_id == $user->id) selected @endif>{{ $user->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -311,10 +311,13 @@
                             <button type="button" class="eco-payer-trigger"
                                 @click="open = !open; if(open) dropUp = (window.innerHeight - $el.getBoundingClientRect().bottom) < 220"
                                 style="width: 100%; justify-content: space-between;">
-                                @if(count($expense->payer ?? []) > 0)
+                                @if(count($expense->payer_ids ?? []) > 0)
                                     <span class="eco-payer-tags" style="flex: 1; overflow: hidden;">
-                                        @foreach($expense->payer as $p)
-                                            <span class="eco-payer-tag">{{ $p }}</span>
+                                        @foreach($expense->payer_ids as $pid)
+                                            @php $pUser = $this->users->find($pid); @endphp
+                                            @if($pUser)
+                                                <span class="eco-payer-tag">{{ $pUser->name }}</span>
+                                            @endif
                                         @endforeach
                                     </span>
                                 @else
@@ -326,8 +329,8 @@
                                 @foreach($this->users as $user)
                                 <label class="eco-payer-option">
                                     <input type="checkbox"
-                                        @if(in_array($user->name, $expense->payer ?? [])) checked @endif
-                                        wire:click="toggleExpensePayer({{ $expense->id }}, '{{ $user->name }}')">
+                                        @if(in_array($user->id, $expense->payer_ids ?? [])) checked @endif
+                                        wire:click="toggleExpensePayer({{ $expense->id }}, {{ $user->id }})">
                                     <span>{{ $user->name }}</span>
                                 </label>
                                 @endforeach
