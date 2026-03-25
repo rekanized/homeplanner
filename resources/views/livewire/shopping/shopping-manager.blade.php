@@ -2,7 +2,6 @@
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color);">
         <div>
-            <div class="badge badge-soft" style="color: var(--primary); background: var(--primary-soft); margin-bottom: var(--space-2);">Navigation</div>
             <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Shopping</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">Manage your grocery and household lists</p>
         </div>
@@ -171,6 +170,83 @@
                 @endforelse
             </div>
         </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div style="margin-top: var(--space-8); display: flex; justify-content: center; padding-bottom: 40px;" x-data="{ sorting: false, sorted: false, showFinishModal: false }">
+        
+        @if(!$isShopping)
+            <!-- Start Shopping Button -->
+            <button 
+                type="button"
+                x-on:click="sorting = true; $wire.startShopping().then(() => { sorting = false; sorted = true; setTimeout(() => { $wire.enterShoppingMode() }, 2000) })"
+                x-bind:disabled="sorting || sorted"
+                class="btn" 
+                x-bind:style="sorted ? 'background: var(--success); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;' : 'background: var(--primary); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;'"
+                title="Automatically sort based on Swedish store layout"
+            >
+                <span x-show="!sorting && !sorted" style="display: flex; align-items: center; gap: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.31-7.22H5.14"/></svg>
+                    <span>Start Shopping</span>
+                </span>
+                <span x-show="sorting" x-cloak style="display: flex; align-items: center; gap: 12px;">
+                    <span class="spinner-small"></span>
+                    <span>Sorting List...</span>
+                </span>
+                <span x-show="sorted" x-cloak style="display: flex; align-items: center; gap: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>List Sorted!</span>
+                </span>
+            </button>
+        @else
+            <!-- Finish Shopping Button -->
+            <button 
+                type="button"
+                x-on:click="showFinishModal = true"
+                class="btn" 
+                style="background: var(--success); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 12px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>Finish Shopping</span>
+            </button>
+        @endif
+
+        <!-- Finish Shopping Modal -->
+        <template x-if="showFinishModal">
+            <div class="modal-overlay" x-on:click.self="showFinishModal = false" x-transition>
+                <div class="modal-content" x-transition>
+                    <div class="modal-title">Finish Shopping?</div>
+                    <p class="modal-desc">What would you like to do with the items in this list?</p>
+                    
+                    <div class="modal-actions">
+                        <button 
+                            type="button"
+                            class="btn-finish-confirm"
+                            x-on:click="$wire.finishShopping(false).then(() => { showFinishModal = false; sorted = false })"
+                        >
+                            Remove Completed Items
+                        </button>
+                        
+                        <button 
+                            type="button"
+                            class="btn-finish-clear"
+                            x-on:click="if(confirm('This will wipe the entire list! Are you sure?')) { $wire.finishShopping(true).then(() => { showFinishModal = false; sorted = false }) }"
+                        >
+                            Clear Entire List
+                        </button>
+                        
+                        <button 
+                            type="button"
+                            class="btn-finish-cancel"
+                            x-on:click="showFinishModal = false"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
     </div>
 
     @push('scripts')

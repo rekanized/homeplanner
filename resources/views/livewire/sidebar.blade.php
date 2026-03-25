@@ -46,6 +46,16 @@
                         </div>
                     </a>
 
+                    <a href="{{ route('todo.index') }}" wire:navigate class="nav-link {{ request()->routeIs('todo.*') ? 'active' : '' }}">
+                        <div class="nav-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700;">Todo</div>
+                            <div style="font-size: 10px; opacity: 0.7;">Shared task lists</div>
+                        </div>
+                    </a>
+
                     <a href="#" class="nav-link">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

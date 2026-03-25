@@ -9,6 +9,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', \App\Livewire\Home\Dashboard::class)->name('home');
     Route::get('/economy', \App\Livewire\Economy\EconomyManager::class)->name('economy.index');
     Route::get('/shopping', \App\Livewire\Shopping\ShoppingManager::class)->name('shopping.index');
+    Route::get('/todo', \App\Livewire\Todo\TodoManager::class)->name('todo.index');
 
     Route::prefix('admin')->middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
         Route::get('/users', \App\Livewire\Admin\UserList::class)->name('admin.users');

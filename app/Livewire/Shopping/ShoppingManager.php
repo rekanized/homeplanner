@@ -5,6 +5,7 @@ namespace App\Livewire\Shopping;
 use Livewire\Component;
 use App\Models\ShoppingList;
 use App\Models\ShoppingItem;
+use App\Services\GrocerySortingService;
 use Livewire\Attributes\Computed;
 
 class ShoppingManager extends Component
@@ -12,6 +13,7 @@ class ShoppingManager extends Component
     public $activeListId;
     public $newListNames = []; // For inline editing of list names
     public $selectedItems = [];
+    public $isShopping = false;
 
     protected $listeners = ['reorder' => 'handleReorder'];
 
@@ -39,7 +41,7 @@ class ShoppingManager extends Component
     #[Computed]
     public function items()
     {
-        return $this->activeList ? $this->activeList->items : collect();
+        return $this->activeList ? $this->activeList->items()->orderBy('sort_order')->get() : collect();
     }
 
     public function selectList($id)
@@ -163,6 +165,46 @@ class ShoppingManager extends Component
                 ShoppingList::where('id', $id)->update(['sort_order' => $index]);
             }
         }
+    }
+
+    public function startShopping(GrocerySortingService $sortingService)
+    {
+        $items = $this->items;
+        if ($items->isEmpty()) return;
+
+        // Sort items using the heuristic service
+        $sortedItems = $items->sortBy(function($item) use ($sortingService) {
+            return $sortingService->getSortScore($item->name);
+        });
+
+        // Batch update sort orders
+        foreach ($sortedItems->values() as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+        
+        // Clear computed properties and refresh relationship
+        unset($this->items);
+        if ($this->activeList) {
+            $this->activeList->load('items');
+        }
+    }
+
+    public function enterShoppingMode()
+    {
+        $this->isShopping = true;
+    }
+
+    public function finishShopping(bool $clearAll = false)
+    {
+        if (!$this->activeList) return;
+
+        if ($clearAll) {
+            $this->activeList->items()->delete();
+        } else {
+            $this->activeList->items()->where('is_checked', true)->delete();
+        }
+
+        $this->isShopping = false;
     }
 
     public function render()
