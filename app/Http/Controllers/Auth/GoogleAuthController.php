@@ -71,11 +71,15 @@ class GoogleAuthController extends Controller
 
         // Enforce whitelist check
         $allowedEmails = Setting::get('google_allowed_emails', '');
-        $isFirstUser = User::count() === 0;
+        $noAdminsExist = User::where('is_admin', true)->count() === 0;
+        $isFirstUser = $noAdminsExist || User::count() === 0;
 
         if ($isFirstUser) {
             // Store who the first user is so we can protect them from deletion in settings
-            Setting::set('google_first_user_email', $email, 'auth');
+            // Only update if not already set to avoid overwriting master on subsequent logins if no other admins promoted
+            if (!Setting::get('google_first_user_email')) {
+                Setting::set('google_first_user_email', $email, 'auth');
+            }
 
             // Automatically add them to the allowed list if not already there
             $allowedArray = array_filter(array_map('trim', explode(',', $allowedEmails)));
@@ -99,6 +103,7 @@ class GoogleAuthController extends Controller
                 'google_id' => $googleUser['sub'],
                 'avatar' => $googleUser['picture'] ?? null,
                 'email_verified_at' => now(),
+                'is_admin' => $isFirstUser ? true : (User::where('email', $email)->value('is_admin') ?? false),
             ]
         );
 

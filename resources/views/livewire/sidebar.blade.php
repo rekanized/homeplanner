@@ -1,5 +1,4 @@
-<div>
-    <aside class="sidebar">
+<aside {{ $attributes->merge(['class' => 'sidebar']) }}>
         <!-- Workspace Header -->
         <a href="/" wire:navigate class="sidebar-header" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6);">
             <div class="sidebar-icon-box">
@@ -55,7 +54,7 @@
                             <a href="{{ route('admin.users') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">User list</a>
                             <a href="/admin/settings" wire:navigate class="nav-sub-link {{ request()->is('admin/settings') ? 'active' : '' }}">Application settings</a>
                             <a href="/admin/settings#auth" wire:navigate class="nav-sub-link">Authentication</a>
-                            <a href="/admin/logs" wire:navigate class="nav-sub-link {{ request()->is('admin/logs') ? 'active' : '' }}">Change log</a>
+                            <a href="{{ route('admin.logs') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}">Audit log</a>
                         </div>
                     </div>
                 </div>
@@ -116,4 +115,3 @@
             @endauth
         </div>
     </aside>
-</div>

@@ -10,10 +10,10 @@ Route::middleware('auth')->group(function () {
         return view('economy.index');
     })->name('economy.index');
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
         Route::get('/users', \App\Livewire\Admin\UserList::class)->name('admin.users');
         Route::get('/settings', function () { return view('admin.settings'); });
-        Route::get('/logs', function () { return view('admin.logs'); });
+        Route::get('/logs', \App\Livewire\Admin\AuditLogList::class)->name('admin.logs');
     });
 
     Route::post('/logout', function () {

@@ -133,6 +133,10 @@ class Dashboard extends Component
         $allowed = ['name', 'amount', 'category', 'handling', 'split', 'delayed'];
         if (!in_array($field, $allowed)) return;
 
+        // Basic validation
+        if ($field === 'amount' && !is_numeric($value)) return;
+        if ($field === 'name' && empty(trim($value))) return;
+
         $expense = Expense::find($id);
         if (!$expense) return;
 
@@ -156,7 +160,10 @@ class Dashboard extends Component
         if (!$model) return;
 
         foreach ($orderedIds as $index => $id) {
-            $model::where('id', $id)->update(['sort_order' => $index]);
+            $record = $model::find($id);
+            if ($record && $record->sort_order != $index) {
+                $record->update(['sort_order' => $index]);
+            }
         }
     }
 
@@ -172,6 +179,8 @@ class Dashboard extends Component
     {
         $allowed = ['name'];
         if (!in_array($field, $allowed)) return;
+
+        if ($field === 'name' && empty(trim($value))) return;
 
         $category = ExpenseCategory::find($id);
         if (!$category) return;

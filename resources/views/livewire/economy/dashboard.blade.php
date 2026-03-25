@@ -1,7 +1,4 @@
 <div>
-    <!-- Sortable.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-
     <!-- Header & Summary Row -->
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
         <div>
@@ -59,7 +56,7 @@
                     <div></div>
                 </div>
                 <div class="eco-grid-body"
-                    x-init="new Sortable($el, {
+                    x-init="if (typeof Sortable !== 'undefined') new Sortable($el, {
                         handle: '.eco-drag-handle',
                         animation: 150,
                         onEnd: (evt) => {
@@ -246,7 +243,7 @@
                 <div></div>
             </div>
             <div class="eco-grid-body"
-                x-init="new Sortable($el, {
+                x-init="if (typeof Sortable !== 'undefined') new Sortable($el, {
                     handle: '.eco-drag-handle',
                     animation: 150,
                     onEnd: (evt) => {

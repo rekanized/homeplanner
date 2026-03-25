@@ -45,6 +45,7 @@ class InitialSetup extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
+            'is_admin' => true,
         ]);
 
         Auth::login($user);

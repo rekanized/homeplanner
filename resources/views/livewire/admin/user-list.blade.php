@@ -22,6 +22,12 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div style="background: var(--danger-soft); color: var(--danger); padding: 16px; border-radius: 16px; margin-bottom: 24px; font-weight: 700; font-size: 14px; border: 1px solid var(--danger);">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="card" style="overflow: hidden;">
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
@@ -63,12 +69,21 @@
                                 </div>
                             @endif
                         </td>
-                        <td style="padding: 20px 24px;">
+                         <td style="padding: 20px 24px;">
                             <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">{{ $user->created_at->format('M j, Y') }}</div>
                             <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">{{ $user->created_at->format('H:i') }}</div>
                         </td>
                         <td style="padding: 20px 24px; text-align: right;">
-                            <span style="display: inline-block; padding: 4px 12px; border-radius: 100px; background: var(--success-soft); color: var(--success); font-size: 11px; font-weight: 800; text-transform: uppercase;">Active</span>
+                            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 100px; background: var(--success-soft); color: var(--success); font-size: 11px; font-weight: 800; text-transform: uppercase;">Active</span>
+                                <button wire:click="deleteUser({{ $user->id }})" 
+                                        wire:confirm="Are you sure you want to remove this member? This will delete all their data logs."
+                                        style="background: none; border: none; cursor: pointer; color: var(--danger); opacity: 0.6; transition: opacity 0.2s;"
+                                        onmouseover="this.style.opacity='1'" 
+                                        onmouseout="this.style.opacity='0.6'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 @endforeach
