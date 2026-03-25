@@ -19,7 +19,7 @@
         @foreach($this->lists as $list)
             <div 
                 class="nav-link {{ $activeListId == $list->id ? 'active' : '' }}" 
-                style="cursor: pointer; padding: 10px 20px; min-width: 120px; flex-shrink: 0; position: relative;"
+                style="cursor: pointer; padding: 10px 20px; min-width: 120px; flex-shrink: 0; position: relative; group"
                 wire:key="list-tab-{{ $list->id }}"
                 data-id="{{ $list->id }}"
                 @click="$wire.selectList({{ $list->id }})"
@@ -39,6 +39,15 @@
                     @else
                         <span style="font-weight: 700; font-size: 14px;">{{ $list->name }}</span>
                     @endif
+
+                    <button 
+                        wire:confirm="Are you sure you want to delete this list and all its items?"
+                        wire:click.stop="deleteList({{ $list->id }})" 
+                        style="background: transparent; border: none; padding: 4px; color: var(--danger); opacity: 0; transition: opacity 0.2s; cursor: pointer;"
+                        class="list-delete-btn"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
                 </div>
             </div>
         @endforeach

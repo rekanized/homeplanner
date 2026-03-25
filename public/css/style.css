@@ -1287,3 +1287,13 @@ tr:hover {
         padding: 12px 8px !important;
     }
 }
+
+/* List Tab Deletion */
+.nav-link:hover .list-delete-btn {
+    opacity: 0.6 !important;
+}
+
+.list-delete-btn:hover {
+    opacity: 1 !important;
+    transform: scale(1.2);
+}
