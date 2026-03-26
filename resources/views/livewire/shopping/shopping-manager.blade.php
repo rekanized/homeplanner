@@ -13,47 +13,68 @@
         </div>
     </div>
 
-    <!-- Multi-List Tabs -->
-    <div style="display: flex; align-items: center; gap: 4px; margin-bottom: var(--space-8); overflow-x: auto; padding-bottom: 4px;" id="list-tabs" data-type="lists">
-        @foreach($this->lists as $list)
-            <div 
-                class="nav-link {{ $activeListId == $list->id ? 'active' : '' }}" 
-                style="cursor: pointer; padding: 10px 20px; min-width: 120px; flex-shrink: 0; position: relative; group"
-                wire:key="list-tab-{{ $list->id }}"
-                data-id="{{ $list->id }}"
-                @click="$wire.selectList({{ $list->id }})"
-            >
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="sort-handle-list" style="cursor: grab; opacity: 0.3;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+    <!-- List Selection & Management -->
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-8);">
+        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px;">
+            <!-- List Selector Dropdown -->
+            <div x-data="{ open: false }" style="position: relative;">
+                <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+                    <span style="font-size: 14px;">{{ $this->activeList->name ?? 'Select List' }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                
+                <div x-show="open" @click.outside="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
+                    <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px;">Shopping Lists</div>
+                    <div style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;">
+                        @foreach($this->lists as $list)
+                            <div 
+                                wire:click="selectList({{ $list->id }})" 
+                                @click="open = false"
+                                style="padding: 10px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); {{ $activeListId == $list->id ? 'background: var(--primary-soft); color: var(--primary); font-weight: 700;' : 'font-weight: 600; color: var(--text-main);' }}"
+                                class="nav-link-item"
+                            >
+                                <span style="font-size: 13px;">{{ $list->name }}</span>
+                                @if($activeListId == $list->id)
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
-                    @if($activeListId == $list->id)
-                        <input 
-                            type="text" 
-                            value="{{ $list->name }}" 
-                            style="background: transparent; border: none; font-weight: 700; color: inherit; width: 100%; outline: none;"
-                            @blur="$wire.updateListName({{ $list->id }}, $event.target.value)"
-                            @keydown.enter="$event.target.blur()"
-                        >
-                    @else
-                        <span style="font-weight: 700; font-size: 14px;">{{ $list->name }}</span>
-                    @endif
-
-                    <button 
-                        wire:confirm="Are you sure you want to delete this list and all its items?"
-                        wire:click.stop="deleteList({{ $list->id }})" 
-                        style="background: transparent; border: none; padding: 4px; color: var(--danger); opacity: 0; transition: opacity 0.2s; cursor: pointer;"
-                        class="list-delete-btn"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    <div style="height: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+                    <button wire:click="addList" @click="open = false" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: none; background: transparent; color: var(--primary); font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: var(--transition);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        Create New List
                     </button>
                 </div>
             </div>
-        @endforeach
-        
-        <button wire:click="addList" class="eco-add-btn" style="margin-left: 8px; width: 36px; height: 36px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-        </button>
+
+            <!-- Active List Name Rename -->
+            @if($activeListId)
+                <div style="display: flex; align-items: center; gap: 8px;" x-data="{ listName: '{{ addslashes($this->activeList->name) }}' }" wire:key="shopping-list-name-{{ $activeListId }}">
+                    <div style="display: inline-grid; align-items: center; min-width: 120px; position: relative;">
+                        <!-- Hidden span to measure text width and make the grid cell shrink/grow -->
+                        <span x-text="listName || 'List name...'" style="grid-area: 1/1; visibility: hidden; padding: 0 16px; white-space: pre; font-weight: 800; font-size: 14px; min-width: 120px;"></span>
+                        <input 
+                            type="text" 
+                            x-model="listName"
+                            style="grid-area: 1/1; width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; font-weight: 800; color: var(--text-main); font-size: 14px; outline: none; height: 44px; transition: border-color 0.2s;"
+                            @blur="$wire.updateListName({{ $activeListId }}, listName)"
+                            @keydown.enter="$event.target.blur()"
+                            placeholder="List name..."
+                        >
+                    </div>
+                    <button 
+                        wire:confirm="Are you sure you want to delete this list and all its items?"
+                        wire:click="deleteList({{ $activeListId }})" 
+                        style="background: var(--danger-soft); color: var(--danger); border: none; padding: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 44px; width: 44px; transition: var(--transition);"
+                        title="Delete current list"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                </div>
+            @endif
+        </div>
     </div>
 
     <!-- Bulk Actions Bar -->
@@ -249,23 +270,4 @@
 
     </div>
 
-    @push('scripts')
-    <script>
-        document.addEventListener('livewire:navigated', () => {
-            const listTabs = document.getElementById('list-tabs');
-            if (listTabs && typeof Sortable !== 'undefined') {
-                new Sortable(listTabs, {
-                    handle: '.sort-handle-list',
-                    animation: 150,
-                    onEnd: (evt) => {
-                        let ids = Array.from(listTabs.children)
-                            .filter(child => child.dataset.id)
-                            .map(child => child.dataset.id);
-                        @this.handleReorder('lists', ids);
-                    }
-                });
-            }
-        });
-    </script>
-    @endpush
 </div>

@@ -15,101 +15,106 @@
         </div>
     </div>
 
-    <!-- Multi-List Tabs & Filters -->
+    <!-- List Selection & Management -->
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-8);">
-        <div 
-            style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding-bottom: 4px; flex: 1; min-width: 300px;" 
-            id="todo-tabs" 
-        data-type="lists"
-        x-init="if (typeof Sortable !== 'undefined') new Sortable($el, {
-            handle: '.sort-handle-list',
-            animation: 150,
-            delay: 100,
-            delayOnTouchOnly: true,
-            onEnd: (evt) => {
-                let ids = Array.from($el.querySelectorAll('[wire\\:key]')).map(el => el.getAttribute('wire:key').split('-')[2]);
-                $wire.handleListReorder(ids);
-            }
-        })"
-    >
-        @foreach($this->todos as $list)
-            <div 
-                class="nav-link {{ $activeTodoId == $list->id ? 'active' : '' }}" 
-                style="cursor: pointer; padding: 10px 20px; min-width: 120px; flex-shrink: 0; position: relative; group"
-                wire:key="list-tab-{{ $list->id }}"
-                data-id="{{ $list->id }}"
-                @click="$wire.selectTodo({{ $list->id }})"
-            >
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="sort-handle-list" style="cursor: grab; opacity: 0.3;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px;">
+            <!-- List Selector Dropdown -->
+            <div x-data="{ open: false }" style="position: relative;">
+                <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+                    <span style="font-size: 14px;">{{ $this->activeTodo->name ?? 'Select List' }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                
+                <div x-show="open" @click.outside="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
+                    <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px;">My Lists</div>
+                    <div style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;">
+                        @foreach($this->todos as $list)
+                            <div 
+                                wire:click="selectTodo({{ $list->id }})" 
+                                @click="open = false"
+                                style="padding: 10px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); {{ $activeTodoId == $list->id ? 'background: var(--primary-soft); color: var(--primary); font-weight: 700;' : 'font-weight: 600; color: var(--text-main);' }}"
+                                class="nav-link-item"
+                            >
+                                <span style="font-size: 13px;">{{ $list->name }}</span>
+                                @if($activeTodoId == $list->id)
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
-                    @if($activeTodoId == $list->id)
-                        <input 
-                            type="text" 
-                            value="{{ $list->name }}" 
-                            style="background: transparent; border: none; font-weight: 700; color: inherit; width: 100%; outline: none;"
-                            @blur="$wire.updateListName({{ $list->id }}, $event.target.value)"
-                            @keydown.enter="$event.target.blur()"
-                        >
-                    @else
-                        <span style="font-weight: 700; font-size: 14px;">{{ $list->name }}</span>
-                    @endif
-
-                    <button 
-                        wire:confirm="Are you sure you want to delete this list and all its tasks?"
-                        wire:click.stop="deleteTodo({{ $list->id }})" 
-                        style="background: transparent; border: none; padding: 4px; color: var(--danger); opacity: 0; transition: opacity 0.2s; cursor: pointer;"
-                        class="list-delete-btn"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    <div style="height: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+                    <button wire:click="addList" @click="open = false" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: none; background: transparent; color: var(--primary); font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: var(--transition);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        Create New List
                     </button>
                 </div>
             </div>
-        @endforeach
+
+            <!-- Active List Name Rename (Only if a list is active) -->
+            @if($activeTodoId)
+                <div style="display: flex; align-items: center; gap: 8px;" x-data="{ activeName: '{{ addslashes($this->activeTodo->name) }}' }" wire:key="todo-list-name-{{ $activeTodoId }}">
+                    <div style="display: inline-grid; align-items: center; min-width: 120px; position: relative;">
+                        <!-- Hidden span to measure text width and make the grid cell shrink/grow -->
+                        <span x-text="activeName || 'List name...'" style="grid-area: 1/1; visibility: hidden; padding: 0 16px; white-space: pre; font-weight: 800; font-size: 14px; min-width: 120px;"></span>
+                        <input 
+                            type="text" 
+                            x-model="activeName"
+                            style="grid-area: 1/1; width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; font-weight: 800; color: var(--text-main); font-size: 14px; outline: none; height: 44px; transition: border-color 0.2s;"
+                            @blur="$wire.updateListName({{ $activeTodoId }}, activeName)"
+                            @keydown.enter="$event.target.blur()"
+                            placeholder="List name..."
+                        >
+                    </div>
+                    <button 
+                        wire:confirm="Are you sure you want to delete this list and all its tasks?"
+                        wire:click="deleteTodo({{ $activeTodoId }})" 
+                        style="background: var(--danger-soft); color: var(--danger); border: none; padding: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 44px; width: 44px; transition: var(--transition);"
+                        title="Delete current list"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                </div>
+            @endif
         </div>
         
-        <!-- Header Actions: Add List & Filter -->
-        <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+        <!-- Filters -->
+        <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
             @if($this->availableTags->isNotEmpty())
             <div style="position: relative;" x-data="{ open: false }">
-                <button @click="open = !open" class="btn" style="background: var(--bg-card-alt); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; border: 1px solid var(--border-color);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                <button @click="open = !open" class="btn" style="background: var(--bg-card); padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); height: 44px; cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                     Filter
                     @if(count($selectedTags) > 0)
-                        <span class="badge badge-soft" style="background: var(--primary); color: white; padding: 2px 6px; font-size: 10px;">{{ count($selectedTags) }}</span>
+                        <span class="badge" style="background: var(--primary); color: white; padding: 2px 6px; font-size: 10px;">{{ count($selectedTags) }}</span>
                     @endif
                 </button>
                 
-                <div x-show="open" @click.outside="open = false" style="position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; min-width: 200px; box-shadow: var(--shadow-lg); z-index: 50;" x-transition x-cloak>
-                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">Filter by Tag</div>
-                    <div style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;">
+                <div x-show="open" @click.outside="open = false" class="todo-filter-popout" style="top: calc(100% + 8px); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 12px; min-width: 200px; box-shadow: var(--shadow-lg);" x-transition x-cloak>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">Filter by Tag</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
                         @foreach($this->availableTags as $tag)
-                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-color); cursor: pointer; padding: 4px; border-radius: 6px; transition: background 0.2s;">
-                                <input type="checkbox" wire:model.live="selectedTags" value="{{ $tag }}" style="width: 16px; height: 16px; accent-color: var(--primary); border-radius: 4px; border: 1px solid var(--border-color);">
+                            <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-color); cursor: pointer;">
+                                <input type="checkbox" wire:model.live="selectedTags" value="{{ $tag }}" style="width: 18px; height: 18px; accent-color: var(--primary);">
                                 {{ $tag }}
                             </label>
                         @endforeach
                     </div>
                     @if(count($selectedTags) > 0)
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
-                            <button wire:click="$set('selectedTags', [])" style="width: 100%; padding: 6px; border: none; background: transparent; color: var(--danger); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;">Clear Filters</button>
+                        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            <button wire:click="$set('selectedTags', [])" style="width: 100%; padding: 8px; border: none; background: transparent; color: var(--danger); font-size: 12px; font-weight: 800; cursor: pointer;">Clear Filters</button>
                         </div>
                     @endif
                 </div>
             </div>
             @endif
-
-            <button wire:click="addList" class="eco-add-btn" style="width: 36px; height: 36px;" title="Add List">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-            </button>
         </div>
     </div>
 
+
     @if($activeTodoId)
-        <!-- Items Container -->
         <div style="display: flex; flex-direction: column; gap: 8px;">
-            
+            @php $headerShown = false; @endphp
             @if($this->pendingItems->isEmpty())
                 <div class="card" style="border-radius: 28px; overflow: hidden; margin-bottom: 24px;">
                     <div style="padding: 40px; text-align: center; color: var(--text-muted); font-size: 14px; font-weight: 500;">
@@ -140,12 +145,15 @@
                         @endif
 
                         <div class="card" style="border-radius: 28px; overflow: hidden; margin-bottom: 8px;">
-                            <div class="todo-grid-header">
-                                <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Sort</div>
-                                <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Done</div>
-                                <div class="text-muted" style="font-size: 9px; font-weight: 800; text-transform: uppercase; padding-left: 10px;">Task Description</div>
-                                <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Del</div>
-                            </div>
+                            @if(!$headerShown)
+                                <div class="todo-grid-header">
+                                    <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Sort</div>
+                                    <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Done</div>
+                                    <div class="text-muted" style="font-size: 9px; font-weight: 800; text-transform: uppercase; padding-left: 10px;">Task Description</div>
+                                    <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">Del</div>
+                                </div>
+                                @php $headerShown = true; @endphp
+                            @endif
                             
                             <div class="eco-grid-body" 
                                 data-group="{{ $groupKey }}"

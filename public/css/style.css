@@ -1515,6 +1515,16 @@ tr:hover {
     cursor: pointer;
 }
 
+.todo-filter-popout {
+    position: absolute;
+    right: 0;
+    z-index: 50;
+}
+
+.nav-link-item:hover {
+    background: var(--bg-nav-item-hover);
+}
+
 /* --- Todo Manager Grid --- */
 .todo-grid-header {
     display: grid;
@@ -1570,6 +1580,7 @@ tr:hover {
 }
 
 @media (max-width: 768px) {
+
     .todo-grid-header,
     .todo-grid-row {
         grid-template-columns: 32px 40px 1fr 40px !important;
