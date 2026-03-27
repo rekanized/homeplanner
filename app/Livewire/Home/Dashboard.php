@@ -55,6 +55,10 @@ class Dashboard extends Component
             'todoItemsOverdue' => $todoItemsOverdue,
             'chartPoints' => $chartPoints,
             'totalCompleted' => array_sum(array_column($chartPoints, 'count')),
+            'economyEnabled' => filter_var(\App\Models\Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'shoppingEnabled' => filter_var(\App\Models\Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'todoEnabled' => filter_var(\App\Models\Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'kidsEnabled' => filter_var(\App\Models\Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
         ]);
     }
 }

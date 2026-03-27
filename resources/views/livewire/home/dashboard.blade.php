@@ -14,6 +14,7 @@
 
     <!-- Stats Grid -->
     <div class="summary-grid">
+        @if($economyEnabled)
         <div class="summary-card accent">
             <div class="summary-label" style="color: rgba(255,255,255,0.6);">Monthly Income</div>
             <div class="summary-value">{{ number_format($totalIncome, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 0.6;">KR</span></div>
@@ -22,6 +23,8 @@
                 Stable Inflow
             </div>
         </div>
+        @endif
+        @if($economyEnabled)
         <div class="summary-card">
             <div class="summary-label">Total Savings</div>
             <div class="summary-value" style="color: var(--primary);">{{ number_format($totalSavings, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
@@ -30,6 +33,8 @@
                 Accumulated Capital
             </div>
         </div>
+        @endif
+        @if($economyEnabled)
         <div class="summary-card">
             <div class="summary-label">Monthly Expenses</div>
             <div class="summary-value" style="color: var(--danger);">{{ number_format($totalExpenses, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
@@ -38,6 +43,8 @@
                 Current Burn Rate
             </div>
         </div>
+        @endif
+        @if($shoppingEnabled)
         <div class="summary-card">
             <div class="summary-label">Shopping Lists</div>
             <div class="summary-value" style="color: var(--text-main);">{{ $shoppingItemsCount }} <span style="font-size: 0.5em; opacity: 1;">Items</span></div>
@@ -46,6 +53,8 @@
                 Waiting to be bought
             </div>
         </div>
+        @endif
+        @if($todoEnabled)
         <div class="summary-card" @if($todoItemsOverdue > 0) style="border-color: var(--danger-soft);" @endif>
             <div class="summary-label">Todo Tasks</div>
             <div class="summary-value" style="color: var(--text-main);">
@@ -63,10 +72,12 @@
                 @endif
             </div>
         </div>
+        @endif
     </div>
 
     <!-- Main Content Area -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-8);">
+        @if($todoEnabled)
         <!-- Task Productivity Chart -->
         <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px;">
             <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
@@ -136,7 +147,9 @@
                 </div>
             </div>
         </div>
+        @endif
 
+        @if($kidsEnabled)
         <!-- Kids System Placeholder -->
         <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px; opacity: 0.8;">
             <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
@@ -154,5 +167,6 @@
                 <div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">Awaiting module activation</div>
             </div>
         </div>
+        @endif
     </div>
 </div>

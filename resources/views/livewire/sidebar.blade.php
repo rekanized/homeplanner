@@ -26,6 +26,7 @@
                         </div>
                     </a>
 
+                    @if($economyEnabled)
                     <a href="{{ route('economy.index') }}" wire:navigate class="nav-link {{ request()->routeIs('economy.*') ? 'active' : '' }}">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
@@ -35,7 +36,9 @@
                             <div style="font-size: 10px; opacity: 0.7;">Shopping and budgets</div>
                         </div>
                     </a>
+                    @endif
 
+                    @if($shoppingEnabled)
                     <a href="{{ route('shopping.index') }}" wire:navigate class="nav-link {{ request()->routeIs('shopping.*') ? 'active' : '' }}">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
@@ -45,7 +48,9 @@
                             <div style="font-size: 10px; opacity: 0.7;">Shared grocery lists</div>
                         </div>
                     </a>
+                    @endif
 
+                    @if($todoEnabled)
                     <a href="{{ route('todo.index') }}" wire:navigate class="nav-link {{ request()->routeIs('todo.*') ? 'active' : '' }}">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -55,7 +60,9 @@
                             <div style="font-size: 10px; opacity: 0.7;">Shared task lists</div>
                         </div>
                     </a>
+                    @endif
 
+                    @if($kidsEnabled)
                     <a href="#" class="nav-link">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -68,6 +75,7 @@
                             <div style="font-size: 10px; opacity: 0.7;">Points and rewards</div>
                         </div>
                     </a>
+                    @endif
 
                     <div x-data="{ open: {{ request()->is('admin/*') ? 'true' : 'false' }} }">
                         <button @click="open = !open" class="nav-link {{ request()->is('admin/*') ? 'active' : '' }}" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; justify-content: space-between;">
