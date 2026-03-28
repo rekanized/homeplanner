@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'google_id', 'avatar', 'is_admin', 'is_child', 'accumulated_score'])]
+#[Fillable(['name', 'email', 'password', 'google_id', 'avatar', 'is_admin', 'is_child', 'accumulated_score', 'monthly_points_goal'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -57,5 +57,51 @@ class User extends Authenticatable
     public function chores()
     {
         return $this->hasMany(Chore::class);
+    }
+
+    /**
+     * Get the monthly points for the child.
+     */
+    public function getMonthlyPointsAttribute(): int
+    {
+        return \App\Models\Chore::where('user_id', $this->id)
+            ->where('is_completed', true)
+            ->whereMonth('completed_at', now()->month)
+            ->whereYear('completed_at', now()->year)
+            ->sum('score');
+    }
+
+    /**
+     * Get the monthly goal progress percentage.
+     */
+    public function getMonthlyGoalProgressAttribute(): int
+    {
+        if (!$this->monthly_points_goal || $this->monthly_points_goal <= 0) {
+            return 0;
+        }
+        $progress = ($this->monthlyPoints / $this->monthly_points_goal) * 100;
+        return min(100, (int)$progress);
+    }
+
+    /**
+     * Get the total chores finished by the child.
+     */
+    public function getTotalFinishedTasksAttribute(): int
+    {
+        return \App\Models\Chore::where('user_id', $this->id)
+            ->where('is_completed', true)
+            ->count();
+    }
+
+    /**
+     * Get the chores finished by the child this month.
+     */
+    public function getMonthlyFinishedTasksAttribute(): int
+    {
+        return \App\Models\Chore::where('user_id', $this->id)
+            ->where('is_completed', true)
+            ->whereMonth('completed_at', now()->month)
+            ->whereYear('completed_at', now()->year)
+            ->count();
     }
 }

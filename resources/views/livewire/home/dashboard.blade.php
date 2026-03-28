@@ -165,10 +165,16 @@
                                 </div>
                                 <div>
                                     <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">{{ $child->name }}</div>
-                                    <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary); margin: 4px 0;">{{ $child->accumulated_score }} <span style="font-size: 10px; opacity: 0.7;">PTS</span></div>
-                                    <div style="font-size: 11px; font-weight: 800; color: var(--success); display: flex; align-items: center; justify-content: center; gap: 4px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                                        {{ $child->monthly_points }} monthly
+                                    <div style="font-size: 1.15rem; font-weight: 900; color: var(--primary); margin: 2px 0;">{{ $child->accumulated_score }} <span style="font-size: 9px; opacity: 0.7;">PTS AVAILABLE</span></div>
+                                    
+                                    <!-- Progress Bar -->
+                                    <div style="width: 80px; height: 5px; background: var(--bg-input); border-radius: 10px; margin: 6px auto 8px auto; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
+                                        <div style="width: {{ $child->monthly_goal_progress }}%; height: 100%; background: @if($child->monthly_goal_progress >= 100) var(--success) @else var(--primary) @endif; border-radius: 10px; transition: width 0.8s ease-out;"></div>
+                                    </div>
+
+                                    <div style="font-size: 10px; font-weight: 800; color: @if($child->monthly_goal_progress >= 100) var(--success) @else var(--text-muted) @endif; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+                                        Target: {{ $child->monthly_points }} / {{ $child->monthly_points_goal }}
                                     </div>
                                 </div>
                                 

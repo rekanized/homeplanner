@@ -102,6 +102,16 @@
                                     @endif
                                 </div>
 
+                                @if($user->is_child)
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Goal:</span>
+                                    <input type="number" 
+                                           value="{{ $user->monthly_points_goal }}" 
+                                           wire:change="updateMonthlyGoal({{ $user->id }}, $event.target.value)"
+                                           style="width: 70px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 10px; padding: 4px 8px; font-size: 13px; font-weight: 800; color: var(--primary); outline: none; text-align: center;">
+                                </div>
+                                @endif
+
                                 <div style="width: 1px; height: 24px; background: var(--border-color); margin: 0 4px;"></div>
 
                                 @if($user->id !== auth()->id() && (!$user->isMaster() || auth()->user()->isMaster()))

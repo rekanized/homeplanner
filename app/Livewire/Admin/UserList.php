@@ -82,6 +82,19 @@ class UserList extends Component
         session()->flash('message', "User {$user->name} has been {$status}.");
     }
 
+    public function updateMonthlyGoal($id, $goal)
+    {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {
+            return;
+        }
+
+        $user = User::find($id);
+        if (!$user) return;
+
+        $user->update(['monthly_points_goal' => (int)$goal]);
+        session()->flash('message', "Monthly goal for {$user->name} updated to {$goal} points.");
+    }
+
     public function impersonate($id)
     {
         if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {

@@ -498,17 +498,7 @@ class KidsManager extends Component
             'completedChores' => $completedChores,
             'redemptions' => $redemptions,
             'templates' => PredefinedChore::all(),
-            'children' => User::where('is_child', true)->get()->map(function($child) {
-                $child->monthly_points = Chore::where('user_id', $child->id)
-                    ->where('is_completed', true)
-                    ->whereMonth('completed_at', now()->month)
-                    ->whereYear('completed_at', now()->year)
-                    ->sum('score');
-                $child->total_finished_tasks = Chore::where('user_id', $child->id)
-                    ->where('is_completed', true)
-                    ->count();
-                return $child;
-            }),
+            'children' => User::where('is_child', true)->get()->sortByDesc('accumulated_score'),
         ])->layout('components.app-layout');
     }
 }

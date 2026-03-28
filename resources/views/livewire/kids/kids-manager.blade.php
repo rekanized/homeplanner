@@ -480,23 +480,35 @@
         @endif
 
         <!-- Children Summary Grid -->
-        <div class="summary-grid">
+        <div class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
             @foreach($children as $child)
                 <div class="summary-card" style="display: flex; align-items: center; gap: 20px; padding: 24px;">
                     <div class="hidden-mobile" style="width: 60px; height: 60px; border-radius: 20px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
                         {{ strtoupper(substr($child->name, 0, 1)) }}
                     </div>
                     <div style="flex: 1;">
-                        <div class="summary-label">{{ $child->name }}</div>
-                        <div class="summary-value" style="color: var(--primary); margin-bottom: 4px;">{{ $child->accumulated_score }} <span style="font-size: 0.875rem; font-weight: 700; opacity: 0.7;">PTS</span></div>
-                        <div style="display: flex; gap: 12px; font-size: 11px; font-weight: 700;">
-                            <div style="color: var(--success); display: flex; align-items: center; gap: 4px;" title="Points earned this month">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                                <span>{{ $child->monthly_points }} this month</span>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                            <div class="summary-label">{{ $child->name }}</div>
+                        </div>
+                        <div class="summary-value" style="color: var(--primary); margin-bottom: 8px;">{{ $child->accumulated_score }} <span style="font-size: 0.875rem; font-weight: 700; opacity: 0.7;">PTS AVAILABLE</span></div>
+                        
+                        <!-- Progress Bar -->
+                        <div style="width: 100%; height: 8px; background: var(--bg-input); border-radius: 10px; margin-bottom: 12px; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
+                            <div style="width: {{ $child->monthly_goal_progress }}%; height: 100%; background: @if($child->monthly_goal_progress >= 100) var(--success) @else var(--primary) @endif; border-radius: 10px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 10px @if($child->monthly_goal_progress >= 100) var(--success-soft) @else var(--primary-soft) @endif;"></div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: 800;">
+                            <div style="color: @if($child->monthly_goal_progress >= 100) var(--success) @else var(--text-muted) @endif; display: flex; align-items: center; gap: 8px;" title="Monthly points progress">
+                                <div style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: @if($child->monthly_goal_progress >= 100) var(--success-soft) @else var(--bg-input) @endif;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m17 17-5 5-5-5"/><path d="m7 7 5-5 5 5"/></svg>
+                                </div>
+                                <span>Monthly Target: <span style="color: var(--text-main);">{{ $child->monthly_points }} / {{ $child->monthly_points_goal }} Points</span></span>
                             </div>
-                            <div style="color: var(--text-muted); display: flex; align-items: center; gap: 4px;" title="Total chores finished">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                <span>{{ $child->total_finished_tasks }} chores</span>
+                            <div style="color: var(--text-muted); display: flex; align-items: center; gap: 8px;" title="Chores finished this month">
+                                <div style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--bg-input);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                                <span>Finished Chores: <span style="color: var(--text-main);">{{ $child->monthly_finished_tasks }} completed</span></span>
                             </div>
                         </div>
                     </div>
