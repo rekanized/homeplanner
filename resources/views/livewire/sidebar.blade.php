@@ -148,7 +148,7 @@
 
             <div style="margin-bottom: 24px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;">
                 <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Application</span>
-                <span class="badge badge-soft" style="font-size: 10px; font-weight: 800; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color);">v{{ $appVersion }}</span>
+                <span class="badge badge-soft" style="font-size: 10px; font-weight: 800; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color);">{{ $appVersion }}</span>
             </div>
             @auth
             <div style="padding: 16px; border-radius: 24px; background: var(--bg-sidebar); border: 1px solid var(--border-color); box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px;">

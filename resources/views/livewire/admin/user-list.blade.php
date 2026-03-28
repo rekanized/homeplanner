@@ -1,10 +1,10 @@
 <div class="animate-in" style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
-    <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="flex-header" style="align-items: flex-end;">
         <div>
             <h1 style="font-size: 2rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading); margin-bottom: 8px;">Registered Users</h1>
             <p style="color: var(--text-muted); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Household member registration log</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
             <button wire:click="openCreateModal" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="16" x2="22" y1="11" y2="11"/></svg>
                 Create Manual User
@@ -29,7 +29,7 @@
     @endif
 
     <div class="card" style="overflow: hidden;">
-        <table style="width: 100%; border-collapse: collapse;">
+        <table class="responsive-table" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: var(--bg-input); border-bottom: 2px solid var(--border-color);">
                     <th style="padding: 16px 24px; text-align: left; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Member</th>
@@ -41,7 +41,7 @@
             <tbody style="background: var(--bg-card);">
                 @foreach($users as $user)
                     <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.2s ease;">
-                        <td style="padding: 20px 24px;">
+                        <td data-label="Member" style="padding: 20px 24px;">
                             <div style="display: flex; align-items: center; gap: 16px;">
                                 <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 2px solid var(--border-color);">
                                     @if($user->avatar)
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="padding: 20px 24px;">
+                        <td data-label="Method" style="padding: 20px 24px;">
                             @if($user->google_id)
                                 <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; background: var(--primary-soft); color: var(--primary); font-size: 11px; font-weight: 800; text-transform: uppercase;">
                                     Google Auth
@@ -69,11 +69,11 @@
                                 </div>
                             @endif
                         </td>
-                         <td style="padding: 20px 24px;">
+                         <td data-label="Joined Date" style="padding: 20px 24px;">
                             <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">{{ $user->created_at->format('M j, Y') }}</div>
                             <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">{{ $user->created_at->format('H:i') }}</div>
                         </td>
-                        <td style="padding: 20px 24px; text-align: right;">
+                        <td data-label="Role" style="padding: 20px 24px; text-align: right;">
                             <div style="display: flex; align-items: center; justify-content: flex-end; gap: 16px;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     @if($user->isMaster())

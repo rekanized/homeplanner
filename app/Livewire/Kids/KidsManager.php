@@ -39,19 +39,27 @@ class KidsManager extends Component
     public $templateDescription = '';
     public $templateScore = 10;
     public $editingTemplateId = null;
+    public $templateRecurrenceType = 'none';
+    public $templateRecurrenceDay = [];
+    public $templateAssignedUserIds = [];
+
+    // Quick Assign Properties
+    public $showQuickAssignModal = false;
+    public $quickAssignUserId = null;
+    public $quickAssignUserName = '';
+    public $quickAssignCompleteImmediately = false;
 
     public function mount()
     {
-        // Default to the first child found if any
-        $firstChild = User::where('is_child', true)->first();
-        if ($firstChild) {
-            $this->assigned_to = [$firstChild->id];
-        }
+        // Check for recurring chores generation on load
+        \Illuminate\Support\Facades\Artisan::call('kids:generate-recurring');
+
+        $this->assigned_to = [];
     }
 
     public function openAddChoreModal()
     {
-        $this->reset(['title', 'description', 'score', 'complete_immediately']);
+        $this->reset(['title', 'description', 'score', 'assigned_to', 'complete_immediately']);
         $this->showAddChoreModal = true;
     }
 
@@ -222,27 +230,41 @@ class KidsManager extends Component
 
     public function saveTemplate()
     {
-        $this->validate([
+        $rules = [
             'templateTitle' => 'required|min:3',
             'templateScore' => 'required|numeric|min:1',
-        ]);
+            'templateRecurrenceType' => 'required|in:none,daily,weekly,monthly',
+            'templateAssignedUserIds' => 'required|array|min:1',
+            'templateAssignedUserIds.*' => 'exists:users,id',
+        ];
+        
+        $this->validate($rules);
+
+        $recurrenceDay = $this->templateRecurrenceDay;
+        // If not weekly, it should be a single value (string) in DB but handled by cast
+        if ($this->templateRecurrenceType !== 'weekly' && is_array($recurrenceDay)) {
+            $recurrenceDay = reset($recurrenceDay) ?: '';
+        }
+
+        $data = [
+            'title' => $this->templateTitle,
+            'description' => $this->templateDescription,
+            'score' => $this->templateScore,
+            'recurrence_type' => $this->templateRecurrenceType,
+            'recurrence_day' => $recurrenceDay,
+            'assigned_user_ids' => $this->templateAssignedUserIds,
+        ];
 
         if ($this->editingTemplateId) {
             $template = PredefinedChore::find($this->editingTemplateId);
-            $template->update([
-                'title' => $this->templateTitle,
-                'description' => $this->templateDescription,
-                'score' => $this->templateScore,
-            ]);
+            $template->update($data);
         } else {
-            PredefinedChore::create([
-                'title' => $this->templateTitle,
-                'description' => $this->templateDescription,
-                'score' => $this->templateScore,
-            ]);
+            PredefinedChore::create($data);
         }
 
-        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds', 'editingTemplateId']);
+        $this->templateRecurrenceDay = [];
+        $this->templateAssignedUserIds = [];
         session()->flash('message', 'Template saved successfully!');
     }
 
@@ -253,6 +275,35 @@ class KidsManager extends Component
         $this->templateTitle = $template->title;
         $this->templateDescription = $template->description;
         $this->templateScore = $template->score;
+        $this->templateRecurrenceType = $template->recurrence_type;
+        $this->templateRecurrenceDay = is_array($template->recurrence_day) ? $template->recurrence_day : ($template->recurrence_day ? [$template->recurrence_day] : []);
+        $this->templateAssignedUserIds = is_array($template->assigned_user_ids) ? $template->assigned_user_ids : [];
+    }
+
+    public function toggleRecurrenceDay($day)
+    {
+        if (!is_array($this->templateRecurrenceDay)) {
+            $this->templateRecurrenceDay = [];
+        }
+
+        if (in_array($day, $this->templateRecurrenceDay)) {
+            $this->templateRecurrenceDay = array_diff($this->templateRecurrenceDay, [$day]);
+        } else {
+            $this->templateRecurrenceDay[] = $day;
+        }
+    }
+
+    public function toggleChildSelection($userId)
+    {
+        if (!is_array($this->templateAssignedUserIds)) {
+            $this->templateAssignedUserIds = [];
+        }
+
+        if (in_array($userId, $this->templateAssignedUserIds)) {
+            $this->templateAssignedUserIds = array_diff($this->templateAssignedUserIds, [$userId]);
+        } else {
+            $this->templateAssignedUserIds[] = $userId;
+        }
     }
 
     public function deleteTemplate($id)
@@ -262,6 +313,42 @@ class KidsManager extends Component
             $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
         }
         session()->flash('message', 'Template deleted successfully!');
+    }
+
+    // Quick Assign Methods
+    public function openQuickAssignModal($userId)
+    {
+        $child = User::find($userId);
+        if (!$child) return;
+
+        $this->quickAssignUserId = $userId;
+        $this->quickAssignUserName = $child->name;
+        $this->quickAssignCompleteImmediately = false;
+        $this->showQuickAssignModal = true;
+    }
+
+    public function quickAssignFromTemplate($templateId)
+    {
+        $template = PredefinedChore::find($templateId);
+        if (!$template || !$this->quickAssignUserId) return;
+
+        $chore = Chore::create([
+            'title' => $template->title,
+            'description' => $template->description,
+            'score' => $template->score,
+            'user_id' => $this->quickAssignUserId,
+            'is_completed' => $this->quickAssignCompleteImmediately,
+            'completed_at' => $this->quickAssignCompleteImmediately ? now() : null,
+        ]);
+
+        if ($this->quickAssignCompleteImmediately) {
+            $child = User::find($this->quickAssignUserId);
+            $child->accumulated_score += $template->score;
+            $child->save();
+        }
+
+        $this->showQuickAssignModal = false;
+        session()->flash('message', "Chore '{$template->title}' assigned " . ($this->quickAssignCompleteImmediately ? "and completed " : "") . "to {$this->quickAssignUserName}!");
     }
 
     public function applyTemplate($id)

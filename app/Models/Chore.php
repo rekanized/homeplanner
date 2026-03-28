@@ -17,6 +17,7 @@ class Chore extends Model
         'user_id',
         'is_completed',
         'completed_at',
+        'source_template_id',
     ];
 
     protected $casts = [
@@ -30,5 +31,10 @@ class Chore extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(PredefinedChore::class, 'source_template_id');
     }
 }

@@ -1,8 +1,8 @@
 <div class="animate-in" x-data="{ editingListId: null }">
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color);">
+    <div class="flex-header">
         <div>
-            <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Todo</h2>
+            <h2 class="responsive-title">Todo</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">Organize your tasks and stay productive</p>
         </div>
         <div>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- List Selection & Management -->
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-8);">
+    <div class="flex-cards" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
         <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px;">
             <!-- List Selector Dropdown -->
             <div x-data="{ open: false }" style="position: relative;">

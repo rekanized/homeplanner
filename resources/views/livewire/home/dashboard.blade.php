@@ -1,6 +1,6 @@
 <div class="animate-in">
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 16px;">
+    <div class="flex-header">
         <div style="min-width: 280px;">
             <div class="badge badge-soft" style="color: var(--primary); background: var(--primary-soft); margin-bottom: var(--space-2);">Overview</div>
             <h2 style="font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Dashboard</h2>
@@ -149,7 +149,7 @@
             <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
                 <div>
                     <h3 style="font-size: 18px; font-weight: 900;">Kids Points Overview</h3>
-                    <p style="font-size: 11px; color: var(--text-muted);">Current accumulated household scores</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">Click a child to quick-assign points</p>
                 </div>
                 <div style="text-align: right;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -157,30 +157,26 @@
             </div>
             <div style="padding: var(--space-6) var(--space-8); background: var(--bg-input); min-height: 200px;">
                 @if($children->count() > 0)
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         @foreach($children as $child)
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
-                                <div style="display: flex; align-items: center; gap: 14px;">
-                                    <div style="width: 38px; height: 38px; border-radius: 12px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);">
-                                        {{ substr($child->name, 0, 1) }}
-                                    </div>
-                                    <div>
-                                        <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">{{ $child->name }}</div>
-                                        <div style="display: flex; gap: 8px; margin-top: 2px;">
-                                            <div style="font-size: 10px; font-weight: 800; color: var(--success); display: flex; align-items: center; gap: 4px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                                                {{ $child->monthly_points }} this month
-                                            </div>
-                                            <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                                {{ $child->total_finished_tasks }} chores
-                                            </div>
-                                        </div>
+                            <div wire:click="openQuickAssignModal({{ $child->id }})" class="dashboard-child-box" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 22px 16px; border-radius: 20px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; box-shadow: var(--shadow-sm);">
+                                <div style="width: 48px; height: 48px; border-radius: 16px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
+                                    {{ strtoupper(substr($child->name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">{{ $child->name }}</div>
+                                    <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary); margin: 4px 0;">{{ $child->accumulated_score }} <span style="font-size: 10px; opacity: 0.7;">PTS</span></div>
+                                    <div style="font-size: 11px; font-weight: 800; color: var(--success); display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+                                        {{ $child->monthly_points }} monthly
                                     </div>
                                 </div>
-                                <div style="text-align: right;">
-                                    <div style="font-weight: 900; color: var(--primary); font-size: 16px;">{{ $child->accumulated_score }}</div>
-                                    <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total PTS</div>
+                                
+                                <div class="hover-assign-overlay" style="position: absolute; inset: 0; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s; transform: translateY(100%);">
+                                    <div style="display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                                        Quick Assign
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -194,6 +190,76 @@
                 @endif
             </div>
         </div>
-        @endif
+    @endif
+
+    <!-- Quick Assign Modal -->
+    @if($showQuickAssignModal)
+    <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
+        <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
+            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 163, 74, 0.05);">
+                <div>
+                    <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success);">Quick Assign</h3>
+                    <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">Assign to {{ $quickAssignUserName }}</p>
+                </div>
+                <button @click="$wire.set('showQuickAssignModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+            </div>
+            
+            <div style="padding: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 12px 20px; background: var(--bg-input); border-radius: 16px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 13px; font-weight: 800; color: var(--text-main);">Mark as completed immediately</div>
+                    <label class="switch">
+                        <input type="checkbox" wire:model="quickAssignCompleteImmediately">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding: 4px; margin: -4px;">
+                    @forelse($templates as $template)
+                        <button wire:click="quickAssignFromTemplate({{ $template->id }})" class="template-card-btn" style="text-align: left; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 100%; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 900; font-size: 15px; color: var(--text-main);">{{ $template->title }}</div>
+                                    <div style="font-size: 12px; font-weight: 900; color: var(--primary); margin-top: 2px;">+{{ $template->score }} Points</div>
+                                </div>
+                                <div style="background: var(--bg-input); color: var(--primary); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                </div>
+                            </div>
+                        </button>
+                    @empty
+                        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
+                            <p style="font-size: 13px; font-weight: 800;">No templates found</p>
+                            <a href="{{ route('kids') }}" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">Go to Kids System</a>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button @click="$wire.set('showQuickAssignModal', false)" class="btn" style="width: 100%; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; font-weight: 800;">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <style>
+        .dashboard-child-box:hover {
+            border-color: var(--success) !important;
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .dashboard-child-box:hover .hover-assign-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .template-card-btn:hover {
+            border-color: var(--primary) !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+        .template-card-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+    @endif
 </div>

@@ -3,12 +3,12 @@
         <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 16px;">
             <div>
-                <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Kids System</h2>
+                <h2 class="responsive-title">Kids System</h2>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">Manage chores and track rewards for the kids</p>
             </div>
             <div style="display: flex; gap: 12px; align-items: center;">
                 @if(!auth()->user()->is_child)
-                    <button wire:click="openManageTemplatesModal" class="btn" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 16px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted);">
+                    <button wire:click="openManageTemplatesModal" class="btn hidden-mobile" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 16px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                         <span>Templates</span>
                     </button>
@@ -31,7 +31,7 @@
         <div class="summary-grid">
             @foreach($children as $child)
                 <div class="summary-card" style="display: flex; align-items: center; gap: 20px; padding: 24px;">
-                    <div style="width: 60px; height: 60px; border-radius: 20px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
+                    <div class="hidden-mobile" style="width: 60px; height: 60px; border-radius: 20px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
                         {{ strtoupper(substr($child->name, 0, 1)) }}
                     </div>
                     <div style="flex: 1;">
@@ -48,17 +48,22 @@
                             </div>
                         </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; width: 140px;">
                         @if(auth()->id() == $child->id || !auth()->user()->is_child)
-                            <button wire:click="openUsePointsModal({{ $child->id }})" class="btn" style="background: var(--primary-soft); color: var(--primary); padding: 6px 12px; font-size: 11px; border-radius: 8px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
-                                Use Points
+                            <button wire:click="openUsePointsModal({{ $child->id }})" class="btn" style="background: var(--primary-soft); color: var(--primary); padding: 8px 14px; font-size: 11px; font-weight: 800; border-radius: 10px; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; transition: all 0.2s;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+                                <span>USE POINTS</span>
                             </button>
                         @endif
-                        
+
                         @if(!auth()->user()->is_child)
-                            <button wire:click="openAdjustPointsModal({{ $child->id }})" style="background: var(--bg-input); border: none; width: 100%; padding: 4px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; gap: 4px; transition: all 0.2s;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <button wire:click="openQuickAssignModal({{ $child->id }})" class="btn" style="background: var(--success-soft); color: var(--success); padding: 8px 14px; font-size: 11px; font-weight: 800; border-radius: 10px; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; transition: all 0.2s;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                                <span>Assign Chore</span>
+                            </button>
+
+                            <button wire:click="openAdjustPointsModal({{ $child->id }})" class="btn" style="background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 14px; font-size: 11px; font-weight: 800; border-radius: 10px; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; transition: all 0.2s;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <span>Settings</span>
                             </button>
                         @endif
@@ -68,7 +73,7 @@
         </div>
 
         <!-- Chores Content -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: start; @media (max-width: 1200px) { grid-template-columns: 1fr; }">
+        <div class="kids-main-grid">
             
             <!-- Pending Chores -->
             <div class="card">
@@ -78,26 +83,25 @@
                 </div>
                 <div class="card-body" style="padding: 0;">
                     <div class="eco-grid-table">
-                        <div class="eco-grid-header" style="grid-template-columns: 1fr 120px 100px 50px;">
+                        <div class="eco-grid-header chores-grid">
                             <div>Chore / Reward</div>
-                            <div style="text-align: center;">Assigned To</div>
-                            <div style="text-align: center;">Action</div>
-                            <div></div>
+                            <div style="text-align: right;">Action</div>
                         </div>
                         <div class="eco-grid-body">
                             @forelse($chores as $chore)
-                                <div class="eco-grid-row" style="grid-template-columns: 1fr 120px 100px 50px; padding: 12px 16px;">
+                                <div class="eco-grid-row chores-grid" style="padding: 12px 16px;">
                                     <div>
                                         <div style="font-weight: 800; color: var(--text-main);">{{ $chore->title }}</div>
-                                        <div style="font-size: 11px; font-weight: 900; color: var(--primary); margin-top: 2px;">+{{ $chore->score }} Points</div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                            <div style="font-size: 11px; font-weight: 900; color: var(--primary);">+{{ $chore->score }} Points</div>
+                                            <span class="badge badge-soft" style="font-size: 9px; padding: 1px 6px;">{{ $chore->user->name }}</span>
+                                        </div>
                                         @if($chore->description)
-                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">{{ $chore->description }}</div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">{{ $chore->description }}</div>
                                         @endif
                                     </div>
-                                    <div style="text-align: center;">
-                                        <span class="badge badge-soft" style="font-size: 10px;">{{ $chore->user->name }}</span>
-                                    </div>
-                                    <div style="text-align: center;">
+
+                                    <div style="display: flex; align-items: center; gap: 12px; justify-content: flex-end;">
                                         @if(auth()->user()->is_child)
                                             @if(auth()->id() == $chore->user_id)
                                                 <button wire:click="completeChore({{ $chore->id }})" class="btn btn-success" style="padding: 8px 16px; font-size: 13px;">
@@ -111,10 +115,11 @@
                                                 Done
                                             </button>
                                         @endif
-                                    </div>
-                                    <div style="display: flex; justify-content: flex-end;">
+
                                         @if(!auth()->user()->is_child)
-                                            <button wire:click="deleteChore({{ $chore->id }})" class="eco-delete-btn" style="opacity: 0.5;">
+                                            <button wire:click="deleteChore({{ $chore->id }})" 
+                                                    wire:confirm="Are you sure you want to delete this chore?"
+                                                    class="eco-delete-btn" style="opacity: 0.5;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                             </button>
                                         @endif
@@ -142,20 +147,25 @@
                         <div class="eco-grid-table">
                             <div class="eco-grid-body">
                                 @forelse($completedChores as $chore)
-                                    <div class="eco-grid-row" style="grid-template-columns: 1fr 120px 100px; padding: 12px 16px;">
+                                    <div class="eco-grid-row finished-grid" style="padding: 12px 16px;">
                                         <div>
                                             <div style="font-weight: 700; color: var(--text-muted); text-decoration: line-through;">{{ $chore->title }}</div>
-                                            <div style="font-size: 11px; font-weight: 800; color: var(--success);">Earned {{ $chore->score }} Points</div>
-                                            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">By {{ $chore->user->name }} • {{ $chore->completed_at ? $chore->completed_at->diffForHumans() : '' }}</div>
+                                            <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                                                <div style="font-size: 11px; font-weight: 800; color: var(--success);">Earned {{ $chore->score }} Points</div>
+                                                <span class="badge badge-soft mobile-only" style="font-size: 9px; padding: 1px 6px;">{{ $chore->user->name }}</span>
+                                            </div>
+                                            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">{{ $chore->completed_at ? $chore->completed_at->diffForHumans() : '' }} <span class="desktop-only">• By {{ $chore->user->name }}</span></div>
                                         </div>
-                                        <div style="text-align: center;">
-                                            <div style="padding: 4px 10px; border-radius: 8px; background: var(--success-soft); color: var(--success); font-size: 9px; font-weight: 900; text-transform: uppercase;">Finished</div>
+                                        <div class="desktop-only" style="text-align: center;">
+                                            <div style="padding: 4px 10px; border-radius: 8px; background: var(--success-soft); color: var(--success); font-size: 9px; font-weight: 900; text-transform: uppercase; display: inline-block;">Finished</div>
                                         </div>
-                                        <div style="text-align: right;">
+                                        <div style="text-align: right; display: flex; justify-content: flex-end;">
                                             @if(!auth()->user()->is_child)
-                                                <button wire:click="revertChore({{ $chore->id }})" class="btn" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 12px; font-size: 11px;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                                                    Revert
+                                                <button wire:click="revertChore({{ $chore->id }})" 
+                                                        wire:confirm="Are you sure you want to revert this chore? The points earned will be deducted from the child's balance."
+                                                        class="btn" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-size: 11px; font-weight: 700; white-space: nowrap; display: flex; align-items: center; gap: 6px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                                    REVERT
                                                 </button>
                                             @endif
                                         </div>
@@ -180,18 +190,23 @@
                         <div class="eco-grid-table">
                             <div class="eco-grid-body">
                                 @forelse($redemptions as $redemption)
-                                    <div class="eco-grid-row" style="grid-template-columns: 1fr 80px 40px; padding: 12px 16px;">
+                                    <div class="eco-grid-row redemption-grid" style="padding: 12px 16px;">
                                         <div>
                                             <div style="font-weight: 800; color: var(--text-main);">{{ $redemption->description }}</div>
-                                            <div style="font-size: 11px; font-weight: 900; color: var(--danger);">Spent {{ $redemption->score }} Points</div>
-                                            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Used by {{ $redemption->user->name }} • {{ $redemption->created_at->diffForHumans() }}</div>
+                                            <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                                                <div style="font-size: 11px; font-weight: 900; color: var(--danger);">Spent {{ $redemption->score }} Points</div>
+                                                <span class="badge badge-soft mobile-only" style="font-size: 9px; padding: 1px 6px;">{{ $redemption->user->name }}</span>
+                                            </div>
+                                            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">{{ $redemption->created_at->diffForHumans() }} <span class="desktop-only">• Used by {{ $redemption->user->name }}</span></div>
                                         </div>
-                                        <div style="text-align: center;">
-                                            <div style="padding: 4px 10px; border-radius: 8px; background: var(--danger-soft); color: var(--danger); font-size: 9px; font-weight: 900; text-transform: uppercase;">Used</div>
+                                        <div class="desktop-only" style="text-align: center;">
+                                            <div style="padding: 4px 10px; border-radius: 8px; background: var(--danger-soft); color: var(--danger); font-size: 9px; font-weight: 900; text-transform: uppercase; display: inline-block;">Used</div>
                                         </div>
                                         <div style="display: flex; justify-content: flex-end;">
                                             @if(!auth()->user()->is_child)
-                                                <button wire:click="deleteRedemption({{ $redemption->id }})" class="eco-delete-btn" style="opacity: 0.4;">
+                                                <button wire:click="deleteRedemption({{ $redemption->id }})" 
+                                                        wire:confirm="Are you sure you want to delete this redemption? The points will be refunded to the child's balance."
+                                                        class="eco-delete-btn" style="opacity: 0.4;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                                 </button>
                                             @endif
@@ -217,18 +232,18 @@
     @if($showAddChoreModal)
     <div class="modal-overlay" @click.self="$wire.set('showAddChoreModal', false)">
         <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
-            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
+            <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
                 <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">Assign Chore</h3>
                 <button @click="$wire.set('showAddChoreModal', false)" style="background: var(--bg-input); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
             </div>
             
-            <form wire:submit.prevent="addChore" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+            <form wire:submit.prevent="addChore" class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
                 @if($templates->count() > 0)
                 <div>
                     <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Quick Templates</label>
-                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none;">
+                    <div class="flex-wrap-mobile" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none;">
                         @foreach($templates as $template)
-                            <button type="button" wire:click="applyTemplate({{ $template->id }})" style="flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                            <button type="button" wire:click="applyTemplate({{ $template->id }})" class="template-btn-mobile" style="flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: all 0.2s; white-space: nowrap;">
                                 {{ $template->title }} ({{ $template->score }} pts)
                             </button>
                         @endforeach
@@ -243,11 +258,11 @@
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Description (Optional)</label>
-                    <textarea wire:model="description" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; min-height: 100px; resize: vertical;" placeholder="Add some details..."></textarea>
+                    <label class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Description (Optional)</label>
+                    <textarea wire:model="description" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; min-height: 100px; resize: vertical;" placeholder="Add some details..."></textarea>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="mobile-stack-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div>
                         <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Assigned To</label>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -271,7 +286,7 @@
                 </div>
 
                 <div style="margin-top: 8px;">
-                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: var(--bg-input); padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border-color); transition: all 0.2s;">
+                    <label class="compact-checkbox-box" style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: var(--bg-input); padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border-color); transition: all 0.2s;">
                         <input type="checkbox" wire:model="complete_immediately" style="width: 20px; height: 20px; accent-color: var(--success); cursor: pointer;">
                         <div>
                             <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Mark as completed immediately</div>
@@ -280,7 +295,7 @@
                     </label>
                 </div>
 
-                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                <div class="compact-footer" style="display: flex; gap: 12px; margin-top: 12px;">
                     <button type="button" @click="$wire.set('showAddChoreModal', false)" class="btn" style="flex: 1; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; font-weight: 800;">Cancel</button>
                     <button type="submit" class="btn btn-primary" style="flex: 2; padding: 16px; border-radius: 18px; font-weight: 900; font-size: 16px; box-shadow: var(--shadow-lg);">Assign Chore</button>
                 </div>
@@ -293,12 +308,12 @@
     @if($showAdjustPointsModal)
     <div class="modal-overlay" @click.self="$wire.set('showAdjustPointsModal', false)">
         <div class="modal-content animate-in" style="max-width: 400px; text-align: left; padding: 0;">
-            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">Adjust Points</h3>
                 <button @click="$wire.set('showAdjustPointsModal', false)" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px;">×</button>
             </div>
             
-            <div style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+            <div class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
                 <div style="text-align: center;">
                     <div style="font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Adjusting Score For</div>
                     <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ $adjustUserName }}</div>
@@ -321,7 +336,7 @@
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 12px;">
+                <div class="compact-footer" style="display: flex; gap: 12px;">
                     <button type="button" @click="$wire.set('showAdjustPointsModal', false)" class="btn" style="flex: 1; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 14px;">Cancel</button>
                     <button type="button" wire:click="adjustPoints" class="btn @if($adjustType == 'add') btn-success @else btn-primary @endif" style="flex: 2; border-radius: 14px; @if($adjustType == 'remove') background: var(--danger); @endif">
                         Apply Change
@@ -336,7 +351,7 @@
     @if($showUsePointsModal)
     <div class="modal-overlay" @click.self="$wire.set('showUsePointsModal', false)">
         <div class="modal-content animate-in" style="max-width: 450px; text-align: left; padding: 0;">
-            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(37, 99, 235, 0.05);">
+            <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(37, 99, 235, 0.05);">
                 <div>
                     <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">Use Points</h3>
                     <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">Redeem points for rewards</p>
@@ -344,7 +359,7 @@
                 <button @click="$wire.set('showUsePointsModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
             </div>
             
-            <form wire:submit.prevent="usePoints" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+            <form wire:submit.prevent="usePoints" class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
                 <div style="text-align: center; background: var(--bg-input); padding: 16px; border-radius: 20px; border: 1px solid var(--border-color);">
                     <div style="font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Redeeming for</div>
                     <div style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">{{ $redemptionUserName }}</div>
@@ -365,7 +380,7 @@
                     @error('redemptionPoints') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
                 </div>
 
-                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                <div class="compact-footer" style="display: flex; gap: 12px; margin-top: 12px;">
                     <button type="button" @click="$wire.set('showUsePointsModal', false)" class="btn" style="flex: 1; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px;">Cancel</button>
                     <button type="submit" class="btn btn-primary" style="flex: 2; padding: 16px; border-radius: 18px; font-size: 16px;">Confirm Redemption</button>
                 </div>
@@ -377,7 +392,7 @@
     <!-- Manage Templates Modal -->
     @if($showManageTemplatesModal)
     <div class="modal-overlay" @click.self="$wire.set('showManageTemplatesModal', false)">
-        <div class="modal-content animate-in" style="max-width: 800px; text-align: left; padding: 0; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 28px;">
+        <div class="modal-content animate-in templates-grid" style="max-width: 800px; text-align: left; padding: 0;">
             <!-- Left Side: Template List -->
             <div style="padding: 32px; border-right: 1px solid var(--border-color); background: rgba(0,0,0,0.01);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -391,6 +406,20 @@
                                 <div style="flex: 1; margin-right: 12px;">
                                     <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">{{ $template->title }}</div>
                                     <div style="font-size: 11px; font-weight: 900; color: var(--primary); margin-top: 2px;">{{ $template->score }} Points</div>
+                                    @if($template->recurrence_type && $template->recurrence_type !== 'none')
+                                        <div style="font-size: 9px; font-weight: 900; color: var(--success); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                            @if($template->recurrence_type == 'weekly' && is_array($template->recurrence_day))
+                                                Every {{ implode(', ', array_map(fn($d) => substr($d, 0, 3), $template->recurrence_day)) }}
+                                            @else
+                                                {{ ucfirst($template->recurrence_type) }} @if($template->recurrence_day) ({{ $template->recurrence_day }}) @endif
+                                            @endif
+                                        </div>
+                                    @endif
+                                    @php $assignedUsers = $template->assignedUsers(); @endphp
+                                    @if($assignedUsers->count() > 0)
+                                        <div style="font-size: 9px; font-weight: 800; color: var(--text-muted); margin-top: 2px;">Assigned to {{ $assignedUsers->pluck('name')->implode(', ') }}</div>
+                                    @endif
                                     @if($template->description)
                                         <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $template->description }}</div>
                                     @endif
@@ -418,16 +447,13 @@
             <div style="padding: 32px; position: relative;">
                 <button @click="$wire.set('showManageTemplatesModal', false)" style="position: absolute; right: 24px; top: 24px; background: var(--bg-input); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div class="modal-compact-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">
                         {{ $editingTemplateId ? 'Edit Template' : 'Create Template' }}
                     </h3>
-                    @if($editingTemplateId)
-                        <button wire:click="openManageTemplatesModal" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer;">+ New</button>
-                    @endif
                 </div>
 
-                <form wire:submit.prevent="saveTemplate" style="display: flex; flex-direction: column; gap: 24px;">
+                <form wire:submit.prevent="saveTemplate" class="modal-compact-form" style="display: flex; flex-direction: column; gap: 24px;">
                     <div>
                         <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Template Title</label>
                         <input type="text" wire:model.defer="templateTitle" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none;" placeholder="e.g. Empty Dishwasher">
@@ -435,19 +461,85 @@
                     </div>
 
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Description</label>
-                        <textarea wire:model.defer="templateDescription" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none; min-height: 100px; resize: vertical;" placeholder="Optional details..."></textarea>
+                        <label class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Description</label>
+                        <textarea wire:model.defer="templateDescription" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none; min-height: 100px; resize: vertical;" placeholder="Optional details..."></textarea>
                     </div>
 
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Points</label>
-                        <div style="position: relative;">
-                            <input type="number" wire:model.defer="templateScore" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 12px; width: 100%; font-size: 18px; font-weight: 900; outline: none;">
-                            <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 900; color: var(--primary);">PTS</span>
+                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Assigned To (Required)</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                            @foreach(\App\Models\User::where('is_child', true)->get() as $child)
+                                <div wire:click="toggleChildSelection({{ $child->id }})" style="cursor: pointer; padding: 12px; border-radius: 12px; border: 2px solid @if(in_array($child->id, $templateAssignedUserIds)) var(--primary) @else var(--border-color) @endif; background: @if(in_array($child->id, $templateAssignedUserIds)) var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s; text-align: center;">
+                                    <div style="font-size: 12px; font-weight: 800; color: @if(in_array($child->id, $templateAssignedUserIds)) var(--primary) @else var(--text-main) @endif;">{{ $child->name }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('templateAssignedUserIds') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">At least one child must be assigned.</p> @enderror
+                    </div>
+
+                    <div class="mobile-stack-grid" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+                        <div>
+                            <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Points</label>
+                            <div style="position: relative;">
+                                <input type="number" wire:model.defer="templateScore" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 12px; width: 100%; font-size: 18px; font-weight: 900; outline: none;">
+                                <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 900; color: var(--primary);">PTS</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 12px; margin-top: 8px;">
+                    <div style="background: var(--bg-input); border-radius: 16px; padding: 20px; border: 1px dashed var(--border-color);">
+                        <div style="font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Recurrence Strategy
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <div wire:click="$set('templateRecurrenceType', 'none')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'none') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'none') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
+                                    <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'none') var(--primary) @else var(--text-muted) @endif;">None</div>
+                                </div>
+                            </div>
+                            <div wire:click="$set('templateRecurrenceType', 'daily')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'daily') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'daily') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
+                                    <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'daily') var(--primary) @else var(--text-muted) @endif;">Daily</div>
+                                </div>
+                            </div>
+                            <div wire:click="$set('templateRecurrenceType', 'weekly')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'weekly') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'weekly') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
+                                    <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'weekly') var(--primary) @else var(--text-muted) @endif;">Weekly</div>
+                                </div>
+                            </div>
+                            <div wire:click="$set('templateRecurrenceType', 'monthly')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'monthly') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'monthly') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
+                                    <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'monthly') var(--primary) @else var(--text-muted) @endif;">Monthly</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($templateRecurrenceType == 'weekly')
+                        <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                            <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Occurs on every:</label>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                                    @php $shortDay = substr($day, 0, 3); @endphp
+                                    <button type="button" wire:click="toggleRecurrenceDay('{{ $day }}')" 
+                                        style="flex: 1; min-width: 44px; padding: 10px 5px; border-radius: 10px; border: 2px solid @if(in_array($day, $templateRecurrenceDay ?? [])) var(--primary) @else var(--border-color) @endif; background: @if(in_array($day, $templateRecurrenceDay ?? [])) var(--primary-soft) @else var(--bg-card) @endif; color: @if(in_array($day, $templateRecurrenceDay ?? [])) var(--primary) @else var(--text-muted) @endif; font-size: 11px; font-weight: 900; cursor: pointer; transition: all 0.2s;">
+                                        {{ $shortDay }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($templateRecurrenceType == 'monthly')
+                        <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                            <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Occurs on day of month:</label>
+                            <input type="number" wire:model.defer="templateRecurrenceDay" min="1" max="31" style="background: var(--bg-card); color: var(--text-main); border: 2px solid var(--border-color); padding: 10px 14px; border-radius: 10px; width: 100%; font-size: 14px; font-weight: 800; outline: none;" placeholder="1-31">
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="compact-footer" style="display: flex; gap: 12px; margin-top: 8px;">
                         <button type="submit" class="btn btn-primary" style="flex: 1; padding: 16px; border-radius: 18px; font-weight: 900; font-size: 16px;">
                             {{ $editingTemplateId ? 'Update Template' : 'Save as Template' }}
                         </button>
@@ -456,5 +548,66 @@
             </div>
         </div>
     </div>
+    @endif
+    <!-- Quick Assign Modal -->
+    @if($showQuickAssignModal)
+    <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
+        <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
+            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 163, 74, 0.05);">
+                <div>
+                    <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success);">Quick Assign</h3>
+                    <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">Assign to {{ $quickAssignUserName }}</p>
+                </div>
+                <button @click="$wire.set('showQuickAssignModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+            </div>
+            
+            <div style="padding: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 12px 20px; background: var(--bg-input); border-radius: 16px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 13px; font-weight: 800; color: var(--text-main);">Mark as completed immediately</div>
+                    <label class="switch">
+                        <input type="checkbox" wire:model="quickAssignCompleteImmediately">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding: 4px; margin: -4px;">
+                    @forelse($templates as $template)
+                        <button wire:click="quickAssignFromTemplate({{ $template->id }})" class="template-card-btn" style="text-align: left; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 100%; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 900; font-size: 15px; color: var(--text-main);">{{ $template->title }}</div>
+                                    <div style="font-size: 12px; font-weight: 900; color: var(--primary); margin-top: 2px;">+{{ $template->score }} Points</div>
+                                </div>
+                                <div style="background: var(--bg-input); color: var(--primary); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                </div>
+                            </div>
+                        </button>
+                    @empty
+                        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
+                            <p style="font-size: 13px; font-weight: 800;">No templates found</p>
+                            <button wire:click="openManageTemplatesModal" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">Create Templates</button>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button @click="$wire.set('showQuickAssignModal', false)" class="btn" style="width: 100%; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; font-weight: 800;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .template-card-btn:hover {
+            border-color: var(--primary) !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+        .template-card-btn:active {
+            transform: translateY(0);
+        }
+    </style>
     @endif
 </div>

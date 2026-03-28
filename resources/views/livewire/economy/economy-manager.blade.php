@@ -1,13 +1,13 @@
 <div>
     <!-- Header & Summary Row -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
+    <div class="flex-header">
         <div>
             <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">Current Month</h1>
             <p style="color: var(--text-muted); font-weight: 600;">Track and manage your household finances.</p>
         </div>
 
         <!-- Summary Cards (Top Right) -->
-        <div class="summary-grid" style="margin-bottom: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; justify-content: flex-end;">
+        <div class="summary-grid" style="margin-bottom: 0; justify-content: flex-end;">
             <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
                 <p class="summary-label">Direct (25th)</p>
                 <h2 class="summary-value" style="color: var(--warning); font-size: 1.25rem;">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>
@@ -36,7 +36,7 @@
     </div>
 
     <!-- Income, Savings, and Categories -->
-    <div style="display: flex; flex-wrap: wrap; gap: var(--space-8); margin-bottom: var(--space-8);">
+    <div class="flex-cards" style="margin-bottom: var(--space-8);">
 
         <!-- Income Card -->
         <div class="card" style="flex: 1 1 400px;">

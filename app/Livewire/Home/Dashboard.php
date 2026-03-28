@@ -14,6 +14,47 @@ use Carbon\Carbon;
 
 class Dashboard extends Component
 {
+    // Quick Assign Properties
+    public $showQuickAssignModal = false;
+    public $quickAssignUserId = null;
+    public $quickAssignUserName = '';
+    public $quickAssignCompleteImmediately = false;
+
+    public function openQuickAssignModal($userId)
+    {
+        $child = User::find($userId);
+        if (!$child) return;
+
+        $this->quickAssignUserId = $userId;
+        $this->quickAssignUserName = $child->name;
+        $this->quickAssignCompleteImmediately = false;
+        $this->showQuickAssignModal = true;
+    }
+
+    public function quickAssignFromTemplate($templateId)
+    {
+        $template = \App\Models\PredefinedChore::find($templateId);
+        if (!$template || !$this->quickAssignUserId) return;
+
+        $chore = Chore::create([
+            'title' => $template->title,
+            'description' => $template->description,
+            'score' => $template->score,
+            'user_id' => $this->quickAssignUserId,
+            'is_completed' => $this->quickAssignCompleteImmediately,
+            'completed_at' => $this->quickAssignCompleteImmediately ? now() : null,
+        ]);
+
+        if ($this->quickAssignCompleteImmediately) {
+            $child = User::find($this->quickAssignUserId);
+            $child->accumulated_score += $template->score;
+            $child->save();
+        }
+
+        $this->showQuickAssignModal = false;
+        session()->flash('message', "Chore '{$template->title}' assigned " . ($this->quickAssignCompleteImmediately ? "and completed " : "") . "to {$this->quickAssignUserName}!");
+    }
+
     public function render()
     {
         $totalIncome = Income::sum('amount');
@@ -72,6 +113,7 @@ class Dashboard extends Component
                     ->count();
                 return $child;
             })->sortByDesc('accumulated_score'),
+            'templates' => \App\Models\PredefinedChore::all(),
         ]);
     }
 }

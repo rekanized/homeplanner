@@ -15,3 +15,4 @@ try {
 }
 
 Schedule::command('economy:capture-snapshot')->monthlyOn($snapshotDay, '00:00');
+Schedule::command('kids:generate-recurring')->dailyAt('00:00');
