@@ -144,21 +144,54 @@
         @endif
 
         @if($kidsEnabled)
-        <!-- Kids System Placeholder -->
-        <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px; opacity: 0.8;">
-            <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <!-- Kids System Summary -->
+        <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px;">
+            <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
                 <div>
-                    <h3 style="font-size: 18px; font-weight: 900;">Kids Points System</h3>
-                    <p style="font-size: 11px; color: var(--text-muted);">Development & Chore tracking</p>
+                    <h3 style="font-size: 18px; font-weight: 900;">Kids Points Overview</h3>
+                    <p style="font-size: 11px; color: var(--text-muted);">Current accumulated household scores</p>
                 </div>
-                <div class="badge" style="background: var(--border-strong); color: var(--text-muted);">Standby</div>
+                <div style="text-align: right;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
             </div>
-            <div style="padding: var(--space-8); height: 320px; background: var(--bg-input); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted);">
-                <div style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--border-color); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <div style="font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; font-size: 13px;">Subsytem Offline</div>
-                <div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">Awaiting module activation</div>
+            <div style="padding: var(--space-6) var(--space-8); background: var(--bg-input); min-height: 200px;">
+                @if($children->count() > 0)
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        @foreach($children as $child)
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <div style="width: 38px; height: 38px; border-radius: 12px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);">
+                                        {{ substr($child->name, 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">{{ $child->name }}</div>
+                                        <div style="display: flex; gap: 8px; margin-top: 2px;">
+                                            <div style="font-size: 10px; font-weight: 800; color: var(--success); display: flex; align-items: center; gap: 4px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+                                                {{ $child->monthly_points }} this month
+                                            </div>
+                                            <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                                {{ $child->total_finished_tasks }} chores
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-weight: 900; color: var(--primary); font-size: 16px;">{{ $child->accumulated_score }}</div>
+                                    <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total PTS</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 160px; color: var(--text-muted); text-align: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 12px;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <div style="font-size: 13px; font-weight: 800;">No children registered</div>
+                        <p style="font-size: 11px; margin-top: 4px;">Tag users as children in the <a href="{{ route('admin.users') }}" style="color: var(--primary); font-weight: 800; text-decoration: underline;">Admin panel</a></p>
+                    </div>
+                @endif
             </div>
         </div>
         @endif

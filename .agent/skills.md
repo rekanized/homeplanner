@@ -11,6 +11,10 @@ My capabilities for this project include:
 - **Modern CSS**: Expert in Variables, Calc, Grid, Flexbox, and state-based styling.
 - **Design System Architecture**: Ability to build robust, scalable design systems using only native CSS.
 
+## Infrastructure & Testing Specialist
+- **Docker Expert**: Containerization via PHP-FPM, multi-stage build optimization, and background scheduler management in `entrypoint.sh`.
+- **Automated Testing**: Proficiency in Laravel Feature testing for Route Accessibility and Role-Based Access Control (RBAC) verification.
+
 ## Compliance & Integrity
 - **Dependency Management**: Strict adherence to project-specific dependency constraints (No Volt, no unauthorized packages).
 - **No-Build Workflow**: Proficiency in managing all assets without build tools or pre-processors.

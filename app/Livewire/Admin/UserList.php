@@ -49,14 +49,37 @@ class UserList extends Component
         }
 
         // Safety: Cannot delete the Master User
-        $masterEmail = Setting::get('google_first_user_email');
-        if ($user->email === $masterEmail) {
+        if ($user->isMaster()) {
             session()->flash('error', 'The Master User cannot be deleted.');
             return;
         }
 
         $user->delete();
         session()->flash('message', 'User deleted successfully.');
+    }
+
+    public function toggleChild($id)
+    {
+        // Only Master User can toggle child status
+        if (!auth()->user()->isMaster()) {
+            session()->flash('error', 'Only the System Master can assign child status.');
+            return;
+        }
+
+        $user = User::find($id);
+        if (!$user) return;
+
+        // Cannot make master a child
+        if ($user->isMaster()) {
+            session()->flash('error', 'The Master User cannot be tagged as a child.');
+            return;
+        }
+
+        $user->is_child = !$user->is_child;
+        $user->save();
+
+        $status = $user->is_child ? 'tagged as a child' : 'removed from children';
+        session()->flash('message', "User {$user->name} has been {$status}.");
     }
     public function render()
     {

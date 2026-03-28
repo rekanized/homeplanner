@@ -13,6 +13,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/economy/savings-history', \App\Livewire\Economy\SavingsHistory::class)->name('economy.savings-history');
     Route::get('/shopping', \App\Livewire\Shopping\ShoppingManager::class)->name('shopping.index');
     Route::get('/todo', \App\Livewire\Todo\TodoManager::class)->name('todo.index');
+    Route::get('/kids', \App\Livewire\Kids\KidsManager::class)->name('kids.index');
 
     Route::prefix('admin')->middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
         Route::get('/users', \App\Livewire\Admin\UserList::class)->name('admin.users');

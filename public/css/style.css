@@ -766,18 +766,16 @@ tr:hover {
 /* Animations */
 .animate-in {
     animation: fadeIn 0.1s ease-out forwards;
-    will-change: opacity, transform;
+    will-change: opacity;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(2px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -1449,8 +1447,10 @@ tr:hover {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
     z-index: 9999;
 }
 
@@ -1463,6 +1463,7 @@ tr:hover {
     border: 1px solid var(--border-color);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     text-align: center;
+    margin-bottom: 40px;
 }
 
 .modal-title {
@@ -1514,6 +1515,51 @@ tr:hover {
     border: none;
     cursor: pointer;
 }
+
+/* Global Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    white-space: nowrap;
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+}
+
+.btn-success:hover {
+    background: var(--success-text);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
+}
+
+.btn-success:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
 
 .todo-filter-popout {
     position: absolute;

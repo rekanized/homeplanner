@@ -58,9 +58,7 @@
             <livewire:sidebar wire:persist="sidebar" x-bind:class="{ 'open': mobileMenuOpen }" />
 
             <main class="main-content">
-                <div class="animate-in">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </main>
         </div>
 

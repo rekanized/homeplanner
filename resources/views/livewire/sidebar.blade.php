@@ -75,20 +75,20 @@
                     @endif
 
                     @if($kidsEnabled)
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('kids.index') }}" wire:navigate class="nav-link {{ request()->routeIs('kids.*') ? 'active' : '' }}">
                         <div class="nav-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </div>
                         <div>
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <div style="font-size: 14px; font-weight: 700;">Kids System</div>
-                                <span style="font-size: 9px; padding: 2px 6px; border-radius: 6px; background: var(--border-color); color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Coming soon...</span>
                             </div>
                             <div style="font-size: 10px; opacity: 0.7;">Points and rewards</div>
                         </div>
                     </a>
                     @endif
 
+                    @if(!auth()->user()->is_child)
                     <div x-data="{ open: {{ request()->is('admin/*') ? 'true' : 'false' }} }">
                         <button @click="open = !open" class="nav-link {{ request()->is('admin/*') ? 'active' : '' }}" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 12px;">
@@ -111,6 +111,7 @@
                             <a href="{{ route('admin.versions') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.versions') ? 'active' : '' }}">App versions</a>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </nav>

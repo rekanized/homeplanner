@@ -8,6 +8,8 @@ use App\Models\Saving;
 use App\Models\Expense;
 use App\Models\ShoppingItem;
 use App\Models\TodoItem;
+use App\Models\User;
+use App\Models\Chore;
 use Carbon\Carbon;
 
 class Dashboard extends Component
@@ -59,6 +61,17 @@ class Dashboard extends Component
             'shoppingEnabled' => filter_var(\App\Models\Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'todoEnabled' => filter_var(\App\Models\Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'kidsEnabled' => filter_var(\App\Models\Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'children' => User::where('is_child', true)->get()->map(function($child) {
+                $child->monthly_points = Chore::where('user_id', $child->id)
+                    ->where('is_completed', true)
+                    ->whereMonth('completed_at', now()->month)
+                    ->whereYear('completed_at', now()->year)
+                    ->sum('score');
+                $child->total_finished_tasks = Chore::where('user_id', $child->id)
+                    ->where('is_completed', true)
+                    ->count();
+                return $child;
+            })->sortByDesc('accumulated_score'),
         ]);
     }
 }

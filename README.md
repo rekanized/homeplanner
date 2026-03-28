@@ -23,8 +23,8 @@ Efficiently manage your household chores. Track due dates, prioritize tasks with
 ### 💰 Economy Manager
 Take control of your finances. Track incomes, savings, and expenses with inline editing and automatic category-based auditing. Designed for transparency and quick updates.
 
-### 👨‍👩‍👧‍👦 Kids Points System (Coming Soon)
-A dedicated module to engage children in household chores through a points-based reward system.
+### 👨‍👩‍👧‍👦 Kids Points System
+Engage children in household chores through a gamified reward economy. Parents can assign tasks with point values, while children track their progress and redeem points for rewards. Features include monthly performance stats and a transparent spending history.
 
 ## 🚀 Quick Deploy
 
