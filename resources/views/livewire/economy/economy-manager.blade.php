@@ -7,7 +7,7 @@
         </div>
 
         <!-- Summary Cards (Top Right) -->
-        <div class="summary-grid" style="margin-bottom: 0; justify-content: flex-end;">
+        <div class="header-stats">
             <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
                 <p class="summary-label">Direct (25th)</p>
                 <h2 class="summary-value" style="color: var(--warning); font-size: 1.25rem;">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>

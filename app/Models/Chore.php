@@ -18,11 +18,16 @@ class Chore extends Model
         'is_completed',
         'completed_at',
         'source_template_id',
+        'needs_approval',
+        'is_pending_approval',
+        'proof_image_path',
     ];
 
     protected $casts = [
         'is_completed' => 'boolean',
         'completed_at' => 'datetime',
+        'needs_approval' => 'boolean',
+        'is_pending_approval' => 'boolean',
     ];
 
     /**

@@ -6,7 +6,7 @@
             <p style="color: var(--text-muted); font-weight: 600;">Manage your long-term accumulated balances and goals.</p>
         </div>
 
-        <div class="summary-grid" style="margin-bottom: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; justify-content: flex-end;">
+        <div class="header-stats">
             <div class="summary-card accent" style="min-width: 180px; padding: 12px 20px;">
                 <p class="summary-label" style="color: rgba(255,255,255,0.7);">Accumulated Savings</p>
                 <h2 class="summary-value" style="font-size: 1.5rem;">{{ number_format($this->totalSavings, 0, ',', ' ') }} kr</h2>

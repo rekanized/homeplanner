@@ -1,4 +1,13 @@
 <aside {{ $attributes->merge(['class' => 'sidebar']) }}>
+    @if(session()->has('impersonator_id'))
+        <div style="background: var(--warning); color: var(--slate-950); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid rgba(0,0,0,0.1);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Impersonating {{ auth()->user()->name }}
+            </div>
+            <button wire:click="stopImpersonating" style="background: white; color: var(--slate-950); border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-weight: 900; font-size: 10px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">Stop</button>
+        </div>
+    @endif
         <!-- Workspace Header -->
         <a href="/" wire:navigate class="sidebar-header" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6);">
             <div class="sidebar-icon-box">

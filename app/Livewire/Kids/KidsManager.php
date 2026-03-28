@@ -3,6 +3,7 @@
 namespace App\Livewire\Kids;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use App\Models\User;
 use App\Models\Chore;
 use App\Models\Redemption;
@@ -11,12 +12,20 @@ use Illuminate\Support\Facades\Auth;
 
 class KidsManager extends Component
 {
+    use WithFileUploads;
+
     public $showAddChoreModal = false;
     public $title = '';
     public $description = '';
     public $score = 10;
     public $assigned_to = [];
     public $complete_immediately = false;
+    public $needs_approval = false;
+
+    // Proof Upload Properties
+    public $showProofUploadModal = false;
+    public $selectedChoreId = null;
+    public $proofImage = null;
 
     // Point Adjustment Properties
     public $showAdjustPointsModal = false;
@@ -42,6 +51,7 @@ class KidsManager extends Component
     public $templateRecurrenceType = 'none';
     public $templateRecurrenceDay = [];
     public $templateAssignedUserIds = [];
+    public $templateNeedsApproval = false;
 
     // Quick Assign Properties
     public $showQuickAssignModal = false;
@@ -59,7 +69,7 @@ class KidsManager extends Component
 
     public function openAddChoreModal()
     {
-        $this->reset(['title', 'description', 'score', 'assigned_to', 'complete_immediately']);
+        $this->reset(['title', 'description', 'score', 'assigned_to', 'complete_immediately', 'needs_approval']);
         $this->showAddChoreModal = true;
     }
 
@@ -78,6 +88,7 @@ class KidsManager extends Component
                 'description' => $this->description,
                 'score' => $this->score,
                 'user_id' => $userId,
+                'needs_approval' => $this->needs_approval,
                 'is_completed' => $this->complete_immediately,
                 'completed_at' => $this->complete_immediately ? now() : null,
             ]);
@@ -96,7 +107,14 @@ class KidsManager extends Component
     public function completeChore($id)
     {
         $chore = Chore::find($id);
-        if (!$chore || $chore->is_completed) return;
+        if (!$chore || $chore->is_completed || $chore->is_pending_approval) return;
+
+        if ($chore->needs_approval) {
+            $this->selectedChoreId = $id;
+            $this->proofImage = null;
+            $this->showProofUploadModal = true;
+            return;
+        }
 
         $chore->is_completed = true;
         $chore->completed_at = now();
@@ -224,7 +242,7 @@ class KidsManager extends Component
     // Template Methods
     public function openManageTemplatesModal()
     {
-        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId', 'templateNeedsApproval']);
         $this->showManageTemplatesModal = true;
     }
 
@@ -253,6 +271,7 @@ class KidsManager extends Component
             'recurrence_type' => $this->templateRecurrenceType,
             'recurrence_day' => $recurrenceDay,
             'assigned_user_ids' => $this->templateAssignedUserIds,
+            'needs_approval' => $this->templateNeedsApproval,
         ];
 
         if ($this->editingTemplateId) {
@@ -262,7 +281,7 @@ class KidsManager extends Component
             PredefinedChore::create($data);
         }
 
-        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds', 'editingTemplateId']);
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds', 'editingTemplateId', 'templateNeedsApproval']);
         $this->templateRecurrenceDay = [];
         $this->templateAssignedUserIds = [];
         session()->flash('message', 'Template saved successfully!');
@@ -278,6 +297,7 @@ class KidsManager extends Component
         $this->templateRecurrenceType = $template->recurrence_type;
         $this->templateRecurrenceDay = is_array($template->recurrence_day) ? $template->recurrence_day : ($template->recurrence_day ? [$template->recurrence_day] : []);
         $this->templateAssignedUserIds = is_array($template->assigned_user_ids) ? $template->assigned_user_ids : [];
+        $this->templateNeedsApproval = $template->needs_approval;
     }
 
     public function toggleRecurrenceDay($day)
@@ -337,6 +357,7 @@ class KidsManager extends Component
             'description' => $template->description,
             'score' => $template->score,
             'user_id' => $this->quickAssignUserId,
+            'needs_approval' => $template->needs_approval,
             'is_completed' => $this->quickAssignCompleteImmediately,
             'completed_at' => $this->quickAssignCompleteImmediately ? now() : null,
         ]);
@@ -358,6 +379,7 @@ class KidsManager extends Component
             $this->title = $template->title;
             $this->description = $template->description;
             $this->score = $template->score;
+            $this->needs_approval = $template->needs_approval;
         }
     }
 
@@ -375,6 +397,64 @@ class KidsManager extends Component
 
         $redemption->delete();
         session()->flash('message', 'Redemption removed and points refunded.');
+    }
+
+    public function submitChoreProof()
+    {
+        $this->validate([
+            'proofImage' => 'required|image|max:10240', // 10MB max
+            'selectedChoreId' => 'required|exists:chores,id',
+        ]);
+
+        $chore = Chore::find($this->selectedChoreId);
+        
+        $path = $this->proofImage->store('chores/proofs', 'public');
+        
+        $chore->update([
+            'is_pending_approval' => true,
+            'proof_image_path' => $path,
+        ]);
+
+        $this->showProofUploadModal = false;
+        $this->reset(['proofImage', 'selectedChoreId']);
+        session()->flash('message', 'Chore submitted for approval! Waiting for parent review.');
+    }
+
+    public function approveChore($id)
+    {
+        if (Auth::user()->is_child) return;
+
+        $chore = Chore::find($id);
+        if (!$chore || !$chore->is_pending_approval) return;
+
+        $chore->update([
+            'is_completed' => true,
+            'is_pending_approval' => false,
+            'completed_at' => now(),
+        ]);
+
+        // Award points
+        $child = $chore->user;
+        $child->accumulated_score += $chore->score;
+        $child->save();
+
+        session()->flash('message', "Chore approved! {$chore->score} points awarded to {$child->name}.");
+    }
+
+    public function rejectChore($id)
+    {
+        if (Auth::user()->is_child) return;
+
+        $chore = Chore::find($id);
+        if (!$chore || !$chore->is_pending_approval) return;
+
+        // Reset to open state so child can try again
+        $chore->update([
+            'is_pending_approval' => false,
+            // We keep the image path for reference but it won't be "pending" anymore
+        ]);
+
+        session()->flash('message', "Chore rejected. The child can try again.");
     }
 
     public function render()

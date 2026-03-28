@@ -17,12 +17,14 @@ class PredefinedChore extends Model
         'recurrence_day',
         'assigned_user_ids',
         'last_generated_at',
+        'needs_approval',
     ];
 
     protected $casts = [
         'recurrence_day' => 'array',
         'assigned_user_ids' => 'array',
         'last_generated_at' => 'datetime',
+        'needs_approval' => 'boolean',
     ];
 
     public function assignedUsers()

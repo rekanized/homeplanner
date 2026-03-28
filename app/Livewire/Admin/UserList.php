@@ -81,6 +81,27 @@ class UserList extends Component
         $status = $user->is_child ? 'tagged as a child' : 'removed from children';
         session()->flash('message', "User {$user->name} has been {$status}.");
     }
+
+    public function impersonate($id)
+    {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {
+            session()->flash('error', 'Only administrators can impersonate.');
+            return;
+        }
+
+        $user = User::find($id);
+        if (!$user) return;
+
+        // Safety: Cannot impersonate self
+        if ($user->id === auth()->id()) {
+            return;
+        }
+
+        session(['impersonator_id' => auth()->id()]);
+        \Illuminate\Support\Facades\Auth::login($user);
+
+        return redirect()->to('/');
+    }
     public function render()
     {
         return view('livewire.admin.user-list', [

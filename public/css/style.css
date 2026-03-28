@@ -313,7 +313,7 @@ a {
 /* Summary Grid */
 .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: var(--space-6);
     margin-bottom: var(--space-8);
 }
@@ -1439,19 +1439,19 @@ tr:hover {
 
 /* Confirmation Modal */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 20px;
-    overflow-y: auto;
-    z-index: 9999;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.75) !important; /* Darker, more distinct background */
+    backdrop-filter: blur(12px) !important; /* Higher blur for better distinction */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px;
+    z-index: 999999 !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
@@ -1464,6 +1464,9 @@ tr:hover {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     text-align: center;
     margin-bottom: 40px;
+    /* Added scrollability */
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
 }
 
 .modal-title {
@@ -1777,9 +1780,12 @@ tr:hover {
     }
 
     .modal-content {
-        width: 95% !important;
+        width: 100% !important;
         padding: 24px !important;
-        margin: 20px auto !important;
+        margin: 0 !important;
+        /* Scrollability on mobile */
+        max-height: calc(100vh - 40px) !important;
+        overflow-y: auto !important;
     }
 }
 
@@ -1812,6 +1818,15 @@ tr:hover {
     margin-bottom: var(--space-8);
     padding-bottom: var(--space-6);
     border-bottom: 1px solid var(--border-color);
+}
+
+.header-stats {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 1;
+    min-width: 300px;
 }
 
 .flex-cards {
@@ -1989,12 +2004,15 @@ input:checked + .slider:before {
         font-size: 13px !important;
     }
     .compact-footer {
-        gap: 8px !important;
-        margin-top: 8px !important;
+        display: flex !important;
+        flex-direction: column-reverse !important;
+        gap: 12px !important;
+        margin-top: 16px !important;
     }
     .compact-footer .btn {
-        padding: 12px !important;
-        font-size: 14px !important;
+        width: 100% !important;
+        padding: 16px !important;
+        font-size: 16px !important;
     }
 }
 

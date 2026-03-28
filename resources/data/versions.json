@@ -1,5 +1,16 @@
 [
     {
+        "version": "v1.3.0",
+        "released_at": "2026-03-28 22:50:00",
+        "changes": [
+            { "type": "added", "description": "Admin Impersonation system with quick-revert sidebar banner" },
+            { "type": "fixed", "description": "Stabilized Kids module by consolidating Alpine.js teleported modals" },
+            { "type": "fixed", "description": "Optimized Economy summary grid to prevent horizontal stacking issues" },
+            { "type": "added", "description": "New 'header-stats' utility for compact, responsive page summaries" },
+            { "type": "fixed", "description": "Added overflow scroll support to all modals to prevent height issues on smaller screens" }
+        ]
+    },
+    {
         "version": "v1.2.0",
         "released_at": "2026-03-28 12:00:00",
         "changes": [

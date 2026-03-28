@@ -19,6 +19,17 @@ class Sidebar extends Component
         // The client handles the immediate UI change.
     }
 
+    public function stopImpersonating()
+    {
+        if (!session()->has('impersonator_id')) return;
+        
+        $adminId = session('impersonator_id');
+        session()->forget('impersonator_id');
+        \Illuminate\Support\Facades\Auth::loginUsingId($adminId);
+
+        return redirect()->to('/admin/users');
+    }
+
     public function render()
     {
         $versions = json_decode(file_get_contents(resource_path('data/versions.json')), true);
