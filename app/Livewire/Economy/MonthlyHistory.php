@@ -11,6 +11,14 @@ use Livewire\Attributes\Computed;
 class MonthlyHistory extends Component
 {
     public $selectedSnapshotId = null;
+    
+    public function mount()
+    {
+        $lastSnapshot = EconomySnapshot::orderBy('id', 'desc')->first();
+        if ($lastSnapshot) {
+            $this->selectedSnapshotId = $lastSnapshot->id;
+        }
+    }
 
     #[Computed]
     public function snapshots()
@@ -38,12 +46,14 @@ class MonthlyHistory extends Component
         }
     }
 
+    #[Computed]
+    public function selectedSnapshot()
+    {
+        return $this->selectedSnapshotId ? EconomySnapshot::find($this->selectedSnapshotId) : null;
+    }
+
     public function render()
     {
-        $snapshot = $this->selectedSnapshotId ? EconomySnapshot::find($this->selectedSnapshotId) : null;
-
-        return view('livewire.economy.monthly-history', [
-            'selectedSnapshot' => $snapshot,
-        ]);
+        return view('livewire.economy.monthly-history');
     }
 }

@@ -42,9 +42,10 @@
                         </button>
                         
                         <div x-show="open" class="nav-sub-container">
-                            <a href="{{ route('economy.index') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.index') && !request()->is('economy/savings') && !request()->is('economy/history') ? 'active' : '' }}">Current month</a>
+                            <a href="{{ route('economy.index') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.index') && !request()->is('economy/savings') && !request()->is('economy/history') && !request()->is('economy/savings-history') ? 'active' : '' }}">Current month</a>
                             <a href="{{ route('economy.savings') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.savings') ? 'active' : '' }}">Savings</a>
                             <a href="{{ route('economy.history') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.history') ? 'active' : '' }}">Monthly history</a>
+                            <a href="{{ route('economy.savings-history') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.savings-history') ? 'active' : '' }}">Savings history</a>
                         </div>
                     </div>
                     @endif

@@ -30,28 +30,31 @@ return new class extends Migration
         });
 
         // 2. Data Migration
-        $users = User::all()->pluck('id', 'name');
+        $users = DB::table('users')->pluck('id', 'name');
 
-        Income::all()->each(function ($income) use ($users) {
+        DB::table('incomes')->get()->each(function ($income) use ($users) {
             if ($income->recipient && isset($users[$income->recipient])) {
-                $income->update(['recipient_id' => $users[$income->recipient]]);
+                DB::table('incomes')->where('id', $income->id)->update(['recipient_id' => $users[$income->recipient]]);
             }
         });
 
-        Saving::all()->each(function ($saving) use ($users) {
+        DB::table('savings')->get()->each(function ($saving) use ($users) {
             if ($saving->saver && isset($users[$saving->saver])) {
-                $saving->update(['saver_id' => $users[$saving->saver]]);
+                DB::table('savings')->where('id', $saving->id)->update(['saver_id' => $users[$saving->saver]]);
             }
         });
 
-        Expense::all()->each(function ($expense) use ($users) {
-            if ($expense->payer && is_array($expense->payer)) {
-                $ids = collect($expense->payer)
-                    ->map(fn($name) => $users[$name] ?? null)
-                    ->filter()
-                    ->values()
-                    ->toArray();
-                $expense->update(['payer_ids' => $ids]);
+        DB::table('expenses')->get()->each(function ($expense) use ($users) {
+            if ($expense->payer) {
+                $payer = json_decode($expense->payer, true);
+                if (is_array($payer)) {
+                    $ids = collect($payer)
+                        ->map(fn($name) => $users[$name] ?? null)
+                        ->filter()
+                        ->values()
+                        ->toArray();
+                    DB::table('expenses')->where('id', $expense->id)->update(['payer_ids' => json_encode($ids)]);
+                }
             }
         });
 

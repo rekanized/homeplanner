@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Setting;
 use App\Models\EconomySnapshot;
+use App\Models\SavingsSnapshot;
 use App\Services\EconomySnapshotService;
 use Carbon\Carbon;
 
@@ -46,6 +47,17 @@ class CaptureEconomySnapshot extends Command
             }
 
             $service->capture();
+            
+            // Savings Snapshot
+            $savingsExists = SavingsSnapshot::where('month', $month)
+                ->where('year', $year)
+                ->exists();
+
+            if (!$savingsExists || $this->option('force')) {
+                $service->captureSavingsSnapshot();
+                $this->info("Savings snapshot captured successfully for {$month}/{$year}.");
+            }
+
             $this->info("Economy snapshot captured successfully for {$month}/{$year}.");
         } else {
             $this->info("Today is not the snapshot day ({$snapshotDay}). skipping...");

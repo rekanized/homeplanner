@@ -59,27 +59,27 @@
 
         <!-- Main Content: Frozen View -->
         <div style="min-height: 400px;">
-            @if($selectedSnapshot)
+            @if($this->selectedSnapshot)
             <div class="animate-in">
                 <div style="margin-bottom: 24px; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; overflow: hidden;">
                     <div>
                         <span class="badge badge-soft" style="background: var(--primary-soft); color: var(--primary); font-weight: 800;">FROZEN SNAPSHOT</span>
-                        <h2 style="font-size: 1.75rem; font-weight: 900; margin-top: 8px;">{{ date("F", mktime(0, 0, 0, $selectedSnapshot->month, 1)) }} {{ $selectedSnapshot->year }}</h2>
-                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Captured on {{ $selectedSnapshot->created_at->format('M j, Y \a\t H:i') }}</p>
+                        <h2 style="font-size: 1.75rem; font-weight: 900; margin-top: 8px;">{{ date("F", mktime(0, 0, 0, $this->selectedSnapshot->month, 1)) }} {{ $this->selectedSnapshot->year }}</h2>
+                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Captured on {{ $this->selectedSnapshot->created_at->format('M j, Y \a\t H:i') }}</p>
                     </div>
                     
                     <div style="display: flex; gap: 16px;">
                         <div class="summary-card" style="min-width: 120px;">
                             <p class="summary-label">Income</p>
-                            <h3 class="summary-value" style="color: var(--success); font-size: 1.15rem;">{{ number_format($selectedSnapshot->total_income, 0, ',', ' ') }}</h3>
+                            <h3 class="summary-value" style="color: var(--success); font-size: 1.15rem;">{{ number_format($this->selectedSnapshot->total_income, 0, ',', ' ') }}</h3>
                         </div>
                         <div class="summary-card" style="min-width: 120px;">
                             <p class="summary-label">Expenses</p>
-                            <h3 class="summary-value" style="color: var(--danger); font-size: 1.15rem;">{{ number_format($selectedSnapshot->total_expenses, 0, ',', ' ') }}</h3>
+                            <h3 class="summary-value" style="color: var(--danger); font-size: 1.15rem;">{{ number_format($this->selectedSnapshot->total_expenses, 0, ',', ' ') }}</h3>
                         </div>
                         <div class="summary-card accent" style="min-width: 120px;">
                             <p class="summary-label" style="opacity: 0.8;">Remaining</p>
-                            <h3 class="summary-value" style="font-size: 1.15rem;">{{ number_format($selectedSnapshot->total_income - $selectedSnapshot->total_expenses - $selectedSnapshot->total_savings, 0, ',', ' ') }}</h3>
+                            <h3 class="summary-value" style="font-size: 1.15rem;">{{ number_format($this->selectedSnapshot->total_income - $this->selectedSnapshot->total_expenses - $this->selectedSnapshot->total_savings, 0, ',', ' ') }}</h3>
                         </div>
                     </div>
                 </div>
@@ -87,31 +87,6 @@
                 <!-- Frozen Data Tables -->
                 <div style="display: flex; flex-direction: column; gap: 24px;">
                     
-                    <!-- Expenses Table (Primary) -->
-                    <div class="card" style="border-radius: 24px; overflow: hidden;">
-                        <div class="card-header" style="border-radius: 24px 24px 0 0;">
-                            <h3 style="font-weight: 900;">Expenses Snapshot</h3>
-                        </div>
-                        <div class="eco-grid-table">
-                            <div class="eco-grid-header expenses-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr auto; border-top: 1px solid var(--border-color);">
-                                <div>Name</div>
-                                <div>Category</div>
-                                <div>Handling</div>
-                                <div style="text-align: right;">Amount</div>
-                            </div>
-                            <div class="eco-grid-body">
-                                @foreach($selectedSnapshot->snapshot_data['expenses'] as $exp)
-                                <div class="eco-grid-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
-                                    <div style="font-weight: 700; color: var(--text-main);">{{ $exp['name'] }}</div>
-                                    <div style="color: var(--text-muted);">{{ $exp['category'] ?? '—' }}</div>
-                                    <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
-                                    <div style="text-align: right; font-weight: 800; font-family: var(--font-heading);">{{ number_format($exp['amount'], 0, ',', ' ') }} kr</div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                         <!-- Incomes -->
                         <div class="card" style="background: var(--bg-card); border-radius: 24px; overflow: hidden;">
@@ -124,7 +99,7 @@
                                     <span>Amount</span>
                                 </div>
                                 <div class="eco-grid-body">
-                                    @foreach($selectedSnapshot->snapshot_data['incomes'] as $inc)
+                                    @foreach($this->selectedSnapshot->snapshot_data['incomes'] as $inc)
                                     <div style="display: flex; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-color);">
                                         <span style="font-weight: 700; font-size: 13px;">{{ $inc['name'] }}</span>
                                         <span style="font-weight: 800; color: var(--success); font-size: 13px;">{{ number_format($inc['amount'], 0, ',', ' ') }} kr</span>
@@ -145,13 +120,38 @@
                                     <span>Amount</span>
                                 </div>
                                 <div class="eco-grid-body">
-                                    @foreach($selectedSnapshot->snapshot_data['savings'] as $sav)
+                                    @foreach($this->selectedSnapshot->snapshot_data['savings'] as $sav)
                                     <div style="display: flex; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-color);">
                                         <span style="font-weight: 700; font-size: 13px;">{{ $sav['name'] }}</span>
                                         <span style="font-weight: 800; color: var(--primary); font-size: 13px;">{{ number_format($sav['amount'], 0, ',', ' ') }} kr</span>
                                     </div>
                                     @endforeach
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expenses Table -->
+                    <div class="card" style="border-radius: 24px; overflow: hidden;">
+                        <div class="card-header" style="border-radius: 24px 24px 0 0;">
+                            <h3 style="font-weight: 900;">Expenses Snapshot</h3>
+                        </div>
+                        <div class="eco-grid-table">
+                            <div class="eco-grid-header expenses-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr auto; border-top: 1px solid var(--border-color);">
+                                <div>Name</div>
+                                <div>Category</div>
+                                <div>Handling</div>
+                                <div style="text-align: right;">Amount</div>
+                            </div>
+                            <div class="eco-grid-body">
+                                @foreach($this->selectedSnapshot->snapshot_data['expenses'] as $exp)
+                                <div class="eco-grid-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
+                                    <div style="font-weight: 700; color: var(--text-main);">{{ $exp['name'] }}</div>
+                                    <div style="color: var(--text-muted);">{{ $exp['category'] ?? '—' }}</div>
+                                    <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
+                                    <div style="text-align: right; font-weight: 800; font-family: var(--font-heading);">{{ number_format($exp['amount'], 0, ',', ' ') }} kr</div>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>

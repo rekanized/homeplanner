@@ -8,6 +8,7 @@ use App\Models\Saving;
 use App\Models\SavingsBalance;
 use App\Models\ExpenseCategory;
 use App\Models\EconomySnapshot;
+use App\Models\SavingsSnapshot;
 use Illuminate\Support\Facades\DB;
 
 class EconomySnapshotService
@@ -44,5 +45,18 @@ class EconomySnapshotService
                 'total_savings' => $totalMonthlySavings, // Keeping this as monthly for backward compat/summary
             ]);
         });
+    }
+
+    public function captureSavingsSnapshot()
+    {
+        $balances = SavingsBalance::orderBy('sort_order')->get();
+        $total = $balances->sum('amount');
+
+        return SavingsSnapshot::create([
+            'month' => now()->month,
+            'year' => now()->year,
+            'snapshot_data' => $balances->toArray(),
+            'total_amount' => $total,
+        ]);
     }
 }
