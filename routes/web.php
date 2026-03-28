@@ -8,6 +8,8 @@ Route::get('/setup', \App\Livewire\Auth\InitialSetup::class)->name('setup.index'
 Route::middleware('auth')->group(function () {
     Route::get('/', \App\Livewire\Home\Dashboard::class)->name('home');
     Route::get('/economy', \App\Livewire\Economy\EconomyManager::class)->name('economy.index');
+    Route::get('/economy/savings', \App\Livewire\Economy\Savings::class)->name('economy.savings');
+    Route::get('/economy/history', \App\Livewire\Economy\MonthlyHistory::class)->name('economy.history');
     Route::get('/shopping', \App\Livewire\Shopping\ShoppingManager::class)->name('shopping.index');
     Route::get('/todo', \App\Livewire\Todo\TodoManager::class)->name('todo.index');
 

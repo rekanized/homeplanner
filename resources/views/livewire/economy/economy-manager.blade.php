@@ -2,7 +2,7 @@
     <!-- Header & Summary Row -->
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
         <div>
-            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">Economy</h1>
+            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">Current Month</h1>
             <p style="color: var(--text-muted); font-weight: 600;">Track and manage your household finances.</p>
         </div>
 

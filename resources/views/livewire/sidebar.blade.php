@@ -27,15 +27,26 @@
                     </a>
 
                     @if($economyEnabled)
-                    <a href="{{ route('economy.index') }}" wire:navigate class="nav-link {{ request()->routeIs('economy.*') ? 'active' : '' }}">
-                        <div class="nav-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
+                    <div x-data="{ open: {{ request()->routeIs('economy.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" class="nav-link {{ request()->routeIs('economy.*') ? 'active' : '' }}" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
+                                </div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 700;">Economy</div>
+                                    <div style="font-size: 10px; opacity: 0.7;">Shopping and budgets</div>
+                                </div>
+                            </div>
+                            <svg :style="open ? 'transform: rotate(180deg)' : ''" style="width: 14px; height: 14px; transition: transform 0.3s;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                        
+                        <div x-show="open" class="nav-sub-container">
+                            <a href="{{ route('economy.index') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.index') && !request()->is('economy/savings') && !request()->is('economy/history') ? 'active' : '' }}">Current month</a>
+                            <a href="{{ route('economy.savings') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.savings') ? 'active' : '' }}">Savings</a>
+                            <a href="{{ route('economy.history') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('economy.history') ? 'active' : '' }}">Monthly history</a>
                         </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700;">Economy</div>
-                            <div style="font-size: 10px; opacity: 0.7;">Shopping and budgets</div>
-                        </div>
-                    </a>
+                    </div>
                     @endif
 
                     @if($shoppingEnabled)
