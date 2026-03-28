@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('amount', 12, 2);
-            $table->string('category');
-            $table->json('payer');
+            $table->string('category')->nullable();
+            $table->json('payer_ids')->nullable();
             $table->string('handling')->nullable();
             $table->boolean('split')->default(false);
             $table->boolean('delayed')->default(false);

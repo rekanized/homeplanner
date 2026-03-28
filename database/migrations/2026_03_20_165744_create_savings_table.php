@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('amount', 12, 2);
-            $table->string('saver');
+            $table->unsignedBigInteger('saver_id')->nullable();
             $table->string('location');
             $table->integer('sort_order')->default(0);
             $table->timestamps();

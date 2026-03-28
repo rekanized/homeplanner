@@ -24,6 +24,9 @@ return new class extends Migration
             $row->foreignId('todo_id')->constrained()->onDelete('cascade');
             $row->string('name');
             $row->boolean('is_done')->default(false);
+            $row->timestamp('completed_at')->nullable();
+            $row->date('due_date')->nullable();
+            $row->string('category')->nullable();
             $row->integer('sort_order')->default(0);
             $row->timestamps();
         });
