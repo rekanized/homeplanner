@@ -22,8 +22,8 @@
                 <div style="display: flex; gap: 32px; position: relative; z-index: 1;">
                     <!-- Date Column -->
                     <div style="width: 140px; flex-shrink: 0; text-align: right; padding-top: 12px;" class="hidden-mobile">
-                        <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">{{ $version->released_at->format('M j, Y') }}</div>
-                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">{{ $version->released_at->format('H:i') }}</div>
+                        <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">{{ $version['released_at']->format('M j, Y') }}</div>
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">{{ $version['released_at']->format('H:i') }}</div>
                     </div>
 
                     <!-- Version Bubble -->
@@ -35,18 +35,18 @@
                     <div style="flex: 1; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <h3 style="font-size: 1.25rem; font-weight: 900; font-family: var(--font-heading);">v{{ $version->version }}</h3>
+                                <h3 style="font-size: 1.25rem; font-weight: 900; font-family: var(--font-heading);">{{ $version['version'] }}</h3>
                                 <span class="badge badge-soft" style="font-size: 10px; font-weight: 800; background: var(--primary-soft); color: var(--primary);">STABLE</span>
                             </div>
                             <!-- Mobile only date -->
                             <div class="visible-mobile" style="font-size: 11px; font-weight: 700; color: var(--text-muted);">
-                                {{ $version->released_at->format('M j, Y') }}
+                                {{ $version['released_at']->format('M j, Y') }}
                             </div>
                         </div>
 
                         <!-- Changes Grid -->
                         <div style="display: flex; flex-direction: column; gap: 12px;">
-                            @foreach($version->changes as $change)
+                            @foreach($version['changes'] as $change)
                                 <div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 16px; background: var(--bg-input);">
                                     <div style="flex-shrink: 0; margin-top: 2px;">
                                         @if($change['type'] === 'added')

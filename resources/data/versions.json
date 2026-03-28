@@ -1,0 +1,30 @@
+[
+    {
+        "version": "v1.2.0",
+        "released_at": "2026-03-28 12:00:00",
+        "changes": [
+            { "type": "added", "description": "Refined Home Dashboard with responsive mobile layouts and fluid spacing" },
+            { "type": "added", "description": "Consolidated database migrations into clean 'create' files for better maintainability" },
+            { "type": "added", "description": "Added dynamic environment-aware snapshot scheduling for Docker deployments" },
+            { "type": "added", "description": "Moved application history to static JSON for persistent release notes without database dependencies" }
+        ]
+    },
+    {
+        "version": "v1.1.0",
+        "released_at": "2026-03-26 10:00:00",
+        "changes": [
+            { "type": "added", "description": "Integrated Economy Module with Income and Savings tracking" },
+            { "type": "added", "description": "Improved Todo List with due date categories and status filtering" },
+            { "type": "added", "description": "Added Administrative UI for module activation and system settings" }
+        ]
+    },
+    {
+        "version": "v1.0.0",
+        "released_at": "2026-03-24 09:00:00",
+        "changes": [
+            { "type": "added", "description": "Initial Release of Homeplanner core system" },
+            { "type": "added", "description": "Support for Google Authentication and Multi-user households" },
+            { "type": "added", "description": "Basic Shopping List and Todo management modules" }
+        ]
+    }
+]
