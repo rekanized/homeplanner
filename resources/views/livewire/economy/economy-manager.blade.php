@@ -25,7 +25,7 @@
                 <h2 class="summary-value" style="color: var(--danger); font-size: 1.25rem;">{{ number_format($this->totalExpenses, 0, ',', ' ') }}</h2>
             </div>
             <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
-                <p class="summary-label">Savings</p>
+                <p class="summary-label">Monthly Savings</p>
                 <h2 class="summary-value" style="color: var(--primary); font-size: 1.25rem;">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
             </div>
             <div class="summary-card accent" style="min-width: 140px; padding: 10px 16px;">
@@ -105,10 +105,10 @@
             </div>
         </div>
 
-        <!-- Savings Card -->
+        <!-- Monthly Savings Card -->
         <div class="card" style="flex: 1 1 400px;">
             <div class="card-header">
-                <h3 style="font-weight: 900;">Savings</h3>
+                <h3 style="font-weight: 900;">Monthly Savings</h3>
                 <button wire:click="addSavingRow" class="eco-add-btn" title="Add saving">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                 </button>

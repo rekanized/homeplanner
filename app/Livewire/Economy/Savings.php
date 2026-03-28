@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Economy;
 
-use App\Models\Saving;
+use App\Models\SavingsBalance;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
@@ -18,7 +18,7 @@ class Savings extends Component
     #[Computed]
     public function savings()
     {
-        return Saving::orderBy('sort_order')->get();
+        return SavingsBalance::orderBy('sort_order')->get();
     }
 
     #[Computed]
@@ -29,12 +29,12 @@ class Savings extends Component
 
     public function addSavingRow()
     {
-        Saving::create([
+        SavingsBalance::create([
             'name' => '',
             'amount' => 0,
             'saver_id' => null,
             'location' => '',
-            'sort_order' => Saving::max('sort_order') + 1,
+            'sort_order' => SavingsBalance::max('sort_order') + 1,
         ]);
     }
 
@@ -43,7 +43,7 @@ class Savings extends Component
         $allowed = ['name', 'amount', 'saver_id', 'location'];
         if (!in_array($field, $allowed)) return;
 
-        $saving = Saving::find($id);
+        $saving = SavingsBalance::find($id);
         if (!$saving) return;
 
         $saving->update([$field => $value]);
@@ -51,7 +51,7 @@ class Savings extends Component
 
     public function deleteSaving($id)
     {
-        Saving::find($id)?->delete();
+        SavingsBalance::find($id)?->delete();
     }
 
     public function reorder($type, $orderedIds)
@@ -59,7 +59,7 @@ class Savings extends Component
         if ($type !== 'saving') return;
 
         foreach ($orderedIds as $index => $id) {
-            $record = Saving::find($id);
+            $record = SavingsBalance::find($id);
             if ($record && $record->sort_order != $index) {
                 $record->update(['sort_order' => $index]);
             }

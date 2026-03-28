@@ -11,6 +11,7 @@ class ModuleSettings extends Component
     public $shoppingEnabled;
     public $todoEnabled;
     public $kidsEnabled;
+    public $snapshotDay;
 
     public function mount()
     {
@@ -18,6 +19,7 @@ class ModuleSettings extends Component
         $this->shoppingEnabled = filter_var(Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN);
         $this->todoEnabled = filter_var(Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN);
         $this->kidsEnabled = filter_var(Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN);
+        $this->snapshotDay = Setting::get('economy_snapshot_day', 25);
     }
 
     public function save()
@@ -26,6 +28,7 @@ class ModuleSettings extends Component
         Setting::set('module_shopping_enabled', $this->shoppingEnabled, 'modules');
         Setting::set('module_todo_enabled', $this->todoEnabled, 'modules');
         Setting::set('module_kids_enabled', $this->kidsEnabled, 'modules');
+        Setting::set('economy_snapshot_day', $this->snapshotDay, 'economy');
 
         session()->flash('message', 'Module settings updated successfully.');
         

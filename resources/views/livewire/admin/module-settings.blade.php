@@ -89,6 +89,27 @@
                 </div>
             </div>
 
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                <h4 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">Economy Configurations</h4>
+                
+                <div style="max-width: 400px; padding: 20px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--warning-soft); color: var(--warning); display: flex; align-items: center; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: 15px; font-weight: 900; color: var(--text-main);">Automatic Snapshot Day</div>
+                            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">Captures ledger state once a month</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="number" wire:model="snapshotDay" min="1" max="31" 
+                               style="width: 70px; padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-main); font-weight: 800; text-align: center; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                               onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border-color)'">
+                    </div>
+                </div>
+            </div>
+
             <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn-primary" style="padding: 10px 24px; border-radius: 12px; background: var(--primary); color: white; border: none; font-weight: 800; cursor: pointer;">
                     Save Module Settings
