@@ -6,8 +6,12 @@
                 <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Kids System</h2>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">Manage chores and track rewards for the kids</p>
             </div>
-            <div>
+            <div style="display: flex; gap: 12px; align-items: center;">
                 @if(!auth()->user()->is_child)
+                    <button wire:click="openManageTemplatesModal" class="btn" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 16px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span>Templates</span>
+                    </button>
                     <button wire:click="openAddChoreModal" class="btn btn-primary" style="display: flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 16px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                         <span>Assign Chore</span>
@@ -219,6 +223,19 @@
             </div>
             
             <form wire:submit.prevent="addChore" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+                @if($templates->count() > 0)
+                <div>
+                    <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Quick Templates</label>
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none;">
+                        @foreach($templates as $template)
+                            <button type="button" wire:click="applyTemplate({{ $template->id }})" style="flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                                {{ $template->title }} ({{ $template->score }} pts)
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <div>
                     <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Chore Title</label>
                     <input type="text" wire:model="title" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;" placeholder="E.g. Vacuum the living room" autofocus>
@@ -251,6 +268,16 @@
                         </div>
                         @error('score') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: var(--bg-input); padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border-color); transition: all 0.2s;">
+                        <input type="checkbox" wire:model="complete_immediately" style="width: 20px; height: 20px; accent-color: var(--success); cursor: pointer;">
+                        <div>
+                            <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Mark as completed immediately</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Points will be awarded and history recorded instantly.</div>
+                        </div>
+                    </label>
                 </div>
 
                 <div style="display: flex; gap: 12px; margin-top: 12px;">
@@ -343,6 +370,90 @@
                     <button type="submit" class="btn btn-primary" style="flex: 2; padding: 16px; border-radius: 18px; font-size: 16px;">Confirm Redemption</button>
                 </div>
             </form>
+        </div>
+    </div>
+    @endif
+
+    <!-- Manage Templates Modal -->
+    @if($showManageTemplatesModal)
+    <div class="modal-overlay" @click.self="$wire.set('showManageTemplatesModal', false)">
+        <div class="modal-content animate-in" style="max-width: 800px; text-align: left; padding: 0; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 28px;">
+            <!-- Left Side: Template List -->
+            <div style="padding: 32px; border-right: 1px solid var(--border-color); background: rgba(0,0,0,0.01);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">Chore Library</h3>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; max-height: 480px; overflow-y: auto; padding-right: 8px;">
+                    @forelse($templates as $template)
+                        <div style="background: var(--bg-card); border: 1px solid @if($editingTemplateId == $template->id) var(--primary) @else var(--border-color) @endif; border-radius: 16px; padding: 16px; transition: all 0.2s; position: relative; @if($editingTemplateId == $template->id) box-shadow: 0 0 0 2px var(--primary-soft); @endif">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="flex: 1; margin-right: 12px;">
+                                    <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">{{ $template->title }}</div>
+                                    <div style="font-size: 11px; font-weight: 900; color: var(--primary); margin-top: 2px;">{{ $template->score }} Points</div>
+                                    @if($template->description)
+                                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $template->description }}</div>
+                                    @endif
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button wire:click="editTemplate({{ $template->id }})" style="background: var(--bg-input); border: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                    </button>
+                                    <button wire:click="deleteTemplate({{ $template->id }})" style="background: var(--danger-soft); border: none; color: var(--danger); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
+                            <div style="font-size: 13px; font-weight: 800; color: var(--text-muted);">No templates yet</div>
+                            <p style="font-size: 11px; margin-top: 4px;">Create your first chore template on the right.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Right Side: Editor -->
+            <div style="padding: 32px; position: relative;">
+                <button @click="$wire.set('showManageTemplatesModal', false)" style="position: absolute; right: 24px; top: 24px; background: var(--bg-input); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">
+                        {{ $editingTemplateId ? 'Edit Template' : 'Create Template' }}
+                    </h3>
+                    @if($editingTemplateId)
+                        <button wire:click="openManageTemplatesModal" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer;">+ New</button>
+                    @endif
+                </div>
+
+                <form wire:submit.prevent="saveTemplate" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Template Title</label>
+                        <input type="text" wire:model.defer="templateTitle" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none;" placeholder="e.g. Empty Dishwasher">
+                        @error('templateTitle') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Description</label>
+                        <textarea wire:model.defer="templateDescription" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none; min-height: 100px; resize: vertical;" placeholder="Optional details..."></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Default Points</label>
+                        <div style="position: relative;">
+                            <input type="number" wire:model.defer="templateScore" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 12px; width: 100%; font-size: 18px; font-weight: 900; outline: none;">
+                            <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 900; color: var(--primary);">PTS</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 8px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 16px; border-radius: 18px; font-weight: 900; font-size: 16px;">
+                            {{ $editingTemplateId ? 'Update Template' : 'Save as Template' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     @endif

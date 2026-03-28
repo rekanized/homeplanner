@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Chore;
 use App\Models\Redemption;
+use App\Models\PredefinedChore;
 use Illuminate\Support\Facades\Auth;
 
 class KidsManager extends Component
@@ -15,6 +16,7 @@ class KidsManager extends Component
     public $description = '';
     public $score = 10;
     public $assigned_to = [];
+    public $complete_immediately = false;
 
     // Point Adjustment Properties
     public $showAdjustPointsModal = false;
@@ -24,12 +26,19 @@ class KidsManager extends Component
     public $adjustType = 'add'; // 'add' or 'remove'
     public $adjustReason = '';
 
-    // Redemption Properties
+    // Point Redemption Properties
     public $showUsePointsModal = false;
-    public $redemptionUserId = null;
     public $redemptionUserName = '';
     public $redemptionDescription = '';
-    public $redemptionPoints = 10;
+    public $redemptionPoints = 0;
+    public $redemptionUserId = null;
+
+    // Template Management Properties
+    public $showManageTemplatesModal = false;
+    public $templateTitle = '';
+    public $templateDescription = '';
+    public $templateScore = 10;
+    public $editingTemplateId = null;
 
     public function mount()
     {
@@ -42,7 +51,7 @@ class KidsManager extends Component
 
     public function openAddChoreModal()
     {
-        $this->reset(['title', 'description', 'score']);
+        $this->reset(['title', 'description', 'score', 'complete_immediately']);
         $this->showAddChoreModal = true;
     }
 
@@ -56,13 +65,20 @@ class KidsManager extends Component
         ]);
 
         foreach ($this->assigned_to as $userId) {
-            Chore::create([
+            $chore = Chore::create([
                 'title' => $this->title,
                 'description' => $this->description,
                 'score' => $this->score,
                 'user_id' => $userId,
-                'is_completed' => false,
+                'is_completed' => $this->complete_immediately,
+                'completed_at' => $this->complete_immediately ? now() : null,
             ]);
+
+            if ($this->complete_immediately) {
+                $child = User::find($userId);
+                $child->accumulated_score += $this->score;
+                $child->save();
+            }
         }
 
         $this->showAddChoreModal = false;
@@ -172,32 +188,90 @@ class KidsManager extends Component
     public function usePoints()
     {
         $this->validate([
-            'redemptionPoints' => 'required|integer|min:1',
-            'redemptionUserId' => 'required|exists:users,id',
             'redemptionDescription' => 'required|min:3',
+            'redemptionPoints' => 'required|numeric|min:1',
         ]);
 
         $child = User::find($this->redemptionUserId);
-        if (!$child) return;
 
         if ($child->accumulated_score < $this->redemptionPoints) {
-            $this->addError('redemptionPoints', "Not enough points! (Has {$child->accumulated_score})");
+            $this->addError('redemptionPoints', 'Not enough points available.');
             return;
         }
 
-        // Deduct points
         $child->accumulated_score -= $this->redemptionPoints;
         $child->save();
 
-        // Create redemption record
         Redemption::create([
-            'user_id' => $child->id,
+            'user_id' => $this->redemptionUserId,
             'description' => $this->redemptionDescription,
             'score' => $this->redemptionPoints,
         ]);
 
         $this->showUsePointsModal = false;
-        session()->flash('message', "{$child->name} used {$this->redemptionPoints} points for: {$this->redemptionDescription}");
+        $this->reset(['redemptionDescription', 'redemptionPoints', 'redemptionUserId']);
+        session()->flash('message', 'Points redeemed successfully!');
+    }
+
+    // Template Methods
+    public function openManageTemplatesModal()
+    {
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+        $this->showManageTemplatesModal = true;
+    }
+
+    public function saveTemplate()
+    {
+        $this->validate([
+            'templateTitle' => 'required|min:3',
+            'templateScore' => 'required|numeric|min:1',
+        ]);
+
+        if ($this->editingTemplateId) {
+            $template = PredefinedChore::find($this->editingTemplateId);
+            $template->update([
+                'title' => $this->templateTitle,
+                'description' => $this->templateDescription,
+                'score' => $this->templateScore,
+            ]);
+        } else {
+            PredefinedChore::create([
+                'title' => $this->templateTitle,
+                'description' => $this->templateDescription,
+                'score' => $this->templateScore,
+            ]);
+        }
+
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+        session()->flash('message', 'Template saved successfully!');
+    }
+
+    public function editTemplate($id)
+    {
+        $template = PredefinedChore::find($id);
+        $this->editingTemplateId = $template->id;
+        $this->templateTitle = $template->title;
+        $this->templateDescription = $template->description;
+        $this->templateScore = $template->score;
+    }
+
+    public function deleteTemplate($id)
+    {
+        PredefinedChore::destroy($id);
+        if ($this->editingTemplateId == $id) {
+            $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+        }
+        session()->flash('message', 'Template deleted successfully!');
+    }
+
+    public function applyTemplate($id)
+    {
+        $template = PredefinedChore::find($id);
+        if ($template) {
+            $this->title = $template->title;
+            $this->description = $template->description;
+            $this->score = $template->score;
+        }
     }
 
     public function deleteRedemption($id)
@@ -256,6 +330,7 @@ class KidsManager extends Component
             'chores' => $chores,
             'completedChores' => $completedChores,
             'redemptions' => $redemptions,
+            'templates' => PredefinedChore::all(),
             'children' => User::where('is_child', true)->get()->map(function($child) {
                 $child->monthly_points = Chore::where('user_id', $child->id)
                     ->where('is_completed', true)

@@ -15,16 +15,6 @@
     <!-- Stats Grid -->
     <div class="summary-grid">
         @if($economyEnabled)
-        <div class="summary-card">
-            <div class="summary-label">Total Savings</div>
-            <div class="summary-value" style="color: var(--primary);">{{ number_format($totalSavings, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
-            <div style="font-size: 11px; margin-top: var(--space-3); color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
-                Accumulated Capital
-            </div>
-        </div>
-        @endif
-        @if($economyEnabled)
         <div class="summary-card accent">
             <div class="summary-label" style="color: rgba(255,255,255,0.6);">Current Months Income</div>
             <div class="summary-value">{{ number_format($totalIncome, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 0.6;">KR</span></div>
@@ -34,6 +24,16 @@
         <div class="summary-card">
             <div class="summary-label">Current  Months Expenses</div>
             <div class="summary-value" style="color: var(--danger);">{{ number_format($totalExpenses, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
+        </div>
+        @endif
+        @if($economyEnabled)
+        <div class="summary-card">
+            <div class="summary-label">Total Savings</div>
+            <div class="summary-value" style="color: var(--primary);">{{ number_format($totalSavings, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
+            <div style="font-size: 11px; margin-top: var(--space-3); color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
+                Accumulated Capital
+            </div>
         </div>
         @endif
         @if($shoppingEnabled)
