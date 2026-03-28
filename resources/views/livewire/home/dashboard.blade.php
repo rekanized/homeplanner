@@ -75,7 +75,7 @@
             <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
                 <div>
                     <h3 style="font-size: 18px; font-weight: 900;">Task Productivity</h3>
-                    <p style="font-size: 11px; color: var(--text-muted);">Completed tasks over the last 6 months</p>
+                    <p style="font-size: 11px; color: var(--text-muted);">Completed tasks over the last 3 months</p>
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 18px; font-weight: 900; color: var(--success);">{{ $totalCompleted }}</div>
@@ -112,7 +112,7 @@
                     }
                 @endphp
                 
-                <div style="flex: 1; position: relative; padding: 0 var(--space-8);">
+                <div style="flex: 1; position: relative; padding: 0 var(--space-12);">
                     <svg viewBox="0 0 {{ $width }} {{ $height }}" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; overflow: visible;">
                         <defs>
                             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
@@ -130,12 +130,14 @@
                 </div>
                 
                 <!-- X-Axis Labels -->
-                <div style="height: 40px; border-top: 1px solid var(--border-color); display: flex; position: relative; margin-top: var(--space-4); padding: 0 var(--space-8);">
-                    @foreach($months as $month)
-                        <div style="position: absolute; left: {{ $month['x'] }}%; transform: translateX(-50%); top: 10px; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
-                            {{ $month['label'] }}
-                        </div>
-                    @endforeach
+                <div style="height: 40px; border-top: 1px solid var(--border-color); margin-top: var(--space-4); padding: 0 var(--space-12);">
+                    <div style="position: relative; width: 100%; height: 100%;">
+                        @foreach($months as $index => $month)
+                            <div style="position: absolute; left: {{ $month['x'] }}%; transform: {{ $index === 0 ? 'none' : ($index === count($months) - 1 ? 'translateX(-100%)' : 'translateX(-50%)') }}; top: 10px; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; white-space: nowrap;">
+                                {{ $month['label'] }}
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

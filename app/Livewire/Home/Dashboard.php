@@ -25,8 +25,8 @@ class Dashboard extends Component
             ->where('due_date', '<', now()->startOfDay())
             ->count();
 
-        // Chart Data: Completed Todos last 6 months
-        $startDate = now()->subMonths(6)->startOfDay();
+        // Chart Data: Completed Todos last 3 months
+        $startDate = now()->subMonths(2)->startOfMonth();
         $endDate = now()->endOfDay();
         
         $completedTodos = TodoItem::where('is_done', true)
