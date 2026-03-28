@@ -23,4 +23,5 @@ chown -R www-data:www-data storage bootstrap/cache "$DB_DIR"
 chmod -R 775 storage bootstrap/cache "$DB_DIR"
 
 echo "🚀 Homeplanner is ready. Starting server..."
+php artisan schedule:work > /dev/null 2>&1 &
 exec "$@"
