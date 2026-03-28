@@ -37,8 +37,8 @@ RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
 COPY . .
 
 # 4. Finalize composer (Autoloading and Scripts)
-# Now that files are present, we can generate the final autoloader and run discovery safely
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# We pass a memory database connection to ensure Laravel can boot safely during discovery without a physical sqlite file
+RUN DB_CONNECTION=sqlite DB_DATABASE=:memory: composer install --no-dev --optimize-autoloader --no-interaction
 
 # Ensure final permissions
 RUN chmod +x docker/entrypoint.sh \
