@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', \App\Livewire\Admin\UserList::class)->name('admin.users');
         Route::get('/settings', function () { return view('admin.settings'); });
         Route::get('/logs', \App\Livewire\Admin\AuditLogList::class)->name('admin.logs');
+        Route::get('/versions', \App\Livewire\Admin\AppVersions::class)->name('admin.versions');
     });
 
     Route::post('/logout', function () {

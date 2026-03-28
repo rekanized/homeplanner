@@ -1,12 +1,12 @@
 <div class="animate-in">
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color);">
-        <div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-8); padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 16px;">
+        <div style="min-width: 280px;">
             <div class="badge badge-soft" style="color: var(--primary); background: var(--primary-soft); margin-bottom: var(--space-2);">Overview</div>
-            <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Home Dashboard</h2>
+            <h2 style="font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1;">Dashboard</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">Global management of your household ecosystems</p>
         </div>
-        <div style="text-align: right;">
+        <div style="text-align: right; flex-shrink: 0;">
             <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Current Session</div>
             <div style="font-size: 14px; font-weight: 700;">{{ now()->format('l, j F') }}</div>
         </div>
@@ -14,16 +14,6 @@
 
     <!-- Stats Grid -->
     <div class="summary-grid">
-        @if($economyEnabled)
-        <div class="summary-card accent">
-            <div class="summary-label" style="color: rgba(255,255,255,0.6);">Monthly Income</div>
-            <div class="summary-value">{{ number_format($totalIncome, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 0.6;">KR</span></div>
-            <div style="font-size: 11px; margin-top: var(--space-3); opacity: 0.8; display: flex; align-items: center; gap: 4px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
-                Stable Inflow
-            </div>
-        </div>
-        @endif
         @if($economyEnabled)
         <div class="summary-card">
             <div class="summary-label">Total Savings</div>
@@ -35,13 +25,15 @@
         </div>
         @endif
         @if($economyEnabled)
+        <div class="summary-card accent">
+            <div class="summary-label" style="color: rgba(255,255,255,0.6);">Current Months Income</div>
+            <div class="summary-value">{{ number_format($totalIncome, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 0.6;">KR</span></div>
+        </div>
+        @endif
+        @if($economyEnabled)
         <div class="summary-card">
-            <div class="summary-label">Monthly Expenses</div>
+            <div class="summary-label">Current  Months Expenses</div>
             <div class="summary-value" style="color: var(--danger);">{{ number_format($totalExpenses, 0, ',', ' ') }} <span style="font-size: 0.5em; opacity: 1;">KR</span></div>
-            <div style="font-size: 11px; margin-top: var(--space-3); color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--danger);"></div>
-                Current Burn Rate
-            </div>
         </div>
         @endif
         @if($shoppingEnabled)
@@ -76,7 +68,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-8);">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);">
         @if($todoEnabled)
         <!-- Task Productivity Chart -->
         <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px;">

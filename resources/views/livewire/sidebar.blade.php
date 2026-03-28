@@ -108,11 +108,15 @@
                             <a href="/admin/settings" wire:navigate class="nav-sub-link {{ request()->is('admin/settings') ? 'active' : '' }}">Application settings</a>
                             <a href="/admin/settings#auth" wire:navigate class="nav-sub-link">Authentication</a>
                             <a href="{{ route('admin.logs') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}">Audit log</a>
+                            <a href="{{ route('admin.versions') }}" wire:navigate class="nav-sub-link {{ request()->routeIs('admin.versions') ? 'active' : '' }}">App versions</a>
                         </div>
                     </div>
                 </div>
             </div>
+        </nav>
 
+        <!-- Footer / User Profile -->
+        <div class="sidebar-footer">
             <!-- Appearance -->
             <div x-data="{ 
                     localDarkMode: localStorage.getItem('darkMode') === 'true'
@@ -123,7 +127,7 @@
                     });
                 "
                 wire:ignore
-                style="padding: 16px; border-radius: 20px; background: var(--bg-input); border: 1px solid var(--border-color); margin-top: 24px;">
+                style="padding: 16px; border-radius: 20px; background: var(--bg-input); border: 1px solid var(--border-color); margin-bottom: 16px;">
                 <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 2px;">Appearance</h3>
                 <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Syncs with browser theme.</p>
                 
@@ -140,10 +144,11 @@
                     </div>
                 </button>
             </div>
-        </nav>
 
-        <!-- Footer / User Profile -->
-        <div class="sidebar-footer">
+            <div style="margin-bottom: 24px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Application</span>
+                <span class="badge badge-soft" style="font-size: 10px; font-weight: 800; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color);">v{{ $appVersion }}</span>
+            </div>
             @auth
             <div style="padding: 16px; border-radius: 24px; background: var(--bg-sidebar); border: 1px solid var(--border-color); box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px;">
                 <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px;">

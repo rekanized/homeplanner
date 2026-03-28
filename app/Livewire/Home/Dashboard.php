@@ -15,7 +15,7 @@ class Dashboard extends Component
     public function render()
     {
         $totalIncome = Income::sum('amount');
-        $totalSavings = Saving::sum('amount');
+        $totalSavings = \App\Models\SavingsBalance::sum('amount');
         $totalExpenses = Expense::sum('amount');
         
         $shoppingItemsCount = ShoppingItem::where('is_checked', false)->count();

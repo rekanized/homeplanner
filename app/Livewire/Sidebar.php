@@ -26,6 +26,7 @@ class Sidebar extends Component
             'shoppingEnabled' => filter_var(\App\Models\Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'todoEnabled' => filter_var(\App\Models\Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'kidsEnabled' => filter_var(\App\Models\Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'appVersion' => \App\Models\AppVersion::orderBy('released_at', 'desc')->first()?->version ?? '1.0.0',
         ]);
     }
 }
