@@ -200,52 +200,54 @@
 
     <!-- Quick Assign Modal -->
     @if($showQuickAssignModal)
-    <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
-        <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
-            <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 163, 74, 0.05);">
-                <div>
-                    <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success);">{{ __('Quick Assign') }}</h3>
-                    <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __('Assign to') }} {{ $quickAssignUserName }}</p>
+    <template x-teleport="body" wire:key="modal-dashboard-quick-assign">
+        <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
+            <div class="modal-content" style="max-width: 500px;">
+                <div style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success); font-family: var(--font-heading);">{{ __('Quick Assign') }}</h3>
+                        <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __('Assign to') }} {{ $quickAssignUserName }}</p>
+                    </div>
+                    <button @click="$wire.set('showQuickAssignModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
-                <button @click="$wire.set('showQuickAssignModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
-            </div>
-            
-            <div style="padding: 32px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 12px 20px; background: var(--bg-input); border-radius: 16px; border: 1px solid var(--border-color);">
-                    <div style="font-size: 13px; font-weight: 800; color: var(--text-main);">{{ __('Mark as completed immediately') }}</div>
-                    <label class="switch">
-                        <input type="checkbox" wire:model="quickAssignCompleteImmediately">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
+                
+                <div style="padding: 24px 32px 32px 32px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 12px 20px; background: var(--bg-input); border-radius: 16px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 13px; font-weight: 800; color: var(--text-main);">{{ __('Mark as completed immediately') }}</div>
+                        <label class="switch">
+                            <input type="checkbox" wire:model="quickAssignCompleteImmediately">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
 
-                <div style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding: 4px; margin: -4px;">
-                    @forelse($templates as $template)
-                        <button wire:click="quickAssignFromTemplate({{ $template->id }})" class="template-card-btn" style="text-align: left; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 100%; position: relative;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div style="font-weight: 900; font-size: 15px; color: var(--text-main);">{{ $template->title }}</div>
-                                    <div style="font-size: 12px; font-weight: 900; color: var(--primary); margin-top: 2px;">+{{ $template->score }} {{ __('Points') }}</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding: 4px; margin: -4px;">
+                        @forelse($templates as $template)
+                            <button wire:click="quickAssignFromTemplate({{ $template->id }})" class="template-card-btn" style="text-align: left; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 100%; position: relative;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: 900; font-size: 15px; color: var(--text-main);">{{ $template->title }}</div>
+                                        <div style="font-size: 12px; font-weight: 900; color: var(--primary); margin-top: 2px;">+{{ $template->score }} {{ __('Points') }}</div>
+                                    </div>
+                                    <div style="background: var(--bg-input); color: var(--primary); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                    </div>
                                 </div>
-                                <div style="background: var(--bg-input); color: var(--primary); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                                </div>
+                            </button>
+                        @empty
+                            <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
+                                <p style="font-size: 13px; font-weight: 800;">{{ __('No templates found') }}</p>
+                                <a href="{{ route('kids') }}" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">{{ __('Go to Kids System') }}</a>
                             </div>
-                        </button>
-                    @empty
-                        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
-                            <p style="font-size: 13px; font-weight: 800;">{{ __('No templates found') }}</p>
-                            <a href="{{ route('kids') }}" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">{{ __('Go to Kids System') }}</a>
-                        </div>
-                    @endforelse
-                </div>
+                        @endforelse
+                    </div>
 
-                <div style="margin-top: 24px;">
-                    <button @click="$wire.set('showQuickAssignModal', false)" class="btn" style="width: 100%; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; font-weight: 800;">{{ __('Cancel') }}</button>
+                    <div style="margin-top: 24px;">
+                        <button @click="$wire.set('showQuickAssignModal', false)" class="btn" style="width: 100%; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; font-weight: 800;">{{ __('Cancel') }}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </template>
 
     <style>
         .dashboard-child-box:hover {

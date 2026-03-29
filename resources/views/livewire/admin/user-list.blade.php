@@ -141,13 +141,14 @@
 
     <!-- Create Modal -->
     @if($showCreateModal)
+    <template x-teleport="body" wire:key="modal-create-user">
         <div class="modal-overlay" @click.self="$wire.set('showCreateModal', false)">
-            <div class="modal-content" style="max-width: 450px; text-align: left;">
-                <div style="padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">{{ __('Create Manual User') }}</h3>
-                    <button @click="$wire.set('showCreateModal', false)" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px;">×</button>
+            <div class="modal-content" style="max-width: 450px;">
+                <div style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
+                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Create Manual User') }}</h3>
+                    <button @click="$wire.set('showCreateModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 18px;">×</button>
                 </div>
-                <form wire:submit.prevent="createUser" style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+                <form wire:submit.prevent="createUser" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 20px;">
                     <div>
                         <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Full Name') }}</label>
                         <input type="text" wire:model="name" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('E.g. Magnus Andersson') }}">
@@ -170,6 +171,7 @@
                 </form>
             </div>
         </div>
+    </template>
 
         <style>
             @keyframes slideUp {

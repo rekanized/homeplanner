@@ -203,9 +203,10 @@
         @endif
 
         <!-- Finish Shopping Modal -->
-        <template x-if="showFinishModal">
-            <div class="modal-overlay" x-on:click.self="showFinishModal = false" x-transition>
-                <div class="modal-content" x-transition>
+        @if($showFinishModal)
+        <template x-teleport="body" wire:key="modal-finish-shopping">
+            <div class="modal-overlay" @click.self="$wire.set('showFinishModal', false)">
+                <div class="modal-content">
                     <div class="modal-title">{{ __('Finish Shopping?') }}</div>
                     <p class="modal-desc">{{ __('What would you like to do with the items in this list?') }}</p>
                     
@@ -213,7 +214,8 @@
                         <button 
                             type="button"
                             class="btn-finish-confirm"
-                            x-on:click="$wire.finishShopping(false).then(() => { showFinishModal = false; sorted = false })"
+                            wire:click="finishShopping(false)"
+                            @click="$wire.set('showFinishModal', false)"
                         >
                             {{ __('Remove Completed Items') }}
                         </button>
@@ -221,7 +223,7 @@
                         <button 
                             type="button"
                             class="btn-finish-clear"
-                            x-on:click="if(confirm('{{ __('This will wipe the entire list! Are you sure?') }}')) { $wire.finishShopping(true).then(() => { showFinishModal = false; sorted = false }) }"
+                            x-on:click="if(confirm('{{ __('This will wipe the entire list! Are you sure?') }}')) { $wire.finishShopping(true).then(() => { $wire.set('showFinishModal', false) }) }"
                         >
                             {{ __('Clear Entire List') }}
                         </button>
@@ -229,7 +231,7 @@
                         <button 
                             type="button"
                             class="btn-finish-cancel"
-                            x-on:click="showFinishModal = false"
+                            @click="$wire.set('showFinishModal', false)"
                         >
                             {{ __('Cancel') }}
                         </button>
@@ -237,6 +239,7 @@
                 </div>
             </div>
         </template>
+        @endif
 
     </div>
 

@@ -14,6 +14,7 @@ class ShoppingManager extends Component
     public $newListNames = []; // For inline editing of list names
 
     public $isShopping = false;
+    public $showFinishModal = false;
 
     protected $listeners = ['reorder' => 'handleReorder'];
 

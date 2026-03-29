@@ -3,13 +3,13 @@
     @if($showAddChoreModal)
     <template x-teleport="body" wire:key="modal-add-chore">
         <div class="modal-overlay" @click.self="$wire.set('showAddChoreModal', false)">
-            <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
-                <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
-                    <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">{{ __('Assign Chore') }}</h3>
-                    <button @click="$wire.set('showAddChoreModal', false)" style="background: var(--bg-input); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
+                    <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Assign Chore') }}</h3>
+                    <button @click="$wire.set('showAddChoreModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s;">×</button>
                 </div>
                 
-                <form wire:submit.prevent="addChore" class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+                <form wire:submit.prevent="addChore" class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
                     @if($templates->count() > 0)
                     <div>
                         <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">{{ __('Quick Templates') }}</label>
@@ -93,13 +93,13 @@
     @if($showAdjustPointsModal)
     <template x-teleport="body" wire:key="modal-adjust-points">
         <div class="modal-overlay" @click.self="$wire.set('showAdjustPointsModal', false)">
-            <div class="modal-content animate-in" style="max-width: 400px; text-align: left; padding: 0;">
-                <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">{{ __('Adjust Points') }}</h3>
-                    <button @click="$wire.set('showAdjustPointsModal', false)" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 24px;">×</button>
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
+                    <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Adjust Points') }}</h3>
+                    <button @click="$wire.set('showAdjustPointsModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
-                <div class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+                <div class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
                     <div style="text-align: center;">
                         <div style="font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Adjusting Score For') }}</div>
                         <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ $adjustUserName }}</div>
@@ -138,16 +138,16 @@
     @if($showUsePointsModal)
     <template x-teleport="body" wire:key="modal-use-points">
         <div class="modal-overlay" @click.self="$wire.set('showUsePointsModal', false)">
-            <div class="modal-content animate-in" style="max-width: 450px; text-align: left; padding: 0;">
-                <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(37, 99, 235, 0.05);">
+            <div class="modal-content" style="max-width: 450px;">
+                <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
                     <div>
-                        <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ __('Use Points') }}</h3>
+                        <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary); font-family: var(--font-heading);">{{ __('Use Points') }}</h3>
                         <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __('Redeem points for rewards') }}</p>
                     </div>
-                    <button @click="$wire.set('showUsePointsModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button @click="$wire.set('showUsePointsModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
-                <form wire:submit.prevent="usePoints" class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+                <form wire:submit.prevent="usePoints" class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
                     <div style="text-align: center; background: var(--bg-input); padding: 16px; border-radius: 20px; border: 1px solid var(--border-color);">
                         <div style="font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">{{ __('Redeeming for') }}</div>
                         <div style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">{{ $redemptionUserName }}</div>
@@ -182,7 +182,7 @@
     @if($showManageTemplatesModal)
     <template x-teleport="body" wire:key="modal-manage-templates">
         <div class="modal-overlay" @click.self="$wire.set('showManageTemplatesModal', false)">
-            <div class="modal-content animate-in templates-grid" style="max-width: 800px; text-align: left; padding: 0;">
+            <div class="modal-content templates-grid" style="max-width: 800px;">
                 <!-- Left Side: Template List -->
                 <div style="padding: 32px; border-right: 1px solid var(--border-color); background: rgba(0,0,0,0.01);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -355,7 +355,7 @@
     @if($showQuickAssignModal)
     <template x-teleport="body" wire:key="modal-quick-assign">
         <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
-            <div class="modal-content animate-in" style="max-width: 500px; text-align: left; padding: 0;">
+            <div class="modal-content" style="max-width: 500px;">
                 <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 163, 74, 0.05);">
                     <div>
                         <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success);">{{ __('Quick Assign') }}</h3>
@@ -407,7 +407,7 @@
     @if($showProofUploadModal)
     <template x-teleport="body" wire:key="modal-proof-upload">
         <div class="modal-overlay" @click.self="$wire.set('showProofUploadModal', false)">
-            <div class="modal-content animate-in" style="max-width: 450px; text-align: left; padding: 0;">
+            <div class="modal-content" style="max-width: 450px;">
                 <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(37, 99, 235, 0.05);">
                     <div>
                         <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ __('Submit Proof') }}</h3>
