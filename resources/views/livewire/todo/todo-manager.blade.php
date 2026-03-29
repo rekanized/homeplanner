@@ -122,7 +122,7 @@
                     </div>
                 </div>
             @else
-                @foreach(['overdue' => __('{{ __("Overdue") }}'), 'today' => __('{{ __("Due Today") }}'), 'upcoming' => __('{{ __("Upcoming") }}'), 'no_date' => __('{{ __("No Due Date") }}')] as $groupKey => $groupLabel)
+                @foreach(['overdue' => __('Overdue'), 'today' => __('Due Today'), 'upcoming' => __('Upcoming'), 'no_date' => __('No Due Date')] as $groupKey => $groupLabel)
                     @if($this->groupedPendingItems[$groupKey]->isNotEmpty() || ($groupKey === 'no_date' && $this->pendingItems->isNotEmpty()))
                         
                         @if($this->groupedPendingItems['overdue']->isNotEmpty() || $this->groupedPendingItems['today']->isNotEmpty() || $this->groupedPendingItems['upcoming']->isNotEmpty())
