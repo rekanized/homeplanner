@@ -33,6 +33,7 @@ class RouteAccessTest extends TestCase
             'economy.savings-history',
             'shopping.index',
             'todo.index',
+            'kids.index',
             'admin.users',
             'admin.logs',
             'admin.versions',
@@ -58,6 +59,7 @@ class RouteAccessTest extends TestCase
             'economy.savings-history',
             'shopping.index',
             'todo.index',
+            'kids.index',
         ];
 
         foreach ($routes as $routeName) {

@@ -7,7 +7,7 @@
 
             <div class="card" style="padding: 24px;">
                 <h3 style="font-weight: 800; margin-bottom: 8px;">{{ __('System Information') }}</h3>
-                <p style="color: var(--text-muted); font-size: 14px;">{{ __('Homeplanner Version 1.0.0. All systems operational.') }}</p>
+                <p style="color: var(--text-muted); font-size: 14px;">{{ __('Homeplanner Version 1.6.0. All systems operational.') }}</p>
             </div>
         </div>
     </div>

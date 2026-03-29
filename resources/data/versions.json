@@ -1,5 +1,23 @@
 [
     {
+        "version": "v1.6.0",
+        "released_at": "2026-03-29 22:30:00",
+        "changes": [
+            {
+                "type": "improved",
+                "description": "Refined Savings management with dedicated View/Edit modes and responsive mobile optimization"
+            },
+            {
+                "type": "improved",
+                "description": "Optimized application structure by removing redundant 'lightningbolt' components and empty directories"
+            },
+            {
+                "type": "fixed",
+                "description": "Standardized dashboard summary cards and resolved layout overlaps on mobile devices"
+            }
+        ]
+    },
+    {
         "version": "v1.5.0",
         "released_at": "2026-03-29 21:10:00",
         "changes": [
