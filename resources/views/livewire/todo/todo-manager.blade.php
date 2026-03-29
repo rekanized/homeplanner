@@ -1,4 +1,11 @@
-<div class="animate-in" x-data="{ editingListId: null }">
+<div class="animate-in" x-data="{ editingListId: null }" 
+    @task-added.window="$nextTick(() => { 
+        let input = document.getElementById('task-input-' + $event.detail.itemId);
+        if (input) {
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => input.focus(), 100);
+        }
+    })">
     <!-- Header -->
     <div class="flex-header">
         <div>
@@ -7,7 +14,7 @@
         </div>
         <div>
             @if($activeTodoId)
-                <button wire:click="addItem('')" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
+                <button wire:click="addItem('')" class="btn btn-primary desktop-only" style="display: flex; align-items: center; gap: 8px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                     {{ __('Add Task') }}
                 </button>
@@ -17,7 +24,7 @@
 
     <!-- List Selection & Management -->
     <div class="flex-cards" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
-        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px;">
+        <div class="manager-actions-row">
             <!-- List Selector Dropdown -->
             <div x-data="{ open: false }" style="position: relative;">
                 <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
@@ -195,6 +202,7 @@
                                                 <input 
                                                     type="text" 
                                                     value="{{ $item->name }}" 
+                                                    id="task-input-{{ $item->id }}"
                                                     class="eco-inline-input"
                                                     placeholder="{{ __('Task description...') }}"
                                                     @blur="$wire.updateItemName({{ $item->id }}, $event.target.value)"
@@ -298,5 +306,16 @@
                 {{ __('Create First List') }}
             </button>
         </div>
+    @endif
+
+    <!-- Mobile Floating Action Button -->
+    @if($activeTodoId)
+    <template x-teleport="body">
+        <div class="mobile-only">
+            <button wire:click="addItem('')" class="main-fab" title="{{ __('Add Task') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </button>
+        </div>
+    </template>
     @endif
 </div>

@@ -147,11 +147,13 @@ class TodoManager extends Component
     {
         if (!$this->activeTodoId) return;
         
-        TodoItem::create([
+        $item = TodoItem::create([
             'todo_id' => $this->activeTodoId,
             'name' => $name,
             'sort_order' => TodoItem::where('todo_id', $this->activeTodoId)->count()
         ]);
+
+        $this->dispatch('task-added', itemId: $item->id);
     }
 
     public function updateItemName($id, $newName)

@@ -1,5 +1,31 @@
 [
     {
+        "version": "v1.5.0",
+        "released_at": "2026-03-29 21:10:00",
+        "changes": [
+            {
+                "type": "improved",
+                "description": "Premium Mobile Modal UX with centered layouts and edge-to-edge headers"
+            },
+            {
+                "type": "added",
+                "description": "Viewport-pinned FAB (Floating Action Button) for Todo and Shopping list management"
+            },
+            {
+                "type": "added",
+                "description": "Smart Auto-Scroll and Instant-Focus logic for high-speed item entry"
+            },
+            {
+                "type": "improved",
+                "description": "Dedicated Grocery Sorting system based on Swedish store aisle heuristics"
+            },
+            {
+                "type": "fixed",
+                "description": "Teleported success notifications to ensure visibility across all scroll depths"
+            }
+        ]
+    },
+    {
         "version": "v1.4.0",
         "released_at": "2026-03-29 01:55:00",
         "changes": [

@@ -13,9 +13,6 @@ class ShoppingManager extends Component
     public $activeListId;
     public $newListNames = []; // For inline editing of list names
 
-    public $isShopping = false;
-    public $showFinishModal = false;
-
     protected $listeners = ['reorder' => 'handleReorder'];
 
     public function mount()
@@ -80,12 +77,14 @@ class ShoppingManager extends Component
     {
         if (!$this->activeListId) return;
 
-        ShoppingItem::create([
+        $item = ShoppingItem::create([
             'shopping_list_id' => $this->activeListId,
             'name' => '',
             'quantity' => 1,
             'sort_order' => ShoppingItem::where('shopping_list_id', $this->activeListId)->max('sort_order') + 1
         ]);
+
+        $this->dispatch('shopping-item-added', itemId: $item->id);
     }
 
     public function updateItem($id, $field, $value)
@@ -143,7 +142,7 @@ class ShoppingManager extends Component
         }
     }
 
-    public function startShopping(GrocerySortingService $sortingService)
+    public function sortItems(GrocerySortingService $sortingService)
     {
         $items = $this->items;
         if ($items->isEmpty()) return;
@@ -163,24 +162,8 @@ class ShoppingManager extends Component
         if ($this->activeList) {
             $this->activeList->load('items');
         }
-    }
 
-    public function enterShoppingMode()
-    {
-        $this->isShopping = true;
-    }
-
-    public function finishShopping(bool $clearAll = false)
-    {
-        if (!$this->activeList) return;
-
-        if ($clearAll) {
-            $this->activeList->items()->delete();
-        } else {
-            $this->activeList->items()->where('is_checked', true)->delete();
-        }
-
-        $this->isShopping = false;
+        session()->flash('message', __('Shopping list sorted!'));
     }
 
     public function render()

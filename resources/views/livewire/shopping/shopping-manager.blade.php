@@ -1,12 +1,39 @@
-<div class="animate-in" x-data="{ editingListId: null }">
+<div class="animate-in" x-data="{ editingListId: null }"
+    @shopping-item-added.window="$nextTick(() => { 
+        let input = document.getElementById('shopping-item-input-' + $event.detail.itemId);
+        if (input) {
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => input.focus(), 100);
+        }
+    })">
+    @if (session()->has('message'))
+    <template x-teleport="body">
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
+            style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 2100; background: var(--success); color: white; padding: 12px 24px; border-radius: 16px; font-weight: 800; box-shadow: var(--shadow-xl); display: flex; align-items: center; gap: 12px;"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 -translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-4"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            {{ session('message') }}
+        </div>
+    </template>
+    @endif
     <!-- Header -->
     <div class="flex-header">
         <div>
             <h2 class="responsive-title">{{ __('Shopping') }}</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">{{ __('Manage your grocery and household lists') }}</p>
         </div>
-        <div>
-            <button wire:click="addItem" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; gap: 8px;">
+            <button wire:click="sortItems" class="btn desktop-only" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>
+                {{ __('Sort List') }}
+            </button>
+            <button wire:click="addItem" class="btn btn-primary desktop-only" style="display: flex; align-items: center; gap: 8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                 {{ __('Add Item') }}
             </button>
@@ -15,7 +42,7 @@
 
     <!-- List Selection & Management -->
     <div class="flex-cards" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
-        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px;">
+        <div class="manager-actions-row">
             <!-- List Selector Dropdown -->
             <div x-data="{ open: false }" style="position: relative;">
                 <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
@@ -82,7 +109,7 @@
     <!-- Items List -->
     <div class="card" style="border-radius: 28px; overflow: hidden;">
         <div class="eco-grid-table">
-            <div class="eco-grid-header shopping-header shopping-grid-header" style="grid-template-columns: 40px 50px 1fr 40px;">
+            <div class="eco-grid-header shopping-header shopping-grid-header">
                 <div class="desktop-only text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">{{ __('Sort') }}</div>
                 <div class="text-muted" style="text-align: center; font-size: 9px; font-weight: 800; text-transform: uppercase;">{{ __('Done') }}</div>
                 <div class="text-muted" style="font-size: 9px; font-weight: 800; text-transform: uppercase; padding-left: 10px;">{{ __('Item Name & Qty') }}</div>
@@ -129,6 +156,7 @@
                             <input 
                                 type="text" 
                                 value="{{ $item->name }}" 
+                                id="shopping-item-input-{{ $item->id }}"
                                 class="eco-inline-input" 
                                 style="{{ $item->is_checked ? 'text-decoration: line-through; opacity: 0.5;' : '' }} flex: 1; min-width: 0;"
                                 @blur="$wire.updateItem({{ $item->id }}, 'name', $event.target.value)"
@@ -163,85 +191,21 @@
         </div>
     </div>
 
-    <!-- Footer Actions -->
-    <div style="margin-top: var(--space-8); display: flex; justify-content: center; padding-bottom: 40px;" x-data="{ sorting: false, sorted: false, showFinishModal: false }">
-        
-        @if(!$isShopping)
-            <!-- Start Shopping Button -->
-            <button 
-                type="button"
-                x-on:click="sorting = true; $wire.startShopping().then(() => { sorting = false; sorted = true; setTimeout(() => { $wire.enterShoppingMode() }, 2000) })"
-                x-bind:disabled="sorting || sorted"
-                class="btn" 
-                x-bind:style="sorted ? 'background: var(--success); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;' : 'background: var(--primary); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;'"
-                title="{{ __('Automatically sort based on Swedish store layout') }}"
-            >
-                <span x-show="!sorting && !sorted" style="display: flex; align-items: center; gap: 12px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.31-7.22H5.14"/></svg>
-                    <span>{{ __('Start Shopping') }}</span>
-                </span>
-                <span x-show="sorting" x-cloak style="display: flex; align-items: center; gap: 12px;">
-                    <span class="spinner-small"></span>
-                    <span>{{ __('Sorting List...') }}</span>
-                </span>
-                <span x-show="sorted" x-cloak style="display: flex; align-items: center; gap: 12px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>{{ __('List Sorted!') }}</span>
-                </span>
+    <!-- Mobile Floating Action Buttons -->
+    @if($activeListId)
+    <template x-teleport="body">
+        <div class="mobile-only">
+            <!-- Sort FAB -->
+            <button wire:click="sortItems" class="main-fab main-fab-secondary" title="{{ __('Sort List') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>
             </button>
-        @else
-            <!-- Finish Shopping Button -->
-            <button 
-                type="button"
-                x-on:click="showFinishModal = true"
-                class="btn" 
-                style="background: var(--success); color: white; padding: 14px 32px; border-radius: 16px; font-weight: 700; transition: all 0.3s; box-shadow: var(--shadow-lg); font-size: 14px;"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 12px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span>{{ __('Finish Shopping') }}</span>
+
+            <!-- Add FAB -->
+            <button wire:click="addItem" class="main-fab" title="{{ __('Add Item') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
             </button>
-        @endif
-
-        <!-- Finish Shopping Modal -->
-        @if($showFinishModal)
-        <template x-teleport="body" wire:key="modal-finish-shopping">
-            <div class="modal-overlay" @click.self="$wire.set('showFinishModal', false)">
-                <div class="modal-content">
-                    <div class="modal-title">{{ __('Finish Shopping?') }}</div>
-                    <p class="modal-desc">{{ __('What would you like to do with the items in this list?') }}</p>
-                    
-                    <div class="modal-actions">
-                        <button 
-                            type="button"
-                            class="btn-finish-confirm"
-                            wire:click="finishShopping(false)"
-                            @click="$wire.set('showFinishModal', false)"
-                        >
-                            {{ __('Remove Completed Items') }}
-                        </button>
-                        
-                        <button 
-                            type="button"
-                            class="btn-finish-clear"
-                            x-on:click="if(confirm('{{ __('This will wipe the entire list! Are you sure?') }}')) { $wire.finishShopping(true).then(() => { $wire.set('showFinishModal', false) }) }"
-                        >
-                            {{ __('Clear Entire List') }}
-                        </button>
-                        
-                        <button 
-                            type="button"
-                            class="btn-finish-cancel"
-                            @click="$wire.set('showFinishModal', false)"
-                        >
-                            {{ __('Cancel') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </template>
-        @endif
-
-    </div>
-
+        </div>
+    </template>
+    @endif
 </div>
 
