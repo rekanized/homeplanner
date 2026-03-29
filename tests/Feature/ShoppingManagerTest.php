@@ -58,18 +58,6 @@ class ShoppingManagerTest extends TestCase
         $this->assertTrue($item->refresh()->is_checked);
     }
 
-    public function test_can_bulk_delete_items()
-    {
-        $list = ShoppingList::factory()->create();
-        $items = ShoppingItem::factory()->count(3)->create(['shopping_list_id' => $list->id]);
-
-        Livewire::actingAs($this->user)
-            ->test(\App\Livewire\Shopping\ShoppingManager::class)
-            ->set('selectedItems', $items->pluck('id')->toArray())
-            ->call('bulkDelete');
-
-        $this->assertEquals(0, ShoppingItem::count());
-    }
 
     public function test_can_reorder_items()
     {

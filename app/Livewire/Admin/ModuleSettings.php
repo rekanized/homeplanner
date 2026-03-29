@@ -30,7 +30,7 @@ class ModuleSettings extends Component
         Setting::set('module_kids_enabled', $this->kidsEnabled, 'modules');
         Setting::set('economy_snapshot_day', $this->snapshotDay, 'economy');
 
-        session()->flash('message', 'Module settings updated successfully.');
+        session()->flash('message', __('Module settings updated successfully.'));
         
         // Dispatch event to refresh sidebar if needed
         $this->dispatch('modules-updated');

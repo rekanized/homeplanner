@@ -43,7 +43,7 @@ class AuthSettings extends Component
     public function removeEmail($email)
     {
         if ($email === $this->firstUserEmail) {
-            session()->flash('error', 'You cannot remove the first setup user from the allowed list.');
+            session()->flash('error', __('You cannot remove the first setup user from the allowed list.'));
             return;
         }
 
@@ -58,7 +58,7 @@ class AuthSettings extends Component
         Setting::set('auth_mode', $this->authMode, 'auth');
         Setting::set('google_allowed_emails', implode(',', $this->allowedEmailsArray), 'auth');
 
-        session()->flash('message', 'Authentication settings updated successfully.');
+        session()->flash('message', __('Authentication settings updated successfully.'));
     }
 
     public function render()

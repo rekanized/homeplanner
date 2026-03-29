@@ -1,6 +1,6 @@
 <div>
     @if ($paginator->hasPages())
-        <nav role="navigation" aria-label="Pagination Navigation" style="display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
+        <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" style="display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <span class="pagination-btn disabled">

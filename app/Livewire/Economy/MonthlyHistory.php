@@ -35,7 +35,7 @@ class MonthlyHistory extends Component
     {
         $snapshot = $service->capture();
         $this->selectedSnapshotId = $snapshot->id;
-        session()->flash('message', 'Manual snapshot captured successfully.');
+        session()->flash('message', __('Manual snapshot captured successfully.'));
     }
 
     public function deleteSnapshot($id)

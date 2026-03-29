@@ -10,13 +10,32 @@ class Sidebar extends Component
     #[Session]
     public $darkMode = false;
 
-    protected $listeners = ['modules-updated' => '$refresh'];
+    public $currentLocale;
+
+    public function mount()
+    {
+        $this->currentLocale = auth()->check() && auth()->user()->locale 
+            ? auth()->user()->locale 
+            : (session()->get('locale') ?? config('app.locale'));
+    }
+
+    public function setLocale($lang)
+    {
+        if (!in_array($lang, ['en', 'sv'])) return;
+
+        $this->currentLocale = $lang;
+        session()->put('locale', $lang);
+
+        if (auth()->check()) {
+            auth()->user()->update(['locale' => $lang]);
+        }
+
+        return redirect(request()->header('Referer'));
+    }
 
     public function toggleDarkMode()
     {
         $this->darkMode = !$this->darkMode;
-        // No longer dispatching from here to prevent flickering.
-        // The client handles the immediate UI change.
     }
 
     public function stopImpersonating()

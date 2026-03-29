@@ -27,7 +27,7 @@ class SavingsHistory extends Component
     public function triggerManualSnapshot(EconomySnapshotService $service)
     {
         $service->captureSavingsSnapshot();
-        session()->flash('message', 'Savings snapshot captured successfully.');
+        session()->flash('message', __('Savings snapshot captured successfully.'));
         
         $newSnapshot = SavingsSnapshot::latest()->first();
         if ($newSnapshot) {
@@ -43,7 +43,7 @@ class SavingsHistory extends Component
             $this->selectedSnapshotId = SavingsSnapshot::latest()->first()?->id;
         }
         
-        session()->flash('message', 'Snapshot deleted.');
+        session()->flash('message', __('Snapshot deleted.'));
     }
 
     public function getSnapshotsProperty()

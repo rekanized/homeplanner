@@ -101,7 +101,7 @@ class KidsManager extends Component
         }
 
         $this->showAddChoreModal = false;
-        session()->flash('message', count($this->assigned_to) . ' chore(s) assigned successfully!');
+        session()->flash('message', __(':count chore(s) assigned successfully!', ['count' => count($this->assigned_to)]));
     }
 
     public function completeChore($id)
@@ -125,7 +125,7 @@ class KidsManager extends Component
         $child->accumulated_score += $chore->score;
         $child->save();
 
-        session()->flash('message', "Great job! {$chore->score} points awarded to {$child->name}.");
+        session()->flash('message', __('Great job! :score points awarded to :name.', ['score' => $chore->score, 'name' => $child->name]));
     }
 
     public function revertChore($id)
@@ -146,7 +146,7 @@ class KidsManager extends Component
         }
         $child->save();
 
-        session()->flash('message', "Chore '{$chore->title}' has been moved back to pending. Points have been deducted.");
+        session()->flash('message', __("Chore ':title' has been moved back to pending. Points have been deducted.", ['title' => $chore->title]));
     }
 
     public function deleteChore($id)
@@ -158,7 +158,7 @@ class KidsManager extends Component
         if (Auth::user()->is_child) return;
 
         $chore->delete();
-        session()->flash('message', 'Chore removed.');
+        session()->flash('message', __('Chore removed.'));
     }
 
     public function openAdjustPointsModal($userId)
@@ -187,16 +187,19 @@ class KidsManager extends Component
 
         if ($this->adjustType === 'add') {
             $child->accumulated_score += $this->adjustAmount;
-            $msg = "Added {$this->adjustAmount} points to {$child->name}.";
+            $msg = 'Added :amount points to :name.';
         } else {
             $child->accumulated_score -= $this->adjustAmount;
             if ($child->accumulated_score < 0) $child->accumulated_score = 0;
-            $msg = "Removed {$this->adjustAmount} points from {$child->name}.";
+            $msg = 'Removed :amount points from :name.';
         }
 
         $child->save();
         $this->showAdjustPointsModal = false;
-        session()->flash('message', $msg);
+        session()->flash('message', __($msg, [
+            'amount' => $this->adjustAmount,
+            'name' => $child->name
+        ]));
     }
 
     public function openUsePointsModal($userId)
@@ -221,7 +224,7 @@ class KidsManager extends Component
         $child = User::find($this->redemptionUserId);
 
         if ($child->accumulated_score < $this->redemptionPoints) {
-            $this->addError('redemptionPoints', 'Not enough points available.');
+            $this->addError('redemptionPoints', __('Not enough points available.'));
             return;
         }
 
@@ -236,7 +239,7 @@ class KidsManager extends Component
 
         $this->showUsePointsModal = false;
         $this->reset(['redemptionDescription', 'redemptionPoints', 'redemptionUserId']);
-        session()->flash('message', 'Points redeemed successfully!');
+        session()->flash('message', __('Points redeemed successfully!'));
     }
 
     // Template Methods
@@ -284,7 +287,7 @@ class KidsManager extends Component
         $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds', 'editingTemplateId', 'templateNeedsApproval']);
         $this->templateRecurrenceDay = [];
         $this->templateAssignedUserIds = [];
-        session()->flash('message', 'Template saved successfully!');
+        session()->flash('message', __('Template saved successfully!'));
     }
 
     public function editTemplate($id)
@@ -332,7 +335,7 @@ class KidsManager extends Component
         if ($this->editingTemplateId == $id) {
             $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
         }
-        session()->flash('message', 'Template deleted successfully!');
+        session()->flash('message', __('Template deleted successfully!'));
     }
 
     // Quick Assign Methods
@@ -369,7 +372,11 @@ class KidsManager extends Component
         }
 
         $this->showQuickAssignModal = false;
-        session()->flash('message', "Chore '{$template->title}' assigned " . ($this->quickAssignCompleteImmediately ? "and completed " : "") . "to {$this->quickAssignUserName}!");
+        session()->flash('message', __("Chore ':title' assigned :status to :name!", [
+            'title' => $template->title,
+            'status' => $this->quickAssignCompleteImmediately ? __('and completed ') : '',
+            'name' => $this->quickAssignUserName
+        ]));
     }
 
     public function applyTemplate($id)
@@ -396,7 +403,7 @@ class KidsManager extends Component
         $child->save();
 
         $redemption->delete();
-        session()->flash('message', 'Redemption removed and points refunded.');
+        session()->flash('message', __('Redemption removed and points refunded.'));
     }
 
     public function submitChoreProof()
@@ -417,7 +424,7 @@ class KidsManager extends Component
 
         $this->showProofUploadModal = false;
         $this->reset(['proofImage', 'selectedChoreId']);
-        session()->flash('message', 'Chore submitted for approval! Waiting for parent review.');
+        session()->flash('message', __('Chore submitted for approval! Waiting for parent review.'));
     }
 
     public function approveChore($id)
@@ -438,7 +445,7 @@ class KidsManager extends Component
         $child->accumulated_score += $chore->score;
         $child->save();
 
-        session()->flash('message', "Chore approved! {$chore->score} points awarded to {$child->name}.");
+        session()->flash('message', __('Chore approved! :score points awarded to :name.', ['score' => $chore->score, 'name' => $child->name]));
     }
 
     public function rejectChore($id)
@@ -454,7 +461,7 @@ class KidsManager extends Component
             // We keep the image path for reference but it won't be "pending" anymore
         ]);
 
-        session()->flash('message', "Chore rejected. The child can try again.");
+        session()->flash('message', __('Chore rejected. The child can try again.'));
     }
 
     public function render()

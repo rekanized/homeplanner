@@ -1,41 +1,112 @@
 [
     {
+        "version": "v1.4.0",
+        "released_at": "2026-03-29 01:55:00",
+        "changes": [
+            {
+                "type": "added",
+                "description": "Full Application-wide localization (English & Swedish) across all core modules"
+            },
+            {
+                "type": "improved",
+                "description": "Complete Swedish translation sweep for Shopping, Todo, and Kids systems"
+            },
+            {
+                "type": "fixed",
+                "description": "Resolved all hardcoded English strings in UI and confirm dialogs"
+            },
+            {
+                "type": "improved",
+                "description": "Capitalized Swedish month names in History and Dashboard views"
+            },
+            {
+                "type": "fixed",
+                "description": "Expanded sv.json with missing keys identified during thorough UI audit"
+            }
+        ]
+    },
+    {
         "version": "v1.3.0",
         "released_at": "2026-03-28 22:50:00",
         "changes": [
-            { "type": "added", "description": "Admin Impersonation system with quick-revert sidebar banner" },
-            { "type": "fixed", "description": "Stabilized Kids module by consolidating Alpine.js teleported modals" },
-            { "type": "fixed", "description": "Optimized Economy summary grid to prevent horizontal stacking issues" },
-            { "type": "added", "description": "New 'header-stats' utility for compact, responsive page summaries" },
-            { "type": "fixed", "description": "Added overflow scroll support to all modals to prevent height issues on smaller screens" }
+            {
+                "type": "added",
+                "description": "Admin Impersonation system with quick-revert sidebar banner"
+            },
+            {
+                "type": "fixed",
+                "description": "Stabilized Kids module by consolidating Alpine.js teleported modals"
+            },
+            {
+                "type": "fixed",
+                "description": "Optimized Economy summary grid to prevent horizontal stacking issues"
+            },
+            {
+                "type": "added",
+                "description": "New 'header-stats' utility for compact, responsive page summaries"
+            },
+            {
+                "type": "fixed",
+                "description": "Added overflow scroll support to all modals to prevent height issues on smaller screens"
+            }
         ]
     },
     {
         "version": "v1.2.0",
         "released_at": "2026-03-28 12:00:00",
         "changes": [
-            { "type": "added", "description": "Refined Home Dashboard with responsive mobile layouts and fluid spacing" },
-            { "type": "added", "description": "Consolidated database migrations into clean 'create' files for better maintainability" },
-            { "type": "added", "description": "Added dynamic environment-aware snapshot scheduling for Docker deployments" },
-            { "type": "added", "description": "Moved application history to static JSON for persistent release notes without database dependencies" }
+            {
+                "type": "added",
+                "description": "Refined Home Dashboard with responsive mobile layouts and fluid spacing"
+            },
+            {
+                "type": "added",
+                "description": "Consolidated database migrations into clean 'create' files for better maintainability"
+            },
+            {
+                "type": "added",
+                "description": "Added dynamic environment-aware snapshot scheduling for Docker deployments"
+            },
+            {
+                "type": "added",
+                "description": "Moved application history to static JSON for persistent release notes without database dependencies"
+            }
         ]
     },
     {
         "version": "v1.1.0",
         "released_at": "2026-03-26 10:00:00",
         "changes": [
-            { "type": "added", "description": "Integrated Economy Module with Income and Savings tracking" },
-            { "type": "added", "description": "Improved Todo List with due date categories and status filtering" },
-            { "type": "added", "description": "Added Administrative UI for module activation and system settings" }
+            {
+                "type": "added",
+                "description": "Integrated Economy Module with Income and Savings tracking"
+            },
+            {
+                "type": "added",
+                "description": "Improved Todo List with due date categories and status filtering"
+            },
+            {
+                "type": "added",
+                "description": "Added Administrative UI for module activation and system settings"
+            }
         ]
     },
     {
         "version": "v1.0.0",
         "released_at": "2026-03-24 09:00:00",
         "changes": [
-            { "type": "added", "description": "Initial Release of Homeplanner core system" },
-            { "type": "added", "description": "Support for Google Authentication and Multi-user households" },
-            { "type": "added", "description": "Basic Shopping List and Todo management modules" }
+            {
+                "type": "added",
+                "description": "Initial Release of Homeplanner core system"
+            },
+            {
+                "type": "added",
+                "description": "Support for Google Authentication and Multi-user households"
+            },
+            {
+                "type": "added",
+                "description": "Basic Shopping List and Todo management modules"
+            }
         ]
     }
 ]

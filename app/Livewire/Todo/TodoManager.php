@@ -121,7 +121,7 @@ class TodoManager extends Component
     public function addList()
     {
         $todo = Todo::create([
-            'name' => 'New List',
+            'name' => __('New List'),
             'sort_order' => Todo::count()
         ]);
         $this->activeTodoId = $todo->id;

@@ -12,7 +12,7 @@ class ShoppingManager extends Component
 {
     public $activeListId;
     public $newListNames = []; // For inline editing of list names
-    public $selectedItems = [];
+
     public $isShopping = false;
 
     protected $listeners = ['reorder' => 'handleReorder'];
@@ -21,7 +21,7 @@ class ShoppingManager extends Component
     {
         $firstList = ShoppingList::orderBy('sort_order')->first();
         if (!$firstList) {
-            $firstList = ShoppingList::create(['name' => 'General Shopping']);
+            $firstList = ShoppingList::create(['name' => __('General Shopping')]);
         }
         $this->activeListId = $firstList->id;
     }
@@ -47,13 +47,12 @@ class ShoppingManager extends Component
     public function selectList($id)
     {
         $this->activeListId = $id;
-        $this->selectedItems = [];
     }
 
     public function addList()
     {
         $newList = ShoppingList::create([
-            'name' => 'New List',
+            'name' => __('New List'),
             'sort_order' => ShoppingList::max('sort_order') + 1
         ]);
         $this->activeListId = $newList->id;
@@ -128,31 +127,7 @@ class ShoppingManager extends Component
         }
     }
 
-    public function bulkDelete()
-    {
-        ShoppingItem::whereIn('id', $this->selectedItems)->delete();
-        $this->selectedItems = [];
-    }
 
-    public function bulkToggleCheck()
-    {
-        $items = ShoppingItem::whereIn('id', $this->selectedItems)->get();
-        $allChecked = $items->every('is_checked', true);
-        
-        ShoppingItem::whereIn('id', $this->selectedItems)->update(['is_checked' => !$allChecked]);
-        $this->selectedItems = [];
-    }
-
-    public function toggleSelectAll()
-    {
-        $itemIds = $this->items->pluck('id')->toArray();
-        
-        if (count($this->selectedItems) === count($itemIds)) {
-            $this->selectedItems = [];
-        } else {
-            $this->selectedItems = $itemIds;
-        }
-    }
 
     public function handleReorder($type, $ids)
     {

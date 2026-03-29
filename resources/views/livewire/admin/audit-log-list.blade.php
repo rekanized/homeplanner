@@ -1,25 +1,25 @@
 <div class="animate-in">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
         <div>
-            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">Audit Log</h1>
-            <p style="color: var(--text-muted); font-weight: 600;">Full history of system changes and user activity.</p>
+            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">{{ __('Audit Log') }}</h1>
+            <p style="color: var(--text-muted); font-weight: 600;">{{ __('Full history of system changes and user activity.') }}</p>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header" style="border-radius: 24px 24px 0 0;">
-            <h3 style="font-weight: 900;">Event Log</h3>
+            <h3 style="font-weight: 900;">{{ __('Event Log') }}</h3>
         </div>
 
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                 <thead>
                     <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
-                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">Event</th>
-                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">User</th>
-                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">Model</th>
-                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">Changes</th>
-                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">Time</th>
+                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('Event') }}</th>
+                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('User') }}</th>
+                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('Model') }}</th>
+                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('Changes') }}</th>
+                        <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('Time') }}</th>
                     </tr>
                 </thead>
                 <tbody style="color: var(--text-main);">
@@ -36,7 +36,7 @@
                             @endphp
                             <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; background: {{ $color }}15; color: {{ $color }}; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;">
                                 <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ $color }};"></span>
-                                {{ $log->event }}
+                                {{ __($log->event) }}
                             </span>
                         </td>
                         <td style="padding: 16px 20px;">
@@ -52,7 +52,7 @@
                                     <span style="font-weight: 700;">{{ $log->user->name }}</span>
                                 </div>
                             @else
-                                <span style="color: var(--slate-400); font-weight: 600;">System</span>
+                                <span style="color: var(--slate-400); font-weight: 600;">{{ __('System') }}</span>
                             @endif
                         </td>
                         <td style="padding: 16px 20px;">
@@ -71,13 +71,13 @@
                                     @endforeach
                                 </div>
                             @elseif($log->event === 'created')
-                                <div style="font-style: italic; color: var(--slate-400); font-size: 11px;">Initial entry created</div>
+                                <div style="font-style: italic; color: var(--slate-400); font-size: 11px;">{{ __('Initial entry created') }}</div>
                             @else
-                                <div style="font-style: italic; color: var(--danger); font-size: 11px;">Model instance removed</div>
+                                <div style="font-style: italic; color: var(--danger); font-size: 11px;">{{ __('Model instance removed') }}</div>
                             @endif
                         </td>
                         <td style="padding: 16px 20px; color: var(--slate-400); font-weight: 600;">
-                            <div>{{ $log->created_at->format('Y-m-d') }}</div>
+                            <div>{{ $log->created_at->translatedFormat('Y-m-d') }}</div>
                             <div style="font-size: 11px;">{{ $log->created_at->format('H:i:s') }}</div>
                         </td>
                     </tr>

@@ -97,7 +97,7 @@ class EconomyManager extends Component
             'amount' => 0,
             'category' => '',
             'payer_ids' => [],
-            'handling' => 'Autogiro',
+            'handling' => __('Autogiro'),
             'split' => false,
             'delayed' => false,
             'sort_order' => Expense::max('sort_order') + 1,

@@ -34,7 +34,7 @@ class UserList extends Component
         ]);
 
         $this->showCreateModal = false;
-        session()->flash('message', 'User created successfully.');
+        session()->flash('message', __('User created successfully.'));
     }
 
     public function deleteUser($id)
@@ -44,25 +44,25 @@ class UserList extends Component
 
         // Safety: Cannot delete self
         if ($user->id === auth()->id()) {
-            session()->flash('error', 'You cannot delete your own account.');
+            session()->flash('error', __('You cannot delete your own account.'));
             return;
         }
 
         // Safety: Cannot delete the Master User
         if ($user->isMaster()) {
-            session()->flash('error', 'The Master User cannot be deleted.');
+            session()->flash('error', __('The Master User cannot be deleted.'));
             return;
         }
 
         $user->delete();
-        session()->flash('message', 'User deleted successfully.');
+        session()->flash('message', __('User deleted successfully.'));
     }
 
     public function toggleChild($id)
     {
         // Only Master User can toggle child status
         if (!auth()->user()->isMaster()) {
-            session()->flash('error', 'Only the System Master can assign child status.');
+            session()->flash('error', __('Only the System Master can assign child status.'));
             return;
         }
 
@@ -71,15 +71,15 @@ class UserList extends Component
 
         // Cannot make master a child
         if ($user->isMaster()) {
-            session()->flash('error', 'The Master User cannot be tagged as a child.');
+            session()->flash('error', __('The Master User cannot be tagged as a child.'));
             return;
         }
 
         $user->is_child = !$user->is_child;
         $user->save();
 
-        $status = $user->is_child ? 'tagged as a child' : 'removed from children';
-        session()->flash('message', "User {$user->name} has been {$status}.");
+        $status = $user->is_child ? __('tagged as a child') : __('removed from children');
+        session()->flash('message', __('User :name has been :status.', ['name' => $user->name, 'status' => $status]));
     }
 
     public function updateMonthlyGoal($id, $goal)
@@ -92,13 +92,13 @@ class UserList extends Component
         if (!$user) return;
 
         $user->update(['monthly_points_goal' => (int)$goal]);
-        session()->flash('message', "Monthly goal for {$user->name} updated to {$goal} points.");
+        session()->flash('message', __('Monthly goal for :name updated to :goal points.', ['name' => $user->name, 'goal' => $goal]));
     }
 
     public function impersonate($id)
     {
         if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {
-            session()->flash('error', 'Only administrators can impersonate.');
+            session()->flash('error', __('Only administrators can impersonate.'));
             return;
         }
 

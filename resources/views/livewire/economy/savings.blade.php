@@ -2,13 +2,13 @@
     <!-- Header & Summary Card -->
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
         <div>
-            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">Savings</h1>
-            <p style="color: var(--text-muted); font-weight: 600;">Manage your long-term accumulated balances and goals.</p>
+            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">{{ __('Savings') }}</h1>
+            <p style="color: var(--text-muted); font-weight: 600;">{{ __('Manage your long-term accumulated balances and goals.') }}</p>
         </div>
 
         <div class="header-stats">
             <div class="summary-card accent" style="min-width: 180px; padding: 12px 20px;">
-                <p class="summary-label" style="color: rgba(255,255,255,0.7);">Accumulated Savings</p>
+                <p class="summary-label" style="color: rgba(255,255,255,0.7);">{{ __('Accumulated Savings') }}</p>
                 <h2 class="summary-value" style="font-size: 1.5rem;">{{ number_format($this->totalSavings, 0, ',', ' ') }} kr</h2>
             </div>
         </div>
@@ -17,18 +17,18 @@
     <!-- Savings List -->
     <div class="card">
         <div class="card-header">
-            <h3 style="font-weight: 900;">Goals & Locations</h3>
-            <button wire:click="addSavingRow" class="eco-add-btn" title="Add saving">
+            <h3 style="font-weight: 900;">{{ __('Goals & Locations') }}</h3>
+            <button wire:click="addSavingRow" class="eco-add-btn" title="{{ __('Add saving') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
             </button>
         </div>
         <div class="eco-grid-table">
             <div class="eco-grid-header savings-grid">
                 <div style="width: 20px;"></div>
-                <div>Purpose</div>
-                <div>Bank/App</div>
-                <div>Saver</div>
-                <div style="text-align: right;">Amount</div>
+                <div>{{ __('Purpose') }}</div>
+                <div>{{ __('Bank/App') }}</div>
+                <div>{{ __('Saver') }}</div>
+                <div style="text-align: right;">{{ __('Amount') }}</div>
                 <div></div>
             </div>
             <div class="eco-grid-body"
@@ -47,29 +47,29 @@
                     </div>
                     <div class="eco-mobile-stack">
                         <div class="eco-field">
-                            <span class="mobile-label">Purpose</span>
-                            <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="Purpose"
+                            <span class="mobile-label">{{ __('Purpose') }}</span>
+                            <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="{{ __('Purpose') }}"
                                 wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)">
                         </div>
                         <div class="eco-field">
-                            <span class="mobile-label">Bank/App</span>
-                            <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="Bank/App"
+                            <span class="mobile-label">{{ __('Bank/App') }}</span>
+                            <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="{{ __('Bank/App') }}"
                                 wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)">
                         </div>
                     </div>
                     <div class="eco-mobile-stack">
                         <div class="eco-field">
-                            <span class="mobile-label">Saver</span>
+                            <span class="mobile-label">{{ __('Saver') }}</span>
                             <select class="eco-inline-select" style="width: 100%;"
                                 wire:change="updateSaving({{ $saving->id }}, 'saver_id', $event.target.value)">
-                                <option value="" @if(!$saving->saver_id) selected @endif>Saver</option>
+                                <option value="" @if(!$saving->saver_id) selected @endif>{{ __('Saver') }}</option>
                                 @foreach($this->users as $user)
                                     <option value="{{ $user->id }}" @if($saving->saver_id == $user->id) selected @endif>{{ $user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="eco-field">
-                            <span class="mobile-label">Amount</span>
+                            <span class="mobile-label">{{ __('Amount') }}</span>
                             <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
                                 wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
                         </div>
@@ -81,9 +81,10 @@
                     </div>
                 </div>
                 @empty
-                <div style="text-align: center; color: var(--slate-400); padding: 40px; font-size: 13px;">No savings goals recorded yet.</div>
+                <div style="text-align: center; color: var(--slate-400); padding: 40px; font-size: 13px;">{{ __('No savings goals recorded yet.') }}</div>
                 @endforelse
             </div>
         </div>
     </div>
 </div>
+

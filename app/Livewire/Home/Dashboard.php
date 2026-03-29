@@ -52,7 +52,11 @@ class Dashboard extends Component
         }
 
         $this->showQuickAssignModal = false;
-        session()->flash('message', "Chore '{$template->title}' assigned " . ($this->quickAssignCompleteImmediately ? "and completed " : "") . "to {$this->quickAssignUserName}!");
+        session()->flash('message', __("Chore ':title' assigned :status to :name!", [
+            'title' => $template->title,
+            'status' => $this->quickAssignCompleteImmediately ? __('and completed ') : '',
+            'name' => $this->quickAssignUserName
+        ]));
     }
 
     public function render()
