@@ -703,8 +703,29 @@ a {
     grid-template-columns: 32px 200px 1fr 1fr 100px 40px;
 }
 
+.savings-view-grid {
+    grid-template-columns: 1.5fr 1fr 1fr 120px;
+}
+
 .categories-grid {
     grid-template-columns: 32px 12px 120px 100px 40px;
+}
+
+/* ── Frozen Grid Snapshots (History) ── */
+.frozen-income-grid {
+    grid-template-columns: 1fr 120px;
+}
+
+.frozen-savings-grid {
+    grid-template-columns: 1fr 120px;
+}
+
+.frozen-balances-grid {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+}
+
+.frozen-expenses-grid {
+    grid-template-columns: 2fr 1.2fr 1.2fr 1fr;
 }
 
 .eco-grid-body {
@@ -849,7 +870,7 @@ tr:hover {
     color: var(--text-main);
 }
 
-@media (min-width: 769px) {
+@media (min-width: 641px) {
 
     .eco-mobile-stack,
     .eco-mobile-row,
@@ -871,6 +892,10 @@ tr:hover {
 
     .savings-grid {
         grid-template-columns: 32px 1fr 1fr 1fr 120px 40px !important;
+    }
+
+    .savings-view-grid {
+        grid-template-columns: 1.2fr 1fr 1fr 120px !important;
     }
 
     .categories-grid {
@@ -929,7 +954,8 @@ tr:hover {
     /* Keep Categories, Income, and Savings as horizontal grids */
     .categories-grid.eco-grid-row,
     .income-grid.eco-grid-row,
-    .savings-grid.eco-grid-row {
+    .savings-grid.eco-grid-row,
+    .savings-view-grid.eco-grid-row {
         display: grid !important;
         gap: 8px !important;
         padding: 12px 16px !important;
@@ -938,6 +964,12 @@ tr:hover {
         border-bottom: 1px solid var(--border-color) !important;
         /* Visual separator */
         background: var(--bg-card) !important;
+    }
+    
+    .savings-view-grid {
+        grid-template-columns: 1.2fr 1fr !important; /* 2-Column Hybrid Stack */
+        gap: 12px 16px !important;
+        align-items: flex-start !important;
     }
 
     .income-grid {
@@ -950,6 +982,25 @@ tr:hover {
 
     .categories-grid {
         grid-template-columns: 32px 12px 1fr 70px 40px !important;
+    }
+
+    /* Frozen Grids Mobile */
+    .frozen-income-grid,
+    .frozen-savings-grid {
+        grid-template-columns: 1fr 100px !important;
+        gap: 12px !important;
+    }
+
+    .frozen-balances-grid {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr !important;
+        font-size: 11px !important;
+        gap: 8px !important;
+    }
+
+    .frozen-expenses-grid {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr !important;
+        font-size: 11px !important;
+        gap: 8px !important;
     }
 
     .eco-grid-row:hover {
@@ -1916,7 +1967,7 @@ tr:hover {
     flex-wrap: wrap;
     justify-content: flex-end;
     flex: 1;
-    min-width: 300px;
+    min-width: 0; /* Let it shrink on tablets */
 }
 
 .flex-cards {
@@ -2145,5 +2196,175 @@ input:checked + .slider:before {
     .manager-actions-row button.btn {
         width: 100% !important;
         justify-content: space-between !important;
+    }
+}
+
+/* ── View Mode Overrides ── */
+@media (min-width: 769px) {
+    .eco-grid-table.view-mode .income-grid {
+        grid-template-columns: 12px 1fr 1fr 120px !important;
+    }
+    .eco-grid-table.view-mode .savings-grid.savings-view-grid {
+        grid-template-columns: 1.5fr 1fr 1fr 120px !important;
+    }
+    
+    /* Dashboard Specific View: Force hybrid stack even on desktop */
+    .eco-grid-table.view-mode .savings-grid.dashboard-view-grid {
+        grid-template-columns: 1.2fr 1fr !important;
+        gap: 12px 16px !important;
+        align-items: flex-start !important;
+    }
+    
+    /* Unified Dashboard Editor Grid (7 Columns) */
+    .dashboard-edit-grid {
+        display: grid !important;
+        grid-template-columns: 32px 12px 1.2fr 1fr 1fr 120px 40px !important;
+        gap: 8px 12px !important;
+        align-items: center !important;
+    }
+    .eco-grid-table.view-mode .categories-grid {
+        grid-template-columns: 12px 1fr 120px !important;
+    }
+    .eco-grid-table.view-mode .expenses-grid {
+        grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr 120px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .eco-grid-table.view-mode .income-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    
+    .eco-grid-table.view-mode .savings-grid.savings-view-grid {
+        grid-template-columns: 1.2fr 1fr !important; /* 2-Column Hybrid Stack */
+        gap: 12px 16px !important;
+        align-items: flex-start !important;
+    }
+    .eco-grid-table.view-mode .categories-grid {
+        grid-template-columns: 12px 1fr 80px !important;
+    }
+    /* Center the last column vertically and right-align its entire content on mobile */
+    .eco-grid-table.view-mode .eco-grid-row > *:last-child {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+        text-align: right !important;
+        min-width: 0 !important; /* Allow children to truncate */
+    }
+
+    /* Support for stacked fields (like Saver/Amount), ensuring labels and values also align right */
+    .eco-grid-table.view-mode .eco-grid-row > *:last-child .eco-field {
+        align-items: flex-end !important;
+        text-align: right !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* Truncate long names/text with ellipsis in View mode to keep layout clean */
+    .eco-grid-table.view-mode .eco-field span {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* ── Economy Card View (View Mode) ── */
+@media (max-width: 640px) {
+    .mobile-grid-only { display: block !important; }
+    .desktop-grid-only { display: none !important; }
+    .eco-grid-table.view-mode .expenses-grid.eco-grid-row {
+        display: block !important;
+        padding: 16px !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        background: var(--bg-card) !important;
+    }
+
+    .expense-view-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 4px !important;
+    }
+
+    .expense-view-name {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: var(--text-base) !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .expense-view-amount {
+        font-size: 1.15rem !important;
+        font-weight: 900 !important;
+        color: var(--danger) !important;
+        margin-left: 16px !important;
+        font-family: var(--font-heading) !important;
+    }
+
+    .expense-view-category {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: var(--text-muted) !important;
+        margin-bottom: 16px !important;
+    }
+
+    .expense-view-details {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 16px !important;
+    }
+
+
+    .expense-detail-item {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        min-width: 0 !important;
+    }
+
+    .expense-detail-label {
+        font-size: 9px !important;
+        font-weight: 800 !important;
+        color: var(--text-muted) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+    }
+
+    .expense-detail-value {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: var(--text-base) !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* ── Defensive Grid Hiding (No-Mistake Fix) ── */
+.force-desktop-grid {
+    display: contents; /* Transparent to layout on desktop */
+}
+
+@media (max-width: 768px) {
+    .force-desktop-grid {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
     }
 }

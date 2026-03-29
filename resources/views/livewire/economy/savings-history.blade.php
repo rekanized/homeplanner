@@ -18,10 +18,10 @@
         </div>
     @endif
 
-    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start;">
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: start;">
         
         <!-- Sidebar: Snapshot List -->
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="flex: 0 0 320px; min-width: 0; width: 100%; display: flex; flex-direction: column; gap: 12px;">
             <h3 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ __('Snapshots') }}</h3>
             @forelse($this->snapshots as $snapshot)
             <div wire:click="selectSnapshot({{ $snapshot->id }})" 
@@ -58,17 +58,17 @@
         </div>
 
         <!-- Main Content: Frozen View -->
-        <div style="min-height: 400px;">
+        <div style="flex: 1 1 500px; min-width: 0;">
             @if($this->selectedSnapshot)
             <div class="animate-in">
-                <div style="margin-bottom: 24px; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; overflow: hidden;">
+                <div style="margin-bottom: 24px; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; overflow: hidden;">
                     <div>
                         <span class="badge badge-soft" style="background: var(--primary-soft); color: var(--primary); font-weight: 800;">{{ __('SAVINGS ARCHIVE') }}</span>
                         <h2 style="font-size: 1.75rem; font-weight: 900; margin-top: 8px;">{{ ucfirst(\Carbon\Carbon::createFromDate($this->selectedSnapshot->year, $this->selectedSnapshot->month, 1)->translatedFormat('F')) }} {{ $this->selectedSnapshot->year }}</h2>
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">{{ __('Recorded on') }} {{ $this->selectedSnapshot->created_at->translatedFormat('j M Y \k\l. H:i') }}</p>
                     </div>
                     
-                    <div style="text-align: right;">
+                    <div style="text-align: right; flex: 1; min-width: 200px;">
                         <p style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ __('Total Accumulated') }}</p>
                         <h3 style="font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: -0.02em;">{{ number_format($this->selectedSnapshot->total_amount, 0, ',', ' ') }} <span style="font-size: 1.25rem; opacity: 0.7;">kr</span></h3>
                     </div>
@@ -82,7 +82,7 @@
                             <h3 style="font-weight: 900;">{{ __('Accumulated Balances Snapshot') }}</h3>
                         </div>
                         <div class="eco-grid-table">
-                            <div class="eco-grid-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; padding: 12px 20px; border-top: 1px solid var(--border-color); font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                            <div class="eco-grid-header frozen-balances-grid" style="border-top: 1px solid var(--border-color);">
                                 <div>{{ __('Name') }}</div>
                                 <div>{{ __('Location') }}</div>
                                 <div>{{ __('Saver') }}</div>
@@ -90,14 +90,26 @@
                             </div>
                             <div class="eco-grid-body">
                                 @foreach($this->selectedSnapshot->snapshot_data as $bal)
-                                <div class="eco-grid-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
-                                    <div style="font-weight: 700; color: var(--text-main);">{{ $bal['name'] }}</div>
-                                    <div style="color: var(--text-muted);">{{ $bal['location'] ?? '—' }}</div>
-                                    <div style="color: var(--text-muted);">
-                                        @php $saver = collect($this->users)->firstWhere('id', $bal['saver_id']); @endphp
-                                        {{ $saver ? $saver->name : '—' }}
+                                <div class="eco-grid-row frozen-balances-grid" style="padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
+                                    <div class="eco-field">
+                                        <span class="mobile-label">{{ __('Name') }}</span>
+                                        <div style="font-weight: 700; color: var(--text-main);">{{ $bal['name'] }}</div>
                                     </div>
-                                    <div style="text-align: right; font-weight: 800; color: var(--primary); font-family: var(--font-heading);">{{ number_format($bal['amount'], 0, ',', ' ') }} {{ __("kr") }}</div>
+                                    <div class="eco-field">
+                                        <span class="mobile-label">{{ __('Location') }}</span>
+                                        <div style="color: var(--text-muted);">{{ $bal['location'] ?? '—' }}</div>
+                                    </div>
+                                    <div class="eco-field">
+                                        <span class="mobile-label">{{ __('Saver') }}</span>
+                                        <div style="color: var(--text-muted);">
+                                            @php $saver = collect($this->users)->firstWhere('id', $bal['saver_id']); @endphp
+                                            {{ $saver ? $saver->name : '—' }}
+                                        </div>
+                                    </div>
+                                    <div class="eco-field" style="text-align: right;">
+                                        <span class="mobile-label">{{ __('Amount') }}</span>
+                                        <div style="font-weight: 800; color: var(--primary); font-family: var(--font-heading);">{{ number_format($bal['amount'], 0, ',', ' ') }} {{ __("kr") }}</div>
+                                    </div>
                                 </div>
                                 @endforeach
                             </div>

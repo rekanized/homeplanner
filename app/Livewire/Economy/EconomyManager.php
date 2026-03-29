@@ -12,6 +12,13 @@ use Livewire\Attributes\Computed;
 
 class EconomyManager extends Component
 {
+    public bool $isEditing = false;
+
+    public function toggleEditMode()
+    {
+        $this->isEditing = !$this->isEditing;
+    }
+
     #[Computed]
     public function users()
     {
