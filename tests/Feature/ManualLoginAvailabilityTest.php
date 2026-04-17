@@ -27,6 +27,7 @@ class ManualLoginAvailabilityTest extends TestCase
         $response->assertSee('Sign in with Google');
         $response->assertSee('Email Address');
         $response->assertSee('Password');
+        $response->assertSee('Keep me signed in');
         $response->assertSee('Sign In');
     }
 
@@ -44,6 +45,7 @@ class ManualLoginAvailabilityTest extends TestCase
         $response->assertDontSee('Sign in with Google');
         $response->assertSee('Email Address');
         $response->assertSee('Password');
+        $response->assertSee('Keep me signed in');
         $response->assertSee('Sign In');
     }
 
@@ -61,5 +63,42 @@ class ManualLoginAvailabilityTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_manual_login_sets_remember_token_by_default(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'remembered@example.com',
+            'password' => bcrypt('password123'),
+            'remember_token' => null,
+        ]);
+
+        Livewire::test(Login::class)
+            ->set('email', 'remembered@example.com')
+            ->set('password', 'password123')
+            ->call('login')
+            ->assertRedirect('/');
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->fresh()->remember_token);
+    }
+
+    public function test_manual_login_can_skip_persistent_login(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'session-only@example.com',
+            'password' => bcrypt('password123'),
+            'remember_token' => null,
+        ]);
+
+        Livewire::test(Login::class)
+            ->set('email', 'session-only@example.com')
+            ->set('password', 'password123')
+            ->set('remember', false)
+            ->call('login')
+            ->assertRedirect('/');
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNull($user->fresh()->remember_token);
     }
 }

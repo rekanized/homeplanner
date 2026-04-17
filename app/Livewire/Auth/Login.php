@@ -12,6 +12,7 @@ class Login extends Component
 {
     public $email = '';
     public $password = '';
+    public $remember = true;
     public $authMode = 'manual';
 
     public function mount()
@@ -38,7 +39,7 @@ class Login extends Component
             return;
         }
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($throttleKey);
             session()->regenerate();
             return redirect()->intended('/');

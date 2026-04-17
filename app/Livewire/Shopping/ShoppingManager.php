@@ -127,6 +127,21 @@ class ShoppingManager extends Component
         }
     }
 
+    public function clearCheckedItems()
+    {
+        if (!$this->activeListId) {
+            return;
+        }
+
+        $deletedCount = ShoppingItem::where('shopping_list_id', $this->activeListId)
+            ->where('is_checked', true)
+            ->delete();
+
+        if ($deletedCount > 0) {
+            session()->flash('message', __('Checked items removed.'));
+        }
+    }
+
 
 
     public function handleReorder($type, $ids)

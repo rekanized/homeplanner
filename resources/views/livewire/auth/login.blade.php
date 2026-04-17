@@ -33,6 +33,10 @@
                 <input type="password" wire:model="password" placeholder="••••••••">
                 @error('password') <span class="error">{{ $message }}</span> @enderror
             </div>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; cursor: pointer;">
+                <input type="checkbox" wire:model="remember">
+                <span>{{ __('Keep me signed in') }}</span>
+            </label>
             <div class="setup-actions">
                 <button type="submit" class="btn-primary" style="flex: 1;">{{ __('Sign In') }}</button>
             </div>

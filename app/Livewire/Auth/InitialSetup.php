@@ -48,7 +48,8 @@ class InitialSetup extends Component
             'is_admin' => true,
         ]);
 
-        Auth::login($user);
+        Auth::login($user, true);
+        session()->regenerate();
 
         return redirect()->to('/');
     }

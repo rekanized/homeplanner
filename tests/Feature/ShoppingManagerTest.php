@@ -58,6 +58,35 @@ class ShoppingManagerTest extends TestCase
         $this->assertTrue($item->refresh()->is_checked);
     }
 
+    public function test_can_clear_checked_items_from_active_list()
+    {
+        $activeList = ShoppingList::factory()->create();
+        $otherList = ShoppingList::factory()->create();
+
+        $checkedItem = ShoppingItem::factory()->create([
+            'shopping_list_id' => $activeList->id,
+            'is_checked' => true,
+        ]);
+        $uncheckedItem = ShoppingItem::factory()->create([
+            'shopping_list_id' => $activeList->id,
+            'is_checked' => false,
+        ]);
+        $otherListCheckedItem = ShoppingItem::factory()->create([
+            'shopping_list_id' => $otherList->id,
+            'is_checked' => true,
+        ]);
+
+        Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Shopping\ShoppingManager::class)
+            ->set('activeListId', $activeList->id)
+            ->call('clearCheckedItems')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('shopping_items', ['id' => $checkedItem->id]);
+        $this->assertDatabaseHas('shopping_items', ['id' => $uncheckedItem->id]);
+        $this->assertDatabaseHas('shopping_items', ['id' => $otherListCheckedItem->id]);
+    }
+
 
     public function test_can_reorder_items()
     {
