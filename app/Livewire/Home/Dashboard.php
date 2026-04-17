@@ -93,6 +93,35 @@ class Dashboard extends Component
             $currentDate->addDay();
         }
 
+        $weeklyProductivity = collect($chartPoints)
+            ->groupBy(function (array $point) {
+                return Carbon::parse($point['date'])->startOfWeek(Carbon::MONDAY)->toDateString();
+            })
+            ->map(function ($points, string $weekStart) {
+                $weekStartDate = Carbon::parse($weekStart);
+                $count = $points->sum('count');
+
+                return [
+                    'week_start' => $weekStartDate->toDateString(),
+                    'label' => ucfirst($weekStartDate->translatedFormat('d M')),
+                    'short_label' => strtoupper($weekStartDate->translatedFormat('M')),
+                    'count' => $count,
+                    'is_current_week' => $weekStartDate->isSameWeek(now()),
+                ];
+            })
+            ->values();
+
+        $maxWeeklyCompleted = max(1, $weeklyProductivity->max('count'));
+        $weeklyProductivity = $weeklyProductivity->map(function (array $week) use ($maxWeeklyCompleted) {
+            $week['height_percent'] = $week['count'] > 0
+                ? max(10, (int) round(($week['count'] / $maxWeeklyCompleted) * 100))
+                : 4;
+
+            return $week;
+        });
+
+        $averageWeeklyCompleted = (int) round($weeklyProductivity->avg('count'));
+
         return view('livewire.home.dashboard', [
             'totalIncome' => $totalIncome,
             'totalSavings' => $totalSavings,
@@ -102,6 +131,9 @@ class Dashboard extends Component
             'todoItemsOverdue' => $todoItemsOverdue,
             'chartPoints' => $chartPoints,
             'totalCompleted' => array_sum(array_column($chartPoints, 'count')),
+            'weeklyProductivity' => $weeklyProductivity,
+            'maxWeeklyCompleted' => $maxWeeklyCompleted,
+            'averageWeeklyCompleted' => $averageWeeklyCompleted,
             'economyEnabled' => filter_var(\App\Models\Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'shoppingEnabled' => filter_var(\App\Models\Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'todoEnabled' => filter_var(\App\Models\Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),

@@ -72,71 +72,70 @@
         @if($todoEnabled)
         <!-- Task Productivity Chart -->
         <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px;">
-            <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
+            <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%); gap: 20px; flex-wrap: wrap;">
                 <div>
                     <h3 style="font-size: 18px; font-weight: 900;">{{ __('Task Productivity') }}</h3>
                     <p style="font-size: 11px; color: var(--text-muted);">{{ __('Completed tasks over the last 3 months') }}</p>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 18px; font-weight: 900; color: var(--success);">{{ $totalCompleted }}</div>
-                    <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">{{ __('Total Done') }}</div>
+                <div style="display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto;">
+                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                        <div style="font-size: 18px; font-weight: 900; color: var(--success); line-height: 1;">{{ $totalCompleted }}</div>
+                        <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Total Done') }}</div>
+                    </div>
+                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                        <div style="font-size: 18px; font-weight: 900; color: var(--primary); line-height: 1;">{{ $maxWeeklyCompleted }}</div>
+                        <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Peak Week') }}</div>
+                    </div>
+                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                        <div style="font-size: 18px; font-weight: 900; color: var(--text-main); line-height: 1;">{{ $averageWeeklyCompleted }}</div>
+                        <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Avg / Week') }}</div>
+                    </div>
+                    <div style="align-self: center; padding: 8px 12px; border-radius: 999px; background: rgba(22, 163, 74, 0.08); color: var(--success); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;">
+                        {{ __('Weekly View') }}
+                    </div>
                 </div>
             </div>
-            <div style="padding: var(--space-8) 0 0 0; height: 320px; background: var(--bg-input); display: flex; flex-direction: column; position: relative;">
-                @php
-                    $maxCount = max(array_column($chartPoints, 'count')) ?: 1;
-                    $width = 1000;
-                    $height = 200;
-                    $pointCount = count($chartPoints);
-                    $stepX = $pointCount > 1 ? $width / ($pointCount - 1) : 0;
-                    
-                    $path = "";
-                    foreach($chartPoints as $i => $point) {
-                        $x = $i * $stepX;
-                        // Invert Y because SVG coordinates start from top
-                        $y = $height - ($point['count'] / $maxCount * $height);
-                        $path .= ($i === 0 ? "M" : " L") . " $x,$y";
-                    }
-                    $fillPath = $path . " L $width,$height L 0,$height Z";
-                    
-                    // Generate month labels
-                    $months = [];
-                    foreach($chartPoints as $i => $point) {
-                        $d = \Carbon\Carbon::parse($point['date']);
-                        if ($d->day === 1) {
-                            $months[] = [
-                                'label' => ucfirst($d->translatedFormat('M')),
-                                'x' => ($i / ($pointCount - 1)) * 100
-                            ];
-                        }
-                    }
-                @endphp
-                
-                <div style="flex: 1; position: relative; padding: 0 var(--space-12);">
-                    <svg viewBox="0 0 {{ $width }} {{ $height }}" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; overflow: visible;">
-                        <defs>
-                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="var(--success)" stop-opacity="0.3" />
-                                <stop offset="100%" stop-color="var(--success)" stop-opacity="0" />
-                            </linearGradient>
-                        </defs>
-                        
-                        <!-- Fill AREA -->
-                        <path d="{{ $fillPath }}" fill="url(#chartGradient)" />
-                        
-                        <!-- LINE -->
-                        <path d="{{ $path }}" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(22, 163, 74, 0.2));" />
-                    </svg>
+            <div style="padding: var(--space-8); min-height: 320px; background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, var(--bg-input) 100%); display: flex; flex-direction: column; gap: 18px; position: relative;">
+                <div style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; flex: 1; min-height: 0;">
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: 6px 0 2px; color: var(--text-muted); font-size: 10px; font-weight: 800; text-transform: uppercase;">
+                        <span>{{ $maxWeeklyCompleted }}</span>
+                        <span>{{ max(1, (int) ceil($maxWeeklyCompleted / 2)) }}</span>
+                        <span>0</span>
+                    </div>
+
+                    <div style="position: relative; min-height: 220px; border-radius: 24px; border: 1px solid rgba(148, 163, 184, 0.18); background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%); padding: 18px 18px 14px; overflow: hidden;">
+                        <div style="position: absolute; inset: 18px 18px 42px; display: grid; grid-template-rows: repeat(3, 1fr); pointer-events: none;">
+                            <div style="border-top: 1px dashed rgba(148, 163, 184, 0.35);"></div>
+                            <div style="border-top: 1px dashed rgba(148, 163, 184, 0.28);"></div>
+                            <div style="border-top: 1px dashed rgba(148, 163, 184, 0.22);"></div>
+                        </div>
+
+                        <div style="position: relative; z-index: 1; height: 100%; display: grid; grid-template-columns: repeat({{ max($weeklyProductivity->count(), 1) }}, minmax(0, 1fr)); gap: 10px; align-items: end;">
+                            @foreach($weeklyProductivity as $week)
+                                <div style="height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 10px; min-width: 0;">
+                                    <div style="font-size: 11px; font-weight: 900; color: {{ $week['count'] > 0 ? 'var(--success)' : 'var(--text-muted)' }}; min-height: 16px; line-height: 1;">{{ $week['count'] > 0 ? $week['count'] : '' }}</div>
+                                    <div style="position: relative; width: 100%; flex: 1; display: flex; align-items: end;">
+                                        <div style="position: absolute; inset: 0; border-radius: 18px 18px 10px 10px; background: rgba(148, 163, 184, 0.08);"></div>
+                                        <div style="position: relative; width: 100%; height: {{ $week['height_percent'] }}%; min-height: {{ $week['count'] > 0 ? '16px' : '4px' }}; border-radius: 18px 18px 10px 10px; background: {{ $week['is_current_week'] ? 'linear-gradient(180deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 1) 100%)' : 'linear-gradient(180deg, rgba(74, 222, 128, 0.92) 0%, rgba(22, 163, 74, 1) 100%)' }}; box-shadow: {{ $week['count'] > 0 ? ($week['is_current_week'] ? '0 12px 24px -18px rgba(37, 99, 235, 0.9)' : '0 12px 24px -18px rgba(22, 163, 74, 0.95)') : 'none' }}; border: 1px solid {{ $week['is_current_week'] ? 'rgba(37, 99, 235, 0.28)' : 'rgba(22, 163, 74, 0.16)' }};"></div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1; min-height: 28px;">
+                                        <span style="font-size: 9px; font-weight: 900; color: {{ $week['is_current_week'] ? 'var(--primary)' : 'var(--text-muted)' }}; text-transform: uppercase; letter-spacing: 0.08em;">{{ $week['short_label'] }}</span>
+                                        <span style="font-size: 10px; font-weight: 700; color: var(--text-main); opacity: 0.7;">{{ \Carbon\Carbon::parse($week['week_start'])->format('d') }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- X-Axis Labels -->
-                <div style="height: 40px; border-top: 1px solid var(--border-color); margin-top: var(--space-4); padding: 0 var(--space-12);">
-                    <div style="position: relative; width: 100%; height: 100%;">
-                        @foreach($months as $index => $month)
-                            <div style="position: absolute; left: {{ $month['x'] }}%; transform: {{ $index === 0 ? 'none' : ($index === count($months) - 1 ? 'translateX(-100%)' : 'translateX(-50%)') }}; top: 10px; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; white-space: nowrap;">
-                                {{ $month['label'] }}
-                            </div>
-                        @endforeach
+
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--success);"></span>
+                        {{ __('Weekly completed tasks') }}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--primary);"></span>
+                        {{ __('Current week') }}
                     </div>
                 </div>
             </div>
