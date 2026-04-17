@@ -72,72 +72,80 @@
         @if($todoEnabled)
         <!-- Task Productivity Chart -->
         <div class="card" style="padding: 0; overflow: hidden; border-radius: 28px;">
-            <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%); gap: 20px; flex-wrap: wrap;">
+            <div class="task-productivity-header" style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%); gap: 20px; flex-wrap: wrap;">
                 <div>
                     <h3 style="font-size: 18px; font-weight: 900;">{{ __('Task Productivity') }}</h3>
                     <p style="font-size: 11px; color: var(--text-muted);">{{ __('Completed tasks over the last 3 months') }}</p>
                 </div>
-                <div style="display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto;">
-                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                <div class="task-productivity-summary" style="display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto;">
+                    <div class="task-productivity-pill" style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
                         <div style="font-size: 18px; font-weight: 900; color: var(--success); line-height: 1;">{{ $totalCompleted }}</div>
                         <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Total Done') }}</div>
                     </div>
-                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                    <div class="task-productivity-pill" style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
                         <div style="font-size: 18px; font-weight: 900; color: var(--primary); line-height: 1;">{{ $maxWeeklyCompleted }}</div>
                         <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Peak Week') }}</div>
                     </div>
-                    <div style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
+                    <div class="task-productivity-pill" style="min-width: 88px; padding: 10px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: right; box-shadow: var(--shadow-sm);">
                         <div style="font-size: 18px; font-weight: 900; color: var(--text-main); line-height: 1;">{{ $averageWeeklyCompleted }}</div>
                         <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 6px;">{{ __('Avg / Week') }}</div>
                     </div>
-                    <div style="align-self: center; padding: 8px 12px; border-radius: 999px; background: rgba(22, 163, 74, 0.08); color: var(--success); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <div class="task-productivity-tag" style="align-self: center; padding: 8px 12px; border-radius: 999px; background: rgba(22, 163, 74, 0.08); color: var(--success); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;">
                         {{ __('Weekly View') }}
                     </div>
                 </div>
             </div>
-            <div style="padding: var(--space-8); min-height: 320px; background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, var(--bg-input) 100%); display: flex; flex-direction: column; gap: 18px; position: relative;">
-                <div style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; flex: 1; min-height: 0;">
-                    <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: 6px 0 2px; color: var(--text-muted); font-size: 10px; font-weight: 800; text-transform: uppercase;">
+            <div class="task-productivity-body" style="padding: var(--space-8); min-height: 320px; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-input) 100%); display: flex; flex-direction: column; gap: 18px; position: relative;">
+                <div class="task-productivity-chart-shell" style="display: grid; grid-template-columns: 44px 1fr; gap: 14px; flex: 1; min-height: 0;">
+                    <div class="task-productivity-scale" style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: 6px 0 2px; color: var(--text-muted); font-size: 10px; font-weight: 800; text-transform: uppercase;">
                         <span>{{ $maxWeeklyCompleted }}</span>
                         <span>{{ max(1, (int) ceil($maxWeeklyCompleted / 2)) }}</span>
                         <span>0</span>
                     </div>
 
-                    <div style="position: relative; min-height: 220px; border-radius: 24px; border: 1px solid rgba(148, 163, 184, 0.18); background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%); padding: 18px 18px 14px; overflow: hidden;">
-                        <div style="position: absolute; inset: 18px 18px 42px; display: grid; grid-template-rows: repeat(3, 1fr); pointer-events: none;">
+                    <div class="task-productivity-frame">
+                        <div class="task-productivity-plot" style="position: relative; min-height: 220px; border-radius: 24px; border: 1px solid rgba(148, 163, 184, 0.18); background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-input) 100%); padding: 18px 18px 14px; overflow: hidden;">
+                        <div class="task-productivity-grid" style="position: absolute; inset: 18px 18px 18px; display: grid; grid-template-rows: repeat(3, 1fr); pointer-events: none;">
                             <div style="border-top: 1px dashed rgba(148, 163, 184, 0.35);"></div>
                             <div style="border-top: 1px dashed rgba(148, 163, 184, 0.28);"></div>
                             <div style="border-top: 1px dashed rgba(148, 163, 184, 0.22);"></div>
                         </div>
 
-                        <div style="position: relative; z-index: 1; height: 100%; display: grid; grid-template-columns: repeat({{ max($weeklyProductivity->count(), 1) }}, minmax(0, 1fr)); gap: 10px; align-items: end;">
+                        <div class="task-productivity-bars" style="position: relative; z-index: 1; height: 100%; display: grid; grid-template-columns: repeat({{ max($weeklyProductivity->count(), 1) }}, minmax(0, 1fr)); gap: 10px; align-items: end; min-width: 0; width: 100%;">
                             @foreach($weeklyProductivity as $week)
-                                <div style="height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 10px; min-width: 0;">
-                                    <div style="font-size: 11px; font-weight: 900; color: {{ $week['count'] > 0 ? 'var(--success)' : 'var(--text-muted)' }}; min-height: 16px; line-height: 1;">{{ $week['count'] > 0 ? $week['count'] : '' }}</div>
-                                    <div style="position: relative; width: 100%; flex: 1; display: flex; align-items: end;">
+                                <div class="task-productivity-week" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 10px; min-width: 0;">
+                                    <div class="task-productivity-value" style="font-size: 11px; font-weight: 900; color: {{ $week['count'] > 0 ? 'var(--success)' : 'var(--text-muted)' }}; min-height: 16px; line-height: 1;">{{ $week['count'] > 0 ? $week['count'] : '' }}</div>
+                                    <div class="task-productivity-bar-track" style="position: relative; width: 100%; flex: 1; display: flex; align-items: end;">
                                         <div style="position: absolute; inset: 0; border-radius: 18px 18px 10px 10px; background: rgba(148, 163, 184, 0.08);"></div>
                                         <div style="position: relative; width: 100%; height: {{ $week['height_percent'] }}%; min-height: {{ $week['count'] > 0 ? '16px' : '4px' }}; border-radius: 18px 18px 10px 10px; background: {{ $week['is_current_week'] ? 'linear-gradient(180deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 1) 100%)' : 'linear-gradient(180deg, rgba(74, 222, 128, 0.92) 0%, rgba(22, 163, 74, 1) 100%)' }}; box-shadow: {{ $week['count'] > 0 ? ($week['is_current_week'] ? '0 12px 24px -18px rgba(37, 99, 235, 0.9)' : '0 12px 24px -18px rgba(22, 163, 74, 0.95)') : 'none' }}; border: 1px solid {{ $week['is_current_week'] ? 'rgba(37, 99, 235, 0.28)' : 'rgba(22, 163, 74, 0.16)' }};"></div>
-                                    </div>
-                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1; min-height: 28px;">
-                                        <span style="font-size: 9px; font-weight: 900; color: {{ $week['is_current_week'] ? 'var(--primary)' : 'var(--text-muted)' }}; text-transform: uppercase; letter-spacing: 0.08em;">{{ $week['short_label'] }}</span>
-                                        <span style="font-size: 10px; font-weight: 700; color: var(--text-main); opacity: 0.7;">{{ \Carbon\Carbon::parse($week['week_start'])->format('d') }}</span>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
+                    @php
+                        $axisIndices = collect([0, (int) floor((max($weeklyProductivity->count(), 1) - 1) / 2), max($weeklyProductivity->count(), 1) - 1])
+                            ->unique()
+                            ->values();
+                    @endphp
+                    <div class="task-productivity-axis" style="position: relative; height: 28px; margin-top: 10px; min-width: 0; width: 100%;">
+                        @foreach($axisIndices as $axisIndex)
+                            @php
+                                $axisWeek = $weeklyProductivity[$axisIndex];
+                                $leftPercent = $weeklyProductivity->count() > 1
+                                    ? ($axisIndex / ($weeklyProductivity->count() - 1)) * 100
+                                    : 0;
+                                $translate = $loop->first ? '0' : ($loop->last ? '-100%' : '-50%');
+                            @endphp
+                            <div class="task-productivity-axis-label" style="position: absolute; left: {{ $leftPercent }}%; transform: translateX({{ $translate }}); display: inline-flex; flex-direction: column; align-items: center; line-height: 1.05; max-width: 64px; text-align: center;">
+                                <span class="task-productivity-axis-month" style="font-size: 8px; font-weight: 900; color: {{ $axisWeek['is_current_week'] ? 'var(--primary)' : 'var(--text-muted)' }}; text-transform: uppercase; letter-spacing: 0.06em;">{{ $axisWeek['short_label'] }}</span>
+                                <span class="task-productivity-axis-day" style="font-size: 10px; font-weight: 800; color: var(--text-main); opacity: 0.72;">{{ \Carbon\Carbon::parse($axisWeek['week_start'])->format('d') }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                    </div>
                 </div>
 
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
-                    <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--success);"></span>
-                        {{ __('Weekly completed tasks') }}
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--primary);"></span>
-                        {{ __('Current week') }}
-                    </div>
-                </div>
             </div>
         </div>
         @endif
@@ -266,6 +274,147 @@
         }
         .template-card-btn:active {
             transform: translateY(0);
+        }
+
+        .task-productivity-frame {
+            min-width: 0;
+        }
+
+        .task-productivity-header {
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%) !important;
+        }
+
+        .task-productivity-body {
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-input) 100%) !important;
+        }
+
+        .task-productivity-plot {
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(37, 99, 235, 0) 100%) !important;
+            border-color: rgba(148, 163, 184, 0.18) !important;
+        }
+
+        .task-productivity-axis-label {
+            max-width: 100%;
+        }
+
+        .task-productivity-axis-month,
+        .task-productivity-axis-day {
+            display: block;
+            max-width: 100%;
+        }
+
+        html.dark .task-productivity-header {
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.02) 100%) !important;
+        }
+
+        html.dark .task-productivity-body {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.92) 100%) !important;
+        }
+
+        html.dark .task-productivity-pill {
+            background: rgba(15, 23, 42, 0.42) !important;
+            border-color: rgba(148, 163, 184, 0.14) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), var(--shadow-sm) !important;
+        }
+
+        html.dark .task-productivity-tag {
+            background: rgba(22, 163, 74, 0.14) !important;
+        }
+
+        html.dark .task-productivity-plot {
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.18) 0%, rgba(15, 23, 42, 0.18) 100%) !important;
+            border-color: rgba(148, 163, 184, 0.12) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+
+        @media (max-width: 640px) {
+            .task-productivity-header {
+                padding: 20px;
+                align-items: stretch !important;
+            }
+
+            .task-productivity-summary {
+                width: 100%;
+                margin-left: 0 !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .task-productivity-pill {
+                min-width: 0 !important;
+                text-align: center !important;
+                padding: 12px 10px !important;
+            }
+
+            .task-productivity-tag {
+                grid-column: 1 / -1;
+                justify-self: center;
+            }
+
+            .task-productivity-body {
+                padding: 20px 14px 16px !important;
+                gap: 14px !important;
+            }
+
+            .task-productivity-chart-shell {
+                grid-template-columns: 24px 1fr !important;
+                gap: 8px !important;
+            }
+
+            .task-productivity-scale {
+                font-size: 9px !important;
+                padding-top: 8px !important;
+            }
+
+            .task-productivity-frame {
+                overflow: hidden;
+            }
+
+            .task-productivity-plot {
+                min-height: 196px !important;
+                padding: 12px 8px 10px !important;
+                min-width: 0;
+            }
+
+            .task-productivity-grid {
+                inset: 12px 8px 12px !important;
+            }
+
+            .task-productivity-bars {
+                gap: 4px !important;
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+
+            .task-productivity-week {
+                gap: 6px !important;
+            }
+
+            .task-productivity-value {
+                font-size: 9px !important;
+                min-height: 12px !important;
+            }
+
+            .task-productivity-bar-track {
+                min-height: 118px;
+            }
+
+            .task-productivity-axis {
+                height: 18px !important;
+                margin-top: 8px !important;
+            }
+
+            .task-productivity-axis-month {
+                display: none !important;
+            }
+
+            .task-productivity-axis-day {
+                font-size: 8px !important;
+                line-height: 1 !important;
+            }
+
         }
     </style>
     @endif
