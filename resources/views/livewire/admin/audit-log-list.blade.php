@@ -87,9 +87,11 @@
         </div>
 
         @if($logs->hasPages())
-            <div style="padding: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; background: var(--bg-main); border-radius: 0 0 24px 24px;">
-                {{ $logs->links('livewire.partials.custom-pagination') }}
-            </div>
+            @include('livewire.partials.pagination-toolbar', [
+                'paginator' => $logs,
+                'perPageOptions' => $this->perPageOptions(),
+                'perPageBinding' => 'perPage',
+            ])
         @endif
     </div>
 </div>
