@@ -36,7 +36,7 @@ class EconomySnapshotService
             $totalMonthlySavings = Saving::sum('amount');
             $totalAccumulatedSavings = SavingsBalance::sum('amount');
 
-            return EconomySnapshot::create([
+            $snapshot = EconomySnapshot::create([
                 'month' => $month,
                 'year' => $year,
                 'snapshot_data' => $data,
@@ -44,6 +44,10 @@ class EconomySnapshotService
                 'total_expenses' => $totalExpenses,
                 'total_savings' => $totalMonthlySavings, // Keeping this as monthly for backward compat/summary
             ]);
+
+            Expense::where('one_time_fee', true)->delete();
+
+            return $snapshot;
         });
     }
 

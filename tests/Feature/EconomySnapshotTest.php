@@ -39,6 +39,36 @@ class EconomySnapshotTest extends TestCase
         $this->assertCount(1, $data['savings']);
     }
 
+    public function test_service_removes_one_time_expenses_after_snapshot_is_saved()
+    {
+        $keptExpense = Expense::create([
+            'name' => 'Rent',
+            'amount' => 1500,
+            'category' => 'Housing',
+            'one_time_fee' => false,
+            'sort_order' => 1,
+        ]);
+
+        $removedExpense = Expense::create([
+            'name' => 'Setup Fee',
+            'amount' => 300,
+            'category' => 'Utilities',
+            'one_time_fee' => true,
+            'sort_order' => 2,
+        ]);
+
+        $service = new EconomySnapshotService();
+        $snapshot = $service->capture();
+
+        $this->assertEquals(1800, $snapshot->total_expenses);
+        $this->assertCount(2, $snapshot->snapshot_data['expenses']);
+        $this->assertSame($removedExpense->id, $snapshot->snapshot_data['expenses'][1]['id']);
+        $this->assertTrue($snapshot->snapshot_data['expenses'][1]['one_time_fee']);
+
+        $this->assertDatabaseHas('expenses', ['id' => $keptExpense->id]);
+        $this->assertDatabaseMissing('expenses', ['id' => $removedExpense->id]);
+    }
+
     public function test_command_respects_the_configured_snapshot_day()
     {
         // Set snapshot day to 25th

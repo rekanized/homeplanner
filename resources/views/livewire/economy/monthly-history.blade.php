@@ -167,7 +167,22 @@
                                 </div>
                                 <div class="eco-field">
                                     <span class="mobile-label">{{ __('Handling') }}</span>
-                                    <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
+                                        @if(($exp['split'] ?? false) || ($exp['delayed'] ?? false) || ($exp['one_time_fee'] ?? false))
+                                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                                @if($exp['split'] ?? false)
+                                                    <span class="eco-payer-tag" style="background: var(--blue-500); color: white; font-size: 10px;">{{ __('DELA') }}</span>
+                                                @endif
+                                                @if($exp['delayed'] ?? false)
+                                                    <span class="eco-payer-tag" style="background: var(--amber-500); color: white; font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
+                                                @endif
+                                                @if($exp['one_time_fee'] ?? false)
+                                                    <span class="eco-payer-tag" style="background: var(--danger); color: white; font-size: 10px;">{{ __('ENGÅNGS') }}</span>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="eco-field" style="text-align: right;">
                                     <span class="mobile-label">{{ __('Amount') }}</span>

@@ -1,5 +1,27 @@
 [
     {
+        "version": "v1.7.0",
+        "released_at": "2026-04-18 12:45:00",
+        "changes": [
+            {
+                "type": "added",
+                "description": "Added a One-time expense option that keeps charges in Monthly History snapshots and automatically removes them from the live expenses list after the monthly capture runs"
+            },
+            {
+                "type": "improved",
+                "description": "Expanded the Economy expenses editor with a bottom add-row action and clearer option badges for split, delayed, and one-time fees"
+            },
+            {
+                "type": "improved",
+                "description": "Reworked mobile navigation into a fixed bottom tab bar with sheet-based sub-navigation for modules like Economy and a dedicated More tray for account and admin actions"
+            },
+            {
+                "type": "fixed",
+                "description": "Reduced mobile navigation friction by replacing the previous hamburger flow with faster thumb-reachable access patterns"
+            }
+        ]
+    },
+    {
         "version": "v1.6.0",
         "released_at": "2026-03-29 22:30:00",
         "changes": [

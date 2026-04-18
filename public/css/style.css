@@ -774,6 +774,43 @@ a {
     transform: scale(1.05);
 }
 
+.eco-table-footer-add {
+    width: calc(100% - 32px);
+    margin: 12px 16px 16px;
+    padding: 12px 16px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 16px;
+    background: linear-gradient(180deg, var(--primary-soft), color-mix(in srgb, var(--bg-card) 88%, var(--primary) 12%));
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.eco-table-footer-add:hover {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary-soft) 68%, var(--bg-card) 32%);
+    transform: translateY(-1px);
+}
+
+.eco-table-footer-add-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.8);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
 .eco-delete-btn {
     background: transparent;
     border: none;
@@ -816,6 +853,10 @@ a {
 
 .eco-toggle-warn {
     color: var(--warning);
+}
+
+.eco-toggle-danger {
+    color: var(--danger);
 }
 
 /* ── Economy: Custom Payer Dropdown ── */
@@ -1405,6 +1446,12 @@ tr:hover {
 
     .eco-grid-row:hover {
         background: var(--bg-card) !important;
+    }
+
+    .eco-table-footer-add {
+        width: auto;
+        margin: 0 16px 16px;
+        padding: 14px 16px;
     }
 
     .eco-row-header {
@@ -2723,7 +2770,7 @@ input:checked + .slider:before {
 
     .expense-view-details {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
+        grid-template-columns: 1fr !important;
         gap: 16px !important;
     }
 

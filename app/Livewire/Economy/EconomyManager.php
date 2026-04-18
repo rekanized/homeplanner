@@ -107,6 +107,7 @@ class EconomyManager extends Component
             'handling' => __('Autogiro'),
             'split' => false,
             'delayed' => false,
+            'one_time_fee' => false,
             'sort_order' => Expense::max('sort_order') + 1,
         ]);
     }
@@ -137,7 +138,7 @@ class EconomyManager extends Component
 
     public function updateExpense($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'category', 'handling', 'split', 'delayed'];
+        $allowed = ['name', 'amount', 'category', 'handling', 'split', 'delayed', 'one_time_fee'];
         if (!in_array($field, $allowed)) return;
 
         // Basic validation
@@ -147,7 +148,7 @@ class EconomyManager extends Component
         $expense = Expense::find($id);
         if (!$expense) return;
 
-        if (in_array($field, ['split', 'delayed'])) {
+        if (in_array($field, ['split', 'delayed', 'one_time_fee'])) {
             $value = (bool) $value;
         }
 

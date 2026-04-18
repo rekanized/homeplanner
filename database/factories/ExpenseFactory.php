@@ -24,6 +24,7 @@ class ExpenseFactory extends Factory
             'payer_ids' => [],
             'split' => false,
             'delayed' => false,
+            'one_time_fee' => false,
             'handling' => null,
             'sort_order' => 0,
         ];

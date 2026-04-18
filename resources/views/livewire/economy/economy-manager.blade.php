@@ -41,8 +41,8 @@
                 <p class="summary-label">{{ __('Monthly Savings') }}</p>
                 <h2 class="summary-value" style="color: var(--primary); font-size: 1.25rem;">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card accent" style="min-width: 140px; padding: 10px 16px;">
-                <p class="summary-label" style="color: rgba(255,255,255,0.7);">{{ __('Remaining') }}</p>
+            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+                <p class="summary-label">{{ __('Remaining') }}</p>
                 <h2 class="summary-value" style="font-size: 1.25rem;">{{ number_format($this->remaining, 0, ',', ' ') }}</h2>
             </div>
         </div>
@@ -321,6 +321,10 @@
                             <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--warning);"></span>
                             {{ __('Delay: Pay later (not 25th)') }}
                         </span>
+                        <span style="display: flex; gap: 4px; align-items: center; color: var(--danger);">
+                            <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--danger);"></span>
+                            {{ __('One-time: Remove after snapshot') }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -425,7 +429,7 @@
                             </div>
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Options') }}</span>
-                                <div style="display: flex; gap: 8px; align-items: center; height: 100%;">
+                                <div style="display: flex; gap: 8px; align-items: center; height: 100%; flex-wrap: wrap;">
                                     <label class="eco-toggle-label" title="{{ __('Split cost') }}">
                                         <input type="checkbox" @if($expense->split) checked @endif
                                             wire:change="updateExpense({{ $expense->id }}, 'split', $event.target.checked ? 1 : 0)">
@@ -435,6 +439,11 @@
                                         <input type="checkbox" @if($expense->delayed) checked @endif
                                             wire:change="updateExpense({{ $expense->id }}, 'delayed', $event.target.checked ? 1 : 0)">
                                         <span class="eco-toggle-text eco-toggle-warn">{{ __('Delay') }}</span>
+                                    </label>
+                                    <label class="eco-toggle-label" title="{{ __('Delete after monthly snapshot') }}">
+                                        <input type="checkbox" @if($expense->one_time_fee) checked @endif
+                                            wire:change="updateExpense({{ $expense->id }}, 'one_time_fee', $event.target.checked ? 1 : 0)">
+                                        <span class="eco-toggle-text eco-toggle-danger">{{ __('One-time') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -505,10 +514,13 @@
                             <div class="eco-field">
                                 <div style="display: flex; gap: 8px;">
                                     @if($expense->split)
-                                        <span class="eco-payer-tag" style="background: var(--blue-500); color: white; font-size: 10px;">{{ __('DELA') }}</span>
+                                        <span class="eco-payer-tag">{{ __('DELA') }}</span>
                                     @endif
                                     @if($expense->delayed)
-                                        <span class="eco-payer-tag" style="background: var(--amber-500); color: white; font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
+                                        <span class="eco-payer-tag">{{ __('DRÖJSMÅL') }}</span>
+                                    @endif
+                                    @if($expense->one_time_fee)
+                                        <span class="eco-payer-tag" style="background: var(--danger); color: white;">{{ __('ENGÅNGS') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -523,6 +535,15 @@
                 @empty
                 <div style="text-align: center; color: var(--slate-400); padding: 40px; font-size: 13px;">{{ __('No expenses recorded. Click + to add one.') }}</div>
                 @endforelse
+
+                @if($isEditing)
+                <button type="button" wire:click="addExpenseRow" class="eco-table-footer-add">
+                    <span class="eco-table-footer-add-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                    </span>
+                    <span>{{ __('Add expense row') }}</span>
+                </button>
+                @endif
             </div>
         </div>
     </div>

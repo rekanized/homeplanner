@@ -58,6 +58,17 @@ class EconomyDashboardTest extends TestCase
         ]);
     }
 
+    public function test_can_mark_expense_as_one_time_fee()
+    {
+        $expense = Expense::factory()->create(['one_time_fee' => false]);
+
+        Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
+            ->call('updateExpense', $expense->id, 'one_time_fee', 1);
+
+        $this->assertTrue($expense->refresh()->one_time_fee);
+    }
+
     public function test_invalid_updates_are_ignored()
     {
         $expense = Expense::factory()->create(['name' => 'Should Not Change']);
