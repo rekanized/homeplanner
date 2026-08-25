@@ -2,15 +2,19 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
 use App\Models\Setting;
+use Livewire\Component;
 
 class ModuleSettings extends Component
 {
     public $economyEnabled;
+
     public $shoppingEnabled;
+
     public $todoEnabled;
+
     public $kidsEnabled;
+
     public $snapshotDay;
 
     public function mount()
@@ -24,6 +28,14 @@ class ModuleSettings extends Component
 
     public function save()
     {
+        $this->validate([
+            'economyEnabled' => 'required|boolean',
+            'shoppingEnabled' => 'required|boolean',
+            'todoEnabled' => 'required|boolean',
+            'kidsEnabled' => 'required|boolean',
+            'snapshotDay' => 'required|integer|min:1|max:31',
+        ]);
+
         Setting::set('module_economy_enabled', $this->economyEnabled, 'modules');
         Setting::set('module_shopping_enabled', $this->shoppingEnabled, 'modules');
         Setting::set('module_todo_enabled', $this->todoEnabled, 'modules');
@@ -31,7 +43,7 @@ class ModuleSettings extends Component
         Setting::set('economy_snapshot_day', $this->snapshotDay, 'economy');
 
         session()->flash('message', __('Module settings updated successfully.'));
-        
+
         // Dispatch event to refresh sidebar if needed
         $this->dispatch('modules-updated');
     }

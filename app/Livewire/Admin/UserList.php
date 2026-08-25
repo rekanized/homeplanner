@@ -2,15 +2,20 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
 use App\Models\User;
-use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Livewire\Component;
 
 class UserList extends Component
 {
     public $showCreateModal = false;
+
     public $name = '';
+
     public $email = '';
+
     public $password = '';
 
     public function openCreateModal()
@@ -22,15 +27,15 @@ class UserList extends Component
     public function createUser()
     {
         $this->validate([
-            'name' => 'required|min:2',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
+            'name' => 'required|string|min:2|max:255',
+            'email' => 'required|email:rfc|max:255|unique:users,email',
+            'password' => 'required|string|min:8|max:255',
         ]);
 
         User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => \Illuminate\Support\Facades\Hash::make($this->password),
+            'name' => trim($this->name),
+            'email' => Str::lower(trim($this->email)),
+            'password' => Hash::make($this->password),
         ]);
 
         $this->showCreateModal = false;
@@ -40,17 +45,21 @@ class UserList extends Component
     public function deleteUser($id)
     {
         $user = User::find($id);
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
         // Safety: Cannot delete self
         if ($user->id === auth()->id()) {
             session()->flash('error', __('You cannot delete your own account.'));
+
             return;
         }
 
         // Safety: Cannot delete the Master User
         if ($user->isMaster()) {
             session()->flash('error', __('The Master User cannot be deleted.'));
+
             return;
         }
 
@@ -61,21 +70,25 @@ class UserList extends Component
     public function toggleChild($id)
     {
         // Only Master User can toggle child status
-        if (!auth()->user()->isMaster()) {
+        if (! auth()->user()->isMaster()) {
             session()->flash('error', __('Only the System Master can assign child status.'));
+
             return;
         }
 
         $user = User::find($id);
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
         // Cannot make master a child
         if ($user->isMaster()) {
             session()->flash('error', __('The Master User cannot be tagged as a child.'));
+
             return;
         }
 
-        $user->is_child = !$user->is_child;
+        $user->is_child = ! $user->is_child;
         $user->save();
 
         $status = $user->is_child ? __('tagged as a child') : __('removed from children');
@@ -84,26 +97,42 @@ class UserList extends Component
 
     public function updateMonthlyGoal($id, $goal)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {
+        if (! auth()->user()->isAdmin() && ! auth()->user()->isMaster()) {
             return;
         }
 
-        $user = User::find($id);
-        if (!$user) return;
+        $validated = validator(
+            ['id' => $id, 'goal' => $goal],
+            ['id' => 'required|integer', 'goal' => 'required|integer|min:0|max:1000000']
+        )->validate();
 
-        $user->update(['monthly_points_goal' => (int)$goal]);
-        session()->flash('message', __('Monthly goal for :name updated to :goal points.', ['name' => $user->name, 'goal' => $goal]));
+        $user = User::whereKey($validated['id'])->where('is_child', true)->first();
+        if (! $user) {
+            return;
+        }
+
+        $user->update(['monthly_points_goal' => $validated['goal']]);
+        session()->flash('message', __('Monthly goal for :name updated to :goal points.', ['name' => $user->name, 'goal' => $validated['goal']]));
     }
 
     public function impersonate($id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isMaster()) {
+        if (! auth()->user()->isAdmin() && ! auth()->user()->isMaster()) {
             session()->flash('error', __('Only administrators can impersonate.'));
+
             return;
         }
 
         $user = User::find($id);
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
+
+        if ($user->isMaster() && ! auth()->user()->isMaster()) {
+            session()->flash('error', __('Only the System Master can impersonate the Master User.'));
+
+            return;
+        }
 
         // Safety: Cannot impersonate self
         if ($user->id === auth()->id()) {
@@ -111,14 +140,16 @@ class UserList extends Component
         }
 
         session(['impersonator_id' => auth()->id()]);
-        \Illuminate\Support\Facades\Auth::login($user);
+        Auth::login($user);
+        session()->regenerate();
 
         return redirect()->to('/');
     }
+
     public function render()
     {
         return view('livewire.admin.user-list', [
-            'users' => User::latest()->get()
+            'users' => User::latest()->get(),
         ])->layout('components.app-layout');
     }
 }

@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-header settings-card-header">
         <h3 style="font-weight: 900;">{{ __('Module Settings') }}</h3>
         <p style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">{{ __('Enable or disable system modules') }}</p>
     </div>
@@ -11,7 +11,7 @@
         @endif
 
         <form wire:submit.prevent="save" style="display: flex; flex-direction: column; gap: 20px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+            <div class="module-settings-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
                 <!-- Economy Module -->
                 <div style="padding: 16px; border-radius: 20px; background: var(--bg-input); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -23,11 +23,12 @@
                             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">{{ __('Budgets & Ledger') }}</div>
                         </div>
                     </div>
-                    <button type="button" @click="$wire.set('economyEnabled', !$wire.economyEnabled)" 
-                            style="width: 48px; height: 24px; border-radius: 24px; position: relative; border: none; cursor: pointer; transition: background 0.3s; padding: 0;"
-                            :style="{ background: $wire.economyEnabled ? 'var(--primary)' : 'var(--border-strong)' }">
-                        <div style="position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: all 0.3s; box-shadow: var(--shadow-sm);"
-                             :style="{ left: $wire.economyEnabled ? '27px' : '3px' }"></div>
+                    <button type="button" class="module-toggle" role="switch"
+                            aria-label="{{ __('Economy') }}" :aria-checked="$wire.economyEnabled ? 'true' : 'false'"
+                            @click="$wire.set('economyEnabled', !$wire.economyEnabled)">
+                        <span class="module-toggle-track" :class="{ 'active': $wire.economyEnabled }">
+                            <span class="module-toggle-thumb"></span>
+                        </span>
                     </button>
                 </div>
 
@@ -42,11 +43,12 @@
                             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">{{ __('Grocery Lists') }}</div>
                         </div>
                     </div>
-                    <button type="button" @click="$wire.set('shoppingEnabled', !$wire.shoppingEnabled)" 
-                            style="width: 48px; height: 24px; border-radius: 24px; position: relative; border: none; cursor: pointer; transition: background 0.3s; padding: 0;"
-                            :style="{ background: $wire.shoppingEnabled ? 'var(--primary)' : 'var(--border-strong)' }">
-                        <div style="position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: all 0.3s; box-shadow: var(--shadow-sm);"
-                             :style="{ left: $wire.shoppingEnabled ? '27px' : '3px' }"></div>
+                    <button type="button" class="module-toggle" role="switch"
+                            aria-label="{{ __('Shopping') }}" :aria-checked="$wire.shoppingEnabled ? 'true' : 'false'"
+                            @click="$wire.set('shoppingEnabled', !$wire.shoppingEnabled)">
+                        <span class="module-toggle-track" :class="{ 'active': $wire.shoppingEnabled }">
+                            <span class="module-toggle-thumb"></span>
+                        </span>
                     </button>
                 </div>
 
@@ -61,11 +63,12 @@
                             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">{{ __('Task Management') }}</div>
                         </div>
                     </div>
-                    <button type="button" @click="$wire.set('todoEnabled', !$wire.todoEnabled)" 
-                            style="width: 48px; height: 24px; border-radius: 24px; position: relative; border: none; cursor: pointer; transition: background 0.3s; padding: 0;"
-                            :style="{ background: $wire.todoEnabled ? 'var(--primary)' : 'var(--border-strong)' }">
-                        <div style="position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: all 0.3s; box-shadow: var(--shadow-sm);"
-                             :style="{ left: $wire.todoEnabled ? '27px' : '3px' }"></div>
+                    <button type="button" class="module-toggle" role="switch"
+                            aria-label="{{ __('Todo') }}" :aria-checked="$wire.todoEnabled ? 'true' : 'false'"
+                            @click="$wire.set('todoEnabled', !$wire.todoEnabled)">
+                        <span class="module-toggle-track" :class="{ 'active': $wire.todoEnabled }">
+                            <span class="module-toggle-thumb"></span>
+                        </span>
                     </button>
                 </div>
 
@@ -80,11 +83,12 @@
                             <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">{{ __('Points & Rewards') }}</div>
                         </div>
                     </div>
-                    <button type="button" @click="$wire.set('kidsEnabled', !$wire.kidsEnabled)" 
-                            style="width: 48px; height: 24px; border-radius: 24px; position: relative; border: none; cursor: pointer; transition: background 0.3s; padding: 0;"
-                            :style="{ background: $wire.kidsEnabled ? 'var(--primary)' : 'var(--border-strong)' }">
-                        <div style="position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: all 0.3s; box-shadow: var(--shadow-sm);"
-                             :style="{ left: $wire.kidsEnabled ? '27px' : '3px' }"></div>
+                    <button type="button" class="module-toggle" role="switch"
+                            aria-label="{{ __('Kids System') }}" :aria-checked="$wire.kidsEnabled ? 'true' : 'false'"
+                            @click="$wire.set('kidsEnabled', !$wire.kidsEnabled)">
+                        <span class="module-toggle-track" :class="{ 'active': $wire.kidsEnabled }">
+                            <span class="module-toggle-thumb"></span>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -92,7 +96,7 @@
             <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
                 <h4 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">{{ __('Economy Configurations') }}</h4>
                 
-                <div style="max-width: 400px; padding: 20px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm);">
+                <div class="snapshot-config-row" style="max-width: 400px; padding: 20px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: var(--shadow-sm);">
                     <div style="display: flex; align-items: center; gap: 16px;">
                         <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--warning-soft); color: var(--warning); display: flex; align-items: center; justify-content: center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>

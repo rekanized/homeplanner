@@ -5,6 +5,12 @@
             <p>{{ __('Welcome! Let\'s get your household planner ready.') }}</p>
         </div>
 
+        @if(session('error'))
+            <div class="error" role="alert" style="margin-bottom: 20px; padding: 12px 14px; border-radius: 12px; background: var(--danger-soft);">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @if($step === 1)
             <div class="setup-choices">
                 <button wire:click="selectType('google')" class="setup-choice-btn">
@@ -27,18 +33,18 @@
             <form wire:submit.prevent="completeManual" class="setup-form">
                 <h2>{{ __('Manual Administrator Setup') }}</h2>
                 <div class="form-group">
-                    <label>{{ __('Full Name') }}</label>
-                    <input type="text" wire:model="name" placeholder="{{ __('E.g. Magnus Andersson') }}">
+                    <label for="setup-name">{{ __('Full Name') }}</label>
+                    <input id="setup-name" type="text" wire:model="name" autocomplete="name" placeholder="{{ __('E.g. Magnus Andersson') }}">
                     @error('name') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>{{ __('Email Address') }}</label>
-                    <input type="email" wire:model="email" placeholder="{{ __('magnus@example.com') }}">
+                    <label for="setup-email">{{ __('Email Address') }}</label>
+                    <input id="setup-email" type="email" wire:model="email" autocomplete="email" placeholder="{{ __('magnus@example.com') }}">
                     @error('email') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>{{ __('Password') }}</label>
-                    <input type="password" wire:model="password" placeholder="••••••••">
+                    <label for="setup-password">{{ __('Password') }}</label>
+                    <input id="setup-password" type="password" wire:model="password" autocomplete="new-password" placeholder="••••••••">
                     @error('password') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="setup-actions">
@@ -53,18 +59,18 @@
                     {{ __('Obtain these from the') }} <a href="https://console.cloud.google.com/" target="_blank">{{ __('Google Cloud Console') }}</a>.
                 </p>
                 <div class="form-group">
-                    <label>{{ __('Client ID') }}</label>
-                    <input type="text" wire:model="clientId" placeholder="{{ __('12345678-abcdef...') }}">
+                    <label for="setup-client-id">{{ __('Client ID') }}</label>
+                    <input id="setup-client-id" type="text" wire:model="clientId" autocomplete="off" placeholder="{{ __('12345678-abcdef...') }}">
                     @error('clientId') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>{{ __('Client Secret') }}</label>
-                    <input type="password" wire:model="clientSecret" placeholder="{{ __('GOCSPX-...') }}">
+                    <label for="setup-client-secret">{{ __('Client Secret') }}</label>
+                    <input id="setup-client-secret" type="password" wire:model="clientSecret" autocomplete="new-password" placeholder="{{ __('GOCSPX-...') }}">
                     @error('clientSecret') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
-                    <label>{{ __('Redirect URI') }}</label>
-                    <input type="text" wire:model="redirectUri" readonly>
+                    <label for="setup-redirect-uri">{{ __('Redirect URI') }}</label>
+                    <input id="setup-redirect-uri" type="url" wire:model="redirectUri" readonly>
                     @error('redirectUri') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <div class="setup-actions">

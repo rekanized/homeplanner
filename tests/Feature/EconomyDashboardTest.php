@@ -105,4 +105,15 @@ class EconomyDashboardTest extends TestCase
             'event' => 'created'
         ]);
     }
+
+    public function test_adding_multiple_categories_uses_unique_editable_names()
+    {
+        Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
+            ->call('addExpenseCategoryRow')
+            ->call('addExpenseCategoryRow');
+
+        $this->assertDatabaseHas('expense_categories', ['name' => 'New category']);
+        $this->assertDatabaseHas('expense_categories', ['name' => 'New category 2']);
+    }
 }

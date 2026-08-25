@@ -1,12 +1,12 @@
 <div>
     <!-- Header & Summary Card -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
+    <div class="savings-page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
         <div>
             <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">{{ __('Savings') }}</h1>
             <p style="color: var(--text-muted); font-weight: 600;">{{ __('Manage your long-term accumulated balances and goals.') }}</p>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 24px;">
+        <div class="savings-header-actions" style="display: flex; align-items: center; gap: 24px;">
             <!-- View/Edit Toggle Button -->
             <button wire:click="toggleEditMode" class="btn {{ $isEditing ? 'btn-success' : 'btn-primary' }}" style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; transition: all 0.2s;">
                 @if($isEditing)
@@ -37,7 +37,7 @@
             </button>
             @endif
         </div>
-        <div class="eco-grid-table {{ !$isEditing ? 'view-mode' : '' }}">
+        <div class="eco-grid-table {{ $isEditing ? 'eco-edit-table' : 'view-mode' }}">
             <div class="eco-grid-header savings-grid {{ !$isEditing ? 'savings-view-grid' : '' }}">
                 @if($isEditing) <div style="width: 20px;"></div> @endif
                 <div>{{ __('Purpose') }}</div>
@@ -56,29 +56,32 @@
                     }
                 })">
                 @forelse($this->savings as $saving)
-                <div class="eco-grid-row savings-grid {{ !$isEditing ? 'savings-view-grid' : '' }}" wire:key="saving-{{ $saving->id }}">
+                <div class="eco-grid-row savings-grid {{ $isEditing ? 'eco-edit-card balance-edit-card' : 'savings-view-grid' }}" wire:key="saving-{{ $saving->id }}" @if($isEditing) data-editor-label="{{ __('Savings goal') }}" @endif>
                     @if($isEditing)
                     <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                     </div>
                     @endif
                     @if($isEditing)
-                        <div class="eco-mobile-stack">
+                        <div class="eco-mobile-stack saving-primary-fields">
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Purpose') }}</span>
                                 <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="{{ __('Purpose') }}"
+                                    aria-label="{{ __('Purpose') }}"
                                     wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)">
                             </div>
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Bank/App') }}</span>
                                 <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="{{ __('Bank/App') }}"
+                                    aria-label="{{ __('Bank/App') }}"
                                     wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)">
                             </div>
                         </div>
-                        <div class="eco-mobile-stack">
+                        <div class="eco-mobile-stack saving-finance-fields">
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Saver') }}</span>
                                 <select class="eco-inline-select" style="width: 100%;"
+                                    aria-label="{{ __('Saver') }}"
                                     wire:change="updateSaving({{ $saving->id }}, 'saver_id', $event.target.value)">
                                     <option value="" @if(!$saving->saver_id) selected @endif>{{ __('Saver') }}</option>
                                     @foreach($this->users as $user)
@@ -90,13 +93,14 @@
                                 <span class="mobile-label">{{ __('Amount') }}</span>
                                 <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
                                     <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
+                                        aria-label="{{ __('Amount') }}"
                                         wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
                                     <span style="font-weight: 700; color: var(--text-muted);">kr</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="desktop-only" style="display: flex; justify-content: flex-end; align-items: center;">
-                            <button wire:click="deleteSaving({{ $saving->id }})" class="eco-delete-btn">
+                        <div class="saving-delete-action">
+                            <button wire:click="deleteSaving({{ $saving->id }})" wire:confirm="{{ __('Delete this savings balance?') }}" class="eco-delete-btn" aria-label="{{ __('Delete this savings balance?') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
@@ -132,4 +136,3 @@
         </div>
     </div>
 </div>
-

@@ -2,16 +2,20 @@
 
 namespace App\Livewire\Todo;
 
-use Livewire\Component;
 use App\Models\Todo;
 use App\Models\TodoItem;
+use Carbon\Carbon;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 class TodoManager extends Component
 {
     public $activeTodoId;
+
     public $newListNames = [];
+
     public $selectedItems = [];
+
     public $selectedTags = [];
 
     protected $listeners = ['reorder' => 'handleReorder'];
@@ -39,21 +43,26 @@ class TodoManager extends Component
     #[Computed]
     public function availableTags()
     {
-        if (!$this->activeTodo) return collect();
+        if (! $this->activeTodo) {
+            return collect();
+        }
+
         return collect($this->activeTodo->items()->whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category'));
     }
 
     #[Computed]
     public function items()
     {
-        if (!$this->activeTodo) return collect();
-        
+        if (! $this->activeTodo) {
+            return collect();
+        }
+
         $query = $this->activeTodo->items()->orderBy('sort_order');
-        
-        if (!empty($this->selectedTags)) {
+
+        if (! empty($this->selectedTags)) {
             $query->whereIn('category', $this->selectedTags);
         }
-        
+
         return $query->get();
     }
 
@@ -80,10 +89,10 @@ class TodoManager extends Component
         $now = now()->startOfDay();
 
         foreach ($this->pendingItems as $item) {
-            if (!$item->due_date) {
+            if (! $item->due_date) {
                 $noDate[] = $item;
             } else {
-                $due = \Carbon\Carbon::parse($item->due_date)->startOfDay();
+                $due = Carbon::parse($item->due_date)->startOfDay();
                 if ($due->isBefore($now)) {
                     $overdue[] = $item;
                 } elseif ($due->isSameDay($now)) {
@@ -104,16 +113,23 @@ class TodoManager extends Component
 
     public function selectTodo($id)
     {
-        $this->activeTodoId = $id;
+        $todo = Todo::find($id);
+        if (! $todo) {
+            return;
+        }
+
+        $this->activeTodoId = $todo->id;
         $this->selectedItems = [];
     }
 
     public function addTodo($name)
     {
-        if (empty($name)) return;
+        if (! is_string($name) || trim($name) === '' || mb_strlen(trim($name)) > 255) {
+            return;
+        }
         $todo = Todo::create([
-            'name' => $name,
-            'sort_order' => Todo::count()
+            'name' => trim($name),
+            'sort_order' => Todo::count(),
         ]);
         $this->activeTodoId = $todo->id;
     }
@@ -122,7 +138,7 @@ class TodoManager extends Component
     {
         $todo = Todo::create([
             'name' => __('New List'),
-            'sort_order' => Todo::count()
+            'sort_order' => Todo::count(),
         ]);
         $this->activeTodoId = $todo->id;
     }
@@ -130,14 +146,14 @@ class TodoManager extends Component
     public function updateListName($id, $newName)
     {
         $todo = Todo::find($id);
-        if ($todo && !empty(trim($newName))) {
-            $todo->update(['name' => $newName]);
+        if ($todo && is_string($newName) && trim($newName) !== '' && mb_strlen(trim($newName)) <= 255) {
+            $todo->update(['name' => trim($newName)]);
         }
     }
 
     public function deleteTodo($id)
     {
-        Todo::find($id)?->delete();
+        Todo::whereKey($id)->whereKey($this->activeTodoId)->first()?->delete();
         if ($this->activeTodoId == $id) {
             $this->activeTodoId = Todo::orderBy('sort_order')->first()?->id;
         }
@@ -145,12 +161,17 @@ class TodoManager extends Component
 
     public function addItem($name = '')
     {
-        if (!$this->activeTodoId) return;
-        
+        if (! Todo::whereKey($this->activeTodoId)->exists()) {
+            return;
+        }
+        if (! is_string($name) || mb_strlen($name) > 255) {
+            return;
+        }
+
         $item = TodoItem::create([
             'todo_id' => $this->activeTodoId,
             'name' => $name,
-            'sort_order' => TodoItem::where('todo_id', $this->activeTodoId)->count()
+            'sort_order' => TodoItem::where('todo_id', $this->activeTodoId)->count(),
         ]);
 
         $this->dispatch('task-added', itemId: $item->id);
@@ -158,61 +179,72 @@ class TodoManager extends Component
 
     public function updateItemName($id, $newName)
     {
-        $item = TodoItem::find($id);
-        if ($item && !empty(trim($newName))) {
-            $item->update(['name' => $newName]);
+        $item = $this->activeItem($id);
+        if ($item && is_string($newName) && trim($newName) !== '' && mb_strlen(trim($newName)) <= 255) {
+            $item->update(['name' => trim($newName)]);
         }
     }
 
     public function toggleItem($id)
     {
-        $item = TodoItem::find($id);
+        $item = $this->activeItem($id);
         if ($item) {
             $item->update([
-                'is_done' => !$item->is_done,
-                'completed_at' => !$item->is_done ? now() : null
+                'is_done' => ! $item->is_done,
+                'completed_at' => ! $item->is_done ? now() : null,
             ]);
         }
     }
 
     public function deleteItem($id)
     {
-        TodoItem::find($id)?->delete();
+        $this->activeItem($id)?->delete();
     }
 
     public function handleReorder($itemIds)
     {
+        if (! is_array($itemIds)) {
+            return;
+        }
+
         foreach ($itemIds as $index => $id) {
-            TodoItem::where('id', $id)->update(['sort_order' => $index]);
+            TodoItem::where('id', $id)
+                ->where('todo_id', $this->activeTodoId)
+                ->update(['sort_order' => $index]);
         }
     }
 
     public function updateItemCategory($id, $category)
     {
-        $item = TodoItem::find($id);
-        if ($item) {
-            $item->update(['category' => $category]);
+        $item = $this->activeItem($id);
+        if ($item && is_string($category) && mb_strlen(trim($category)) <= 255) {
+            $item->update(['category' => trim($category) ?: null]);
         }
     }
 
     public function updateItemDueDate($id, $date)
     {
-        $item = TodoItem::find($id);
+        $item = $this->activeItem($id);
         if ($item) {
-            $item->update(['due_date' => empty($date) ? null : \Carbon\Carbon::parse($date)->format('Y-m-d')]);
+            $validated = validator(['date' => $date], ['date' => 'nullable|date_format:Y-m-d'])->validate();
+            $item->update(['due_date' => $validated['date'] ?: null]);
         }
     }
 
     public function moveItemToGroup($itemId, $targetGroup, $itemIdsInNewOrder)
     {
-        $item = TodoItem::find($itemId);
+        if (! in_array($targetGroup, ['overdue', 'today', 'upcoming', 'no_date'], true) || ! is_array($itemIdsInNewOrder)) {
+            return;
+        }
+
+        $item = $this->activeItem($itemId);
         if ($item && $targetGroup) {
             $now = now()->startOfDay();
-            if ($targetGroup === 'overdue' && (!$item->due_date || \Carbon\Carbon::parse($item->due_date)->isAfter($now->copy()->subDay()->endOfDay()))) {
+            if ($targetGroup === 'overdue' && (! $item->due_date || Carbon::parse($item->due_date)->isAfter($now->copy()->subDay()->endOfDay()))) {
                 $item->due_date = $now->copy()->subDay()->format('Y-m-d');
             } elseif ($targetGroup === 'today') {
                 $item->due_date = $now->format('Y-m-d');
-            } elseif ($targetGroup === 'upcoming' && (!$item->due_date || \Carbon\Carbon::parse($item->due_date)->isBefore($now->copy()->addDay()->startOfDay()))) {
+            } elseif ($targetGroup === 'upcoming' && (! $item->due_date || Carbon::parse($item->due_date)->isBefore($now->copy()->addDay()->startOfDay()))) {
                 $item->due_date = $now->copy()->addDay()->format('Y-m-d');
             } elseif ($targetGroup === 'no_date') {
                 $item->due_date = null;
@@ -221,12 +253,18 @@ class TodoManager extends Component
         }
 
         foreach ($itemIdsInNewOrder as $index => $id) {
-            TodoItem::where('id', $id)->update(['sort_order' => $index]);
+            TodoItem::where('id', $id)
+                ->where('todo_id', $this->activeTodoId)
+                ->update(['sort_order' => $index]);
         }
     }
 
     public function handleListReorder($listIds)
     {
+        if (! is_array($listIds)) {
+            return;
+        }
+
         foreach ($listIds as $index => $id) {
             Todo::where('id', $id)->update(['sort_order' => $index]);
         }
@@ -235,5 +273,12 @@ class TodoManager extends Component
     public function render()
     {
         return view('livewire.todo.todo-manager');
+    }
+
+    private function activeItem($id): ?TodoItem
+    {
+        return TodoItem::whereKey($id)
+            ->where('todo_id', $this->activeTodoId)
+            ->first();
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
+use App\Models\Setting;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Session;
+use Livewire\Component;
 
 class Sidebar extends Component
 {
@@ -14,14 +17,16 @@ class Sidebar extends Component
 
     public function mount()
     {
-        $this->currentLocale = auth()->check() && auth()->user()->locale 
-            ? auth()->user()->locale 
+        $this->currentLocale = auth()->check() && auth()->user()->locale
+            ? auth()->user()->locale
             : (session()->get('locale') ?? config('app.locale'));
     }
 
     public function setLocale($lang)
     {
-        if (!in_array($lang, ['en', 'sv'])) return;
+        if (! in_array($lang, ['en', 'sv'])) {
+            return;
+        }
 
         $this->currentLocale = $lang;
         session()->put('locale', $lang);
@@ -30,21 +35,37 @@ class Sidebar extends Component
             auth()->user()->update(['locale' => $lang]);
         }
 
-        return redirect(request()->header('Referer'));
+        $referer = request()->header('Referer');
+        $refererHost = $referer ? parse_url($referer, PHP_URL_HOST) : null;
+
+        return redirect($refererHost === request()->getHost() ? $referer : route('home'));
     }
 
     public function toggleDarkMode()
     {
-        $this->darkMode = !$this->darkMode;
+        $this->darkMode = ! $this->darkMode;
     }
 
     public function stopImpersonating()
     {
-        if (!session()->has('impersonator_id')) return;
-        
+        if (! session()->has('impersonator_id')) {
+            return;
+        }
+
         $adminId = session('impersonator_id');
         session()->forget('impersonator_id');
-        \Illuminate\Support\Facades\Auth::loginUsingId($adminId);
+        $admin = User::whereKey($adminId)->where('is_admin', true)->first();
+
+        if (! $admin) {
+            Auth::logout();
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('login');
+        }
+
+        Auth::login($admin);
+        session()->regenerate();
 
         return redirect()->to('/admin/users');
     }
@@ -55,10 +76,10 @@ class Sidebar extends Component
         $currentVersion = $versions[0]['version'] ?? 'v1.2.0';
 
         return view('livewire.sidebar', [
-            'economyEnabled' => filter_var(\App\Models\Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'shoppingEnabled' => filter_var(\App\Models\Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'todoEnabled' => filter_var(\App\Models\Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'kidsEnabled' => filter_var(\App\Models\Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'economyEnabled' => filter_var(Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'shoppingEnabled' => filter_var(Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'todoEnabled' => filter_var(Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'kidsEnabled' => filter_var(Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'appVersion' => $currentVersion,
         ]);
     }

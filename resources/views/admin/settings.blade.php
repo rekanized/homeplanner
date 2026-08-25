@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
+    <div class="admin-page-shell" style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
         <h1 style="font-size: 1.875rem; font-weight: 700; font-family: var(--font-heading); color: var(--text-main); margin-bottom: 24px;">{{ __('Application Settings') }}</h1>
         <div style="display: flex; flex-direction: column; gap: 24px;">
             <livewire:admin.auth-settings />

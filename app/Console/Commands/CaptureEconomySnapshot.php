@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Setting;
 use App\Models\EconomySnapshot;
 use App\Models\SavingsSnapshot;
+use App\Models\Setting;
 use App\Services\EconomySnapshotService;
-use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CaptureEconomySnapshot extends Command
 {
@@ -31,36 +30,38 @@ class CaptureEconomySnapshot extends Command
     public function handle(EconomySnapshotService $service)
     {
         $snapshotDay = (int) Setting::get('economy_snapshot_day', 25);
+        $effectiveSnapshotDay = min($snapshotDay, now()->daysInMonth);
         $today = now()->day;
         $month = now()->month;
         $year = now()->year;
 
-        if ($this->option('force') || $today === $snapshotDay) {
+        if ($this->option('force') || $today === $effectiveSnapshotDay) {
             // Check if we already have a snapshot for this month
             $exists = EconomySnapshot::where('month', $month)
                 ->where('year', $year)
                 ->exists();
 
-            if ($exists && !$this->option('force')) {
+            if ($exists && ! $this->option('force')) {
                 $this->info("Snapshot already exists for {$month}/{$year}.");
+
                 return;
             }
 
             $service->capture();
-            
+
             // Savings Snapshot
             $savingsExists = SavingsSnapshot::where('month', $month)
                 ->where('year', $year)
                 ->exists();
 
-            if (!$savingsExists || $this->option('force')) {
+            if (! $savingsExists || $this->option('force')) {
                 $service->captureSavingsSnapshot();
                 $this->info("Savings snapshot captured successfully for {$month}/{$year}.");
             }
 
             $this->info("Economy snapshot captured successfully for {$month}/{$year}.");
         } else {
-            $this->info("Today is not the snapshot day ({$snapshotDay}). skipping...");
+            $this->info("Today is not the snapshot day ({$effectiveSnapshotDay}). Skipping...");
         }
     }
 }

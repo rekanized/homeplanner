@@ -4,8 +4,9 @@ namespace App\Livewire\Economy;
 
 use App\Models\SavingsBalance;
 use App\Models\User;
-use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 class Savings extends Component
 {
@@ -13,7 +14,7 @@ class Savings extends Component
 
     public function toggleEditMode()
     {
-        $this->isEditing = !$this->isEditing;
+        $this->isEditing = ! $this->isEditing;
     }
 
     #[Computed]
@@ -47,13 +48,22 @@ class Savings extends Component
 
     public function updateSaving($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'saver_id', 'location'];
-        if (!in_array($field, $allowed)) return;
+        $rules = [
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0|max:9999999999.99',
+            'saver_id' => 'nullable|integer|exists:users,id',
+            'location' => 'nullable|string|max:255',
+        ];
+        if (! isset($rules[$field]) || Validator::make(['value' => $value], ['value' => $rules[$field]])->fails()) {
+            return;
+        }
 
         $saving = SavingsBalance::find($id);
-        if (!$saving) return;
+        if (! $saving) {
+            return;
+        }
 
-        $saving->update([$field => $value]);
+        $saving->update([$field => is_string($value) ? trim($value) : $value]);
     }
 
     public function deleteSaving($id)
@@ -63,7 +73,9 @@ class Savings extends Component
 
     public function reorder($type, $orderedIds)
     {
-        if ($type !== 'saving') return;
+        if ($type !== 'saving' || ! is_array($orderedIds)) {
+            return;
+        }
 
         foreach ($orderedIds as $index => $id) {
             $record = SavingsBalance::find($id);

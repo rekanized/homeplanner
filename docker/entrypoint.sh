@@ -13,7 +13,11 @@ mkdir -p "$DB_DIR" storage/framework/sessions storage/framework/views storage/fr
 [ -f "$DB_PATH" ] || touch "$DB_PATH"
 
 # 3. Laravel Setup
-php artisan key:generate --no-interaction
+# Generate a key only on the first boot when neither the environment nor .env provides one.
+# Rotating APP_KEY on restart would invalidate sessions and encrypted settings.
+if [ -z "${APP_KEY:-}" ] && ! grep -Eq '^APP_KEY=.+$' .env; then
+    php artisan key:generate --force --no-interaction
+fi
 php artisan migrate --force --no-interaction
 php artisan storage:link || true
 php artisan optimize

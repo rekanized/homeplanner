@@ -12,7 +12,7 @@
         </div>
 
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <table class="responsive-table audit-log-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                 <thead>
                     <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
                         <th style="padding: 16px 20px; font-weight: 800; text-transform: uppercase; font-size: 10px; color: var(--slate-400);">{{ __('Event') }}</th>
@@ -25,7 +25,7 @@
                 <tbody style="color: var(--text-main);">
                     @foreach($logs as $log)
                     <tr style="border-bottom: 1px solid var(--border-color); vertical-align: top;">
-                        <td style="padding: 16px 20px;">
+                        <td data-label="{{ __('Event') }}" style="padding: 16px 20px;">
                             @php
                                 $color = match($log->event) {
                                     'created' => 'var(--success)',
@@ -39,7 +39,7 @@
                                 {{ __($log->event) }}
                             </span>
                         </td>
-                        <td style="padding: 16px 20px;">
+                        <td data-label="{{ __('User') }}" style="padding: 16px 20px;">
                             @if($log->user)
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     @if($log->user->avatar)
@@ -55,11 +55,11 @@
                                 <span style="color: var(--slate-400); font-weight: 600;">{{ __('System') }}</span>
                             @endif
                         </td>
-                        <td style="padding: 16px 20px;">
+                        <td data-label="{{ __('Model') }}" style="padding: 16px 20px;">
                             <div style="font-weight: 800; color: var(--slate-500); font-size: 11px; text-transform: uppercase;">{{ str_replace('App\\Models\\', '', $log->auditable_type) }}</div>
                             <div style="font-family: monospace; font-size: 12px;">ID: {{ $log->auditable_id }}</div>
                         </td>
-                        <td style="padding: 16px 20px; max-width: 400px;">
+                        <td data-label="{{ __('Changes') }}" style="padding: 16px 20px; max-width: 400px;">
                             @if($log->event === 'updated')
                                 <div style="display: flex; flex-direction: column; gap: 8px;">
                                     @foreach($log->new_values ?? [] as $key => $newValue)
@@ -76,7 +76,7 @@
                                 <div style="font-style: italic; color: var(--danger); font-size: 11px;">{{ __('Model instance removed') }}</div>
                             @endif
                         </td>
-                        <td style="padding: 16px 20px; color: var(--slate-400); font-weight: 600;">
+                        <td data-label="{{ __('Time') }}" style="padding: 16px 20px; color: var(--slate-400); font-weight: 600;">
                             <div>{{ $log->created_at->translatedFormat('Y-m-d') }}</div>
                             <div style="font-size: 11px;">{{ $log->created_at->format('H:i:s') }}</div>
                         </td>

@@ -46,10 +46,11 @@
         @livewireStyles
     </head>
     <body class="antialiased">
+        <a href="#main-content" class="skip-link">{{ __('Skip to main content') }}</a>
         <div class="layout-container">
             <livewire:sidebar wire:persist="sidebar" />
 
-            <main class="main-content">
+            <main id="main-content" class="main-content" tabindex="-1">
                 <div class="animate-in">
                     {{ $slot }}
                 </div>
@@ -57,5 +58,6 @@
         </div>
 
         @livewireScripts
+        <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}" defer></script>
     </body>
 </html>

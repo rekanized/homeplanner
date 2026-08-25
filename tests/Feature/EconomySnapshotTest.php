@@ -9,6 +9,7 @@ use App\Models\Saving;
 use App\Models\Setting;
 use App\Services\EconomySnapshotService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class EconomySnapshotTest extends TestCase
@@ -20,11 +21,11 @@ class EconomySnapshotTest extends TestCase
         // 1. Setup Data
         Income::create(['name' => 'Salary', 'amount' => 5000, 'sort_order' => 1]);
         Income::create(['name' => 'Bonus', 'amount' => 1000, 'sort_order' => 2]);
-        
+
         Expense::create(['name' => 'Rent', 'amount' => 1500, 'category' => 'Housing', 'sort_order' => 1]);
         Saving::create(['name' => 'Emergency Fund', 'amount' => 500, 'location' => 'Bank A', 'sort_order' => 1]);
 
-        $service = new EconomySnapshotService();
+        $service = new EconomySnapshotService;
         $snapshot = $service->capture();
 
         // 2. Assertions
@@ -32,7 +33,7 @@ class EconomySnapshotTest extends TestCase
         $this->assertEquals(6000, $snapshot->total_income);
         $this->assertEquals(1500, $snapshot->total_expenses);
         $this->assertEquals(500, $snapshot->total_savings);
-        
+
         $data = $snapshot->snapshot_data;
         $this->assertCount(2, $data['incomes']);
         $this->assertCount(1, $data['expenses']);
@@ -57,7 +58,7 @@ class EconomySnapshotTest extends TestCase
             'sort_order' => 2,
         ]);
 
-        $service = new EconomySnapshotService();
+        $service = new EconomySnapshotService;
         $snapshot = $service->capture();
 
         $this->assertEquals(1800, $snapshot->total_expenses);
@@ -72,30 +73,30 @@ class EconomySnapshotTest extends TestCase
     public function test_command_respects_the_configured_snapshot_day()
     {
         // Set snapshot day to 25th
-        Setting::set('economy', 'economy_snapshot_day', 25);
-        
+        Setting::set('economy_snapshot_day', 25, 'economy');
+
         // Mock current date to 24th
         $this->travelTo(now()->setDay(24));
-        
+
         $this->artisan('economy:capture-snapshot')
-             ->expectsOutputToContain('Today is not the snapshot day')
-             ->assertExitCode(0);
+            ->expectsOutputToContain('Today is not the snapshot day')
+            ->assertExitCode(0);
 
         $this->assertDatabaseEmpty('economy_snapshots');
 
         // Mock current date to 25th
         $this->travelTo(now()->setDay(25));
-        
+
         $this->artisan('economy:capture-snapshot')
-             ->expectsOutputToContain('Economy snapshot captured successfully')
-             ->assertExitCode(0);
+            ->expectsOutputToContain('Economy snapshot captured successfully')
+            ->assertExitCode(0);
 
         $this->assertDatabaseCount('economy_snapshots', 1);
     }
 
     public function test_command_prevents_duplicate_snapshots_in_same_month()
     {
-        Setting::set('economy', 'economy_snapshot_day', 25);
+        Setting::set('economy_snapshot_day', 25, 'economy');
         $this->travelTo(now()->setDay(25));
 
         // First run
@@ -104,16 +105,28 @@ class EconomySnapshotTest extends TestCase
 
         // Second run same day
         $this->artisan('economy:capture-snapshot')
-             ->expectsOutputToContain('Snapshot already exists')
-             ->assertExitCode(0);
+            ->expectsOutputToContain('Snapshot already exists')
+            ->assertExitCode(0);
 
         $this->assertDatabaseCount('economy_snapshots', 1);
 
         // Forced run
         $this->artisan('economy:capture-snapshot --force')
-             ->expectsOutputToContain('Economy snapshot captured successfully')
-             ->assertExitCode(0);
+            ->expectsOutputToContain('Economy snapshot captured successfully')
+            ->assertExitCode(0);
 
         $this->assertDatabaseCount('economy_snapshots', 2);
+    }
+
+    public function test_snapshot_day_uses_the_last_day_of_a_shorter_month(): void
+    {
+        Setting::set('economy_snapshot_day', 31, 'economy');
+        $this->travelTo(Carbon::create(2027, 2, 28, 0, 0));
+
+        $this->artisan('economy:capture-snapshot')
+            ->expectsOutputToContain('Economy snapshot captured successfully')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseCount('economy_snapshots', 1);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Livewire\Kids\KidsManager;
 use App\Models\Chore;
-use App\Models\Redemption;
 use App\Models\PredefinedChore;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -35,7 +35,7 @@ class KidsManagerTest extends TestCase
         $child = User::factory()->create(['is_child' => true]);
 
         Livewire::actingAs($parent)
-            ->test(\App\Livewire\Kids\KidsManager::class)
+            ->test(KidsManager::class)
             ->set('title', 'Clean the room')
             ->set('score', 20)
             ->set('assigned_to', [$child->id])
@@ -58,7 +58,7 @@ class KidsManagerTest extends TestCase
         $chore = Chore::factory()->create(['user_id' => $child->id, 'score' => 50, 'is_completed' => false]);
 
         Livewire::actingAs($parent)
-            ->test(\App\Livewire\Kids\KidsManager::class)
+            ->test(KidsManager::class)
             ->call('completeChore', $chore->id);
 
         $this->assertEquals(50, $child->fresh()->accumulated_score);
@@ -74,7 +74,7 @@ class KidsManagerTest extends TestCase
         $child = User::factory()->create(['is_child' => true, 'accumulated_score' => 100]);
 
         Livewire::actingAs($parent)
-            ->test(\App\Livewire\Kids\KidsManager::class)
+            ->test(KidsManager::class)
             ->set('adjustUserId', $child->id)
             ->set('adjustAmount', 25)
             ->set('adjustType', 'remove')
@@ -92,7 +92,7 @@ class KidsManagerTest extends TestCase
         $child = User::factory()->create(['is_child' => true, 'accumulated_score' => 300]);
 
         Livewire::actingAs($parent)
-            ->test(\App\Livewire\Kids\KidsManager::class)
+            ->test(KidsManager::class)
             ->set('redemptionUserId', $child->id)
             ->set('redemptionDescription', 'New Toy')
             ->set('redemptionPoints', 200)
@@ -102,7 +102,7 @@ class KidsManagerTest extends TestCase
         $this->assertDatabaseHas('redemptions', [
             'user_id' => $child->id,
             'description' => 'New Toy',
-            'score' => 200
+            'score' => 200,
         ]);
     }
 
@@ -115,7 +115,7 @@ class KidsManagerTest extends TestCase
         $child = User::factory()->create(['is_child' => true]);
 
         Livewire::actingAs($parent)
-            ->test(\App\Livewire\Kids\KidsManager::class)
+            ->test(KidsManager::class)
             ->set('templateTitle', 'Weekly Vacuuming')
             ->set('templateScore', 40)
             ->set('templateRecurrenceType', 'weekly')
@@ -126,7 +126,27 @@ class KidsManagerTest extends TestCase
         $this->assertDatabaseHas('predefined_chores', [
             'title' => 'Weekly Vacuuming',
             'score' => 40,
-            'recurrence_type' => 'weekly'
+            'recurrence_type' => 'weekly',
+        ]);
+    }
+
+    public function test_recurring_chore_preserves_approval_requirement(): void
+    {
+        $child = User::factory()->create(['is_child' => true]);
+        PredefinedChore::create([
+            'title' => 'Photo Chore',
+            'score' => 20,
+            'recurrence_type' => 'daily',
+            'assigned_user_ids' => [$child->id],
+            'needs_approval' => true,
+        ]);
+
+        $this->artisan('kids:generate-recurring')->assertExitCode(0);
+
+        $this->assertDatabaseHas('chores', [
+            'title' => 'Photo Chore',
+            'user_id' => $child->id,
+            'needs_approval' => true,
         ]);
     }
 }

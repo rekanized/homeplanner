@@ -1,4 +1,4 @@
-<div class="animate-in" style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
+<div class="animate-in admin-page-shell" style="max-width: 1280px; margin: 0 auto; padding: 40px 24px;">
     <div class="flex-header" style="align-items: flex-end;">
         <div>
             <h1 style="font-size: 2rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading); margin-bottom: 8px;">{{ __('Registered Users') }}</h1>
@@ -73,8 +73,8 @@
                             <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">{{ $user->created_at->translatedFormat('M j, Y') }}</div>
                             <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">{{ $user->created_at->format('H:i') }}</div>
                         </td>
-                        <td data-label="{{ __('Role') }}" style="padding: 20px 24px; text-align: right;">
-                            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 16px;">
+                        <td class="user-role-cell" data-label="{{ __('Role') }}" style="padding: 20px 24px; text-align: right;">
+                            <div class="user-role-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 16px;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     @if($user->isMaster())
                                         <span class="badge" style="background: var(--primary); color: white; border: none; font-weight: 900; box-shadow: 0 4px 10px var(--primary-soft);">{{ __('System Master') }}</span>
@@ -108,29 +108,32 @@
                                     <input type="number" 
                                            value="{{ $user->monthly_points_goal }}" 
                                            wire:change="updateMonthlyGoal({{ $user->id }}, $event.target.value)"
+                                           aria-label="{{ __('Monthly points goal for :name', ['name' => $user->name]) }}"
                                            style="width: 70px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 10px; padding: 4px 8px; font-size: 13px; font-weight: 800; color: var(--primary); outline: none; text-align: center;">
                                 </div>
                                 @endif
 
-                                <div style="width: 1px; height: 24px; background: var(--border-color); margin: 0 4px;"></div>
+                                <div class="user-role-divider" style="width: 1px; height: 24px; background: var(--border-color); margin: 0 4px;"></div>
 
-                                @if($user->id !== auth()->id() && (!$user->isMaster() || auth()->user()->isMaster()))
-                                <button wire:click="impersonate({{ $user->id }})" 
-                                        title="{{ __('Impersonate User') }}"
-                                        style="background: none; border: none; cursor: pointer; color: var(--primary); opacity: 0.6; transition: opacity 0.2s;"
-                                        onmouseover="this.style.opacity='1'" 
-                                        onmouseout="this.style.opacity='0.6'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 11h.01"/></svg>
-                                </button>
-                                @endif
+                                <div class="user-account-actions" style="display: flex; align-items: center; gap: 16px;">
+                                    @if($user->id !== auth()->id() && (!$user->isMaster() || auth()->user()->isMaster()))
+                                    <button wire:click="impersonate({{ $user->id }})"
+                                            title="{{ __('Impersonate User') }}"
+                                            style="background: none; border: none; cursor: pointer; color: var(--primary); opacity: 0.6; transition: opacity 0.2s;"
+                                            onmouseover="this.style.opacity='1'"
+                                            onmouseout="this.style.opacity='0.6'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 11h.01"/></svg>
+                                    </button>
+                                    @endif
 
-                                <button wire:click="deleteUser({{ $user->id }})" 
-                                        wire:confirm="{{ __('Are you sure you want to remove this member? This will delete all their data logs.') }}"
-                                        style="background: none; border: none; cursor: pointer; color: var(--danger); opacity: 0.6; transition: opacity 0.2s;"
-                                        onmouseover="this.style.opacity='1'" 
-                                        onmouseout="this.style.opacity='0.6'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
+                                    <button wire:click="deleteUser({{ $user->id }})"
+                                            wire:confirm="{{ __('Are you sure you want to remove this member? This will delete all their data logs.') }}"
+                                            style="background: none; border: none; cursor: pointer; color: var(--danger); opacity: 0.6; transition: opacity 0.2s;"
+                                            onmouseover="this.style.opacity='1'"
+                                            onmouseout="this.style.opacity='0.6'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -142,26 +145,26 @@
     <!-- Create Modal -->
     @if($showCreateModal)
     <template x-teleport="body" wire:key="modal-create-user">
-        <div class="modal-overlay" @click.self="$wire.set('showCreateModal', false)">
-            <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-overlay" @click.self="$wire.set('showCreateModal', false)" @keydown.escape.window="$wire.set('showCreateModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Create Manual User') }}" style="max-width: 450px;">
                 <div style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
                     <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Create Manual User') }}</h3>
-                    <button @click="$wire.set('showCreateModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 18px;">×</button>
+                    <button type="button" @click="$wire.set('showCreateModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 18px;">×</button>
                 </div>
                 <form wire:submit.prevent="createUser" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 20px;">
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Full Name') }}</label>
-                        <input type="text" wire:model="name" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('E.g. Magnus Andersson') }}">
+                        <label for="create-user-name" style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Full Name') }}</label>
+                        <input id="create-user-name" type="text" wire:model="name" autocomplete="name" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('E.g. Magnus Andersson') }}">
                         @error('name') <p style="font-size: 11px; color: var(--danger); margin-top: 4px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Email Address') }}</label>
-                        <input type="email" wire:model="email" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('magnus@example.com') }}">
+                        <label for="create-user-email" style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Email Address') }}</label>
+                        <input id="create-user-email" type="email" wire:model="email" autocomplete="email" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('magnus@example.com') }}">
                         @error('email') <p style="font-size: 11px; color: var(--danger); margin-top: 4px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Password') }}</label>
-                        <input type="password" wire:model="password" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('••••••••') }}">
+                        <label for="create-user-password" style="display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">{{ __('Password') }}</label>
+                        <input id="create-user-password" type="password" wire:model="password" autocomplete="new-password" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; width: 100%; font-size: 14px; font-weight: 600;" placeholder="{{ __('••••••••') }}">
                         @error('password') <p style="font-size: 11px; color: var(--danger); margin-top: 4px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
                     <div style="display: flex; gap: 12px; margin-top: 8px;">

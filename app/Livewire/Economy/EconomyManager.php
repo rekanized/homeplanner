@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Economy;
 
+use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Income;
-use App\Models\Expense;
 use App\Models\Saving;
 use App\Models\User;
-use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 class EconomyManager extends Component
 {
@@ -16,7 +17,7 @@ class EconomyManager extends Component
 
     public function toggleEditMode()
     {
-        $this->isEditing = !$this->isEditing;
+        $this->isEditing = ! $this->isEditing;
     }
 
     #[Computed]
@@ -127,37 +128,58 @@ class EconomyManager extends Component
 
     public function updateIncome($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'recipient_id'];
-        if (!in_array($field, $allowed)) return;
+        $rules = [
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0|max:9999999999.99',
+            'recipient_id' => 'nullable|integer|exists:users,id',
+        ];
+        if (! isset($rules[$field]) || ! $this->isValid($value, $rules[$field])) {
+            return;
+        }
 
         $income = Income::find($id);
-        if (!$income) return;
+        if (! $income) {
+            return;
+        }
 
-        $income->update([$field => $value]);
+        $income->update([$field => is_string($value) ? trim($value) : $value]);
     }
 
     public function updateExpense($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'category', 'handling', 'split', 'delayed', 'one_time_fee'];
-        if (!in_array($field, $allowed)) return;
-
-        // Basic validation
-        if ($field === 'amount' && !is_numeric($value)) return;
-        if ($field === 'name' && empty(trim($value))) return;
+        $rules = [
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0|max:9999999999.99',
+            'category' => 'nullable|string|max:255',
+            'handling' => 'nullable|string|max:255',
+            'split' => 'required|boolean',
+            'delayed' => 'required|boolean',
+            'one_time_fee' => 'required|boolean',
+        ];
+        if (! isset($rules[$field]) || ! $this->isValid($value, $rules[$field])) {
+            return;
+        }
 
         $expense = Expense::find($id);
-        if (!$expense) return;
+        if (! $expense) {
+            return;
+        }
 
         if (in_array($field, ['split', 'delayed', 'one_time_fee'])) {
             $value = (bool) $value;
         }
 
-        $expense->update([$field => $value]);
+        $expense->update([$field => is_string($value) ? trim($value) : $value]);
     }
 
     public function reorder($type, $orderedIds)
     {
-        $model = match($type) {
+        if (! is_array($orderedIds)) {
+            return;
+        }
+        $orderedIds = array_values(array_unique(array_filter($orderedIds, 'is_numeric')));
+
+        $model = match ($type) {
             'income' => Income::class,
             'expense' => Expense::class,
             'saving' => Saving::class,
@@ -165,7 +187,9 @@ class EconomyManager extends Component
             default => null
         };
 
-        if (!$model) return;
+        if (! $model) {
+            return;
+        }
 
         foreach ($orderedIds as $index => $id) {
             $record = $model::find($id);
@@ -177,8 +201,17 @@ class EconomyManager extends Component
 
     public function addExpenseCategoryRow()
     {
+        $baseName = __('New category');
+        $name = $baseName;
+        $suffix = 2;
+
+        while (ExpenseCategory::where('name', $name)->exists()) {
+            $name = "{$baseName} {$suffix}";
+            $suffix++;
+        }
+
         ExpenseCategory::create([
-            'name' => '',
+            'name' => $name,
             'sort_order' => ExpenseCategory::max('sort_order') + 1,
         ]);
     }
@@ -186,14 +219,20 @@ class EconomyManager extends Component
     public function updateExpenseCategory($id, $field, $value)
     {
         $allowed = ['name'];
-        if (!in_array($field, $allowed)) return;
+        if (! in_array($field, $allowed)) {
+            return;
+        }
 
-        if ($field === 'name' && empty(trim($value))) return;
+        if ($field === 'name' && (! is_string($value) || trim($value) === '' || mb_strlen(trim($value)) > 255)) {
+            return;
+        }
 
         $category = ExpenseCategory::find($id);
-        if (!$category) return;
+        if (! $category) {
+            return;
+        }
 
-        $category->update([$field => $value]);
+        $category->update([$field => trim($value)]);
     }
 
     public function deleteExpenseCategory($id)
@@ -203,15 +242,21 @@ class EconomyManager extends Component
 
     public function toggleExpensePayer($id, $userId)
     {
+        if (! User::whereKey($userId)->exists()) {
+            return;
+        }
+
         $expense = Expense::find($id);
-        if (!$expense) return;
+        if (! $expense) {
+            return;
+        }
 
         $payerIds = $expense->payer_ids ?? [];
 
-        if (in_array((int)$userId, $payerIds)) {
-            $payerIds = array_values(array_diff($payerIds, [(int)$userId]));
+        if (in_array((int) $userId, $payerIds)) {
+            $payerIds = array_values(array_diff($payerIds, [(int) $userId]));
         } else {
-            $payerIds[] = (int)$userId;
+            $payerIds[] = (int) $userId;
         }
 
         $expense->update(['payer_ids' => $payerIds]);
@@ -221,15 +266,23 @@ class EconomyManager extends Component
 
     public function updateSaving($id, $field, $value)
     {
-        $allowed = ['name', 'amount', 'saver_id', 'location'];
-        if (!in_array($field, $allowed)) return;
+        $rules = [
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0|max:9999999999.99',
+            'saver_id' => 'nullable|integer|exists:users,id',
+            'location' => 'nullable|string|max:255',
+        ];
+        if (! isset($rules[$field]) || ! $this->isValid($value, $rules[$field])) {
+            return;
+        }
 
         $saving = Saving::find($id);
-        if (!$saving) return;
+        if (! $saving) {
+            return;
+        }
 
-        $saving->update([$field => $value]);
+        $saving->update([$field => is_string($value) ? trim($value) : $value]);
     }
-
 
     public function deleteIncome($id)
     {
@@ -249,5 +302,10 @@ class EconomyManager extends Component
     public function render()
     {
         return view('livewire.economy.economy-manager');
+    }
+
+    private function isValid($value, string $rule): bool
+    {
+        return ! Validator::make(['value' => $value], ['value' => $rule])->fails();
     }
 }

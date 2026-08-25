@@ -2984,3 +2984,957 @@ input:checked + .slider:before {
         overflow: hidden !important;
     }
 }
+
+/* ── Production polish and accessibility ── */
+html {
+    scroll-padding-bottom: calc(var(--mobile-tabbar-height) + 24px);
+}
+
+body {
+    overflow-x: clip;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary) 72%, white 28%) !important;
+    outline-offset: 3px !important;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+    cursor: not-allowed !important;
+    opacity: 0.55;
+}
+
+.skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10000000;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-160%);
+    transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+.modal-content[role="dialog"] {
+    position: relative;
+}
+
+.modal-content button {
+    min-height: 44px;
+}
+
+.modal-content button[style*="border-radius: 50%"] {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+}
+
+.modal-close-button {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+}
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-finish-confirm,
+.btn-finish-clear,
+.btn-finish-cancel {
+    min-height: 44px;
+}
+
+.eco-add-btn,
+.eco-delete-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex: 0 0 44px;
+}
+
+.eco-payer-trigger,
+.completion-toggle,
+.date-badge,
+.category-badge {
+    min-height: 44px;
+}
+
+/* Keep completion controls circular while preserving a 44px hit target. */
+.completion-toggle {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    flex: 0 0 44px;
+}
+
+.completion-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    background: var(--bg-card);
+    transform: translate(-50%, -50%);
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.completion-toggle.checked {
+    border-color: transparent;
+    background: transparent;
+}
+
+.completion-toggle.checked::before {
+    border-color: var(--success);
+    background: var(--success);
+}
+
+.completion-toggle:hover {
+    transform: none;
+}
+
+.completion-toggle:hover::before {
+    border-color: var(--success);
+    box-shadow: 0 0 0 4px var(--success-soft);
+}
+
+.completion-toggle svg {
+    position: relative;
+    z-index: 1;
+}
+
+.quantity-stepper {
+    min-height: 44px;
+    height: 44px;
+    transform: none !important;
+}
+
+.quantity-stepper button {
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.saving-delete-action {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+@media (min-width: 769px) {
+    .dashboard-edit-grid {
+        grid-template-columns: 32px 12px 1.2fr 1fr 1fr 120px 44px !important;
+    }
+
+    .savings-grid {
+        grid-template-columns: 32px 1fr 1fr 1fr 120px 44px !important;
+    }
+
+    .categories-grid {
+        grid-template-columns: 32px 12px 1fr 80px 44px !important;
+    }
+
+    .expenses-grid {
+        grid-template-columns: 32px 1fr 1fr 1.5fr 1fr 120px 120px 44px !important;
+    }
+}
+
+.history-sidebar {
+    flex: 0 1 320px !important;
+    max-width: 100%;
+}
+
+.kids-main-grid > *,
+.kids-main-grid .card,
+.kids-main-grid .eco-grid-table,
+.kids-main-grid .eco-grid-body {
+    min-width: 0;
+}
+
+.settings-card-header {
+    gap: 12px;
+}
+
+.module-toggle {
+    position: relative;
+    width: 52px;
+    height: 44px;
+    flex: 0 0 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.module-toggle-track {
+    position: absolute;
+    top: 10px;
+    left: 2px;
+    width: 48px;
+    height: 24px;
+    border-radius: 24px;
+    background: var(--border-strong);
+    transition: background 0.2s ease;
+}
+
+.module-toggle-track.active {
+    background: var(--primary);
+}
+
+.module-toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease;
+}
+
+.module-toggle-track.active .module-toggle-thumb {
+    transform: translateX(24px);
+}
+
+@media (max-width: 768px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    .main-content {
+        overflow-x: visible;
+    }
+
+    .admin-page-shell {
+        padding: 0 !important;
+    }
+
+    .settings-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .module-settings-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .snapshot-config-row {
+        align-items: flex-start !important;
+        flex-direction: column;
+    }
+
+    .snapshot-config-row > div:last-child {
+        width: 100%;
+    }
+
+    .snapshot-config-row input {
+        width: 100% !important;
+        min-height: 44px;
+    }
+
+    .responsive-table td button,
+    .responsive-table td input,
+    .responsive-table td select {
+        min-height: 44px;
+    }
+
+    .responsive-table td button {
+        min-width: 44px;
+    }
+
+    .user-role-cell {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 10px;
+        text-align: left !important;
+    }
+
+    .user-role-actions {
+        width: 100%;
+        min-width: 0;
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .user-role-divider {
+        display: none;
+    }
+
+    .user-account-actions {
+        flex: 0 0 auto;
+        gap: 8px !important;
+    }
+
+    .shopping-grid-row,
+    .todo-grid-row,
+    .todo-grid-header {
+        grid-template-columns: 44px 44px minmax(0, 1fr) 44px !important;
+    }
+
+    .shopping-grid-row {
+        grid-template-columns: 50px minmax(0, 1fr) 44px !important;
+    }
+
+    .savings-grid {
+        grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1fr) 44px !important;
+    }
+
+    .categories-grid {
+        grid-template-columns: 32px 12px minmax(0, 1fr) 70px 44px !important;
+    }
+
+    .completion-toggle {
+        width: 44px !important;
+        height: 44px !important;
+    }
+
+    .todo-item-meta {
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .date-badge.empty {
+        width: 44px;
+    }
+
+    .category-badge {
+        width: 92px;
+    }
+
+    .eco-inline-input,
+    .eco-inline-select {
+        min-height: 44px;
+    }
+
+    .eco-toggle-label {
+        min-height: 44px;
+    }
+
+    .eco-toggle-label input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+
+    .savings-page-header {
+        align-items: stretch !important;
+        flex-direction: column;
+        gap: 20px !important;
+    }
+
+    .savings-header-actions {
+        width: 100%;
+        align-items: stretch !important;
+        flex-direction: column;
+        gap: 12px !important;
+    }
+
+    .savings-header-actions > .btn {
+        width: 100%;
+    }
+
+    .savings-header-actions .header-stats {
+        width: 100%;
+        margin-top: 0 !important;
+    }
+
+    .savings-header-actions .summary-card {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    .audit-log-table td:first-child::before {
+        display: block;
+    }
+
+    .audit-log-table td:first-child {
+        align-items: center;
+    }
+}
+
+/* Dashboard: actionable household productivity overview. */
+.productivity-card {
+    grid-column: 1 / -1;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 28px;
+}
+
+.productivity-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: var(--space-6) var(--space-8);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.productivity-eyebrow {
+    margin-bottom: 5px;
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.productivity-header h3 {
+    color: var(--text-main);
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.productivity-header p {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.productivity-legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.productivity-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.productivity-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.todo-dot,
+.todo-segment {
+    background: var(--primary);
+}
+
+.chore-dot,
+.chore-segment {
+    background: var(--success);
+}
+
+.productivity-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-input);
+}
+
+.productivity-metric {
+    min-width: 0;
+    padding: 18px 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.productivity-metric:last-child {
+    border-right: 0;
+}
+
+.productivity-metric > span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.productivity-metric strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.productivity-metric strong.positive {
+    color: var(--success);
+}
+
+.productivity-metric strong.negative {
+    color: var(--danger);
+}
+
+.productivity-metric small {
+    display: block;
+    margin-top: 6px;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+}
+
+.productivity-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    padding: 24px var(--space-8) 28px;
+}
+
+.productivity-week {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.productivity-week-label {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.productivity-week-label small {
+    margin-top: 1px;
+    color: var(--primary);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.productivity-track {
+    display: flex;
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--border-color) 60%, transparent);
+}
+
+.productivity-segment {
+    min-width: 3px;
+    height: 100%;
+}
+
+.productivity-week.current .productivity-track {
+    box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.productivity-week-total {
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 900;
+    text-align: right;
+}
+
+.productivity-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: -10px var(--space-8) 24px;
+    padding: 14px 16px;
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.productivity-empty strong {
+    color: var(--text-main);
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .productivity-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .productivity-metric:nth-child(2) {
+        border-right: 0;
+    }
+
+    .productivity-metric:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+/* Phone editors: clear hierarchy without changing the desktop grids. */
+@media (max-width: 640px) {
+    .productivity-header {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .productivity-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .productivity-metric {
+        padding: 16px;
+    }
+
+    .productivity-metric strong {
+        font-size: 1.35rem;
+    }
+
+    .productivity-chart {
+        gap: 13px;
+        padding: 22px 16px 24px;
+    }
+
+    .productivity-week {
+        grid-template-columns: 76px minmax(0, 1fr) 24px;
+        gap: 8px;
+    }
+
+    .productivity-week-label {
+        font-size: 9px;
+    }
+
+    .productivity-track {
+        height: 12px;
+    }
+
+    .productivity-empty {
+        margin: -8px 16px 20px;
+    }
+
+    .shopping-grid-row.mobile-item-editor {
+        grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+        grid-template-rows: auto auto !important;
+        column-gap: 10px !important;
+        row-gap: 8px !important;
+        align-items: start !important;
+        padding: 14px !important;
+    }
+
+    .shopping-grid-row.mobile-item-editor .shopping-item-editor {
+        display: contents !important;
+    }
+
+    .shopping-grid-row.mobile-item-editor .shopping-item-editor > .eco-inline-input {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100% !important;
+    }
+
+    .shopping-grid-row.mobile-item-editor .quantity-stepper {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: start;
+        margin: 0 !important;
+    }
+
+    .shopping-grid-row.mobile-item-editor .cell-handle {
+        grid-column: 1;
+        grid-row: 2;
+        width: 44px;
+        height: 44px;
+        justify-content: center;
+    }
+
+    .shopping-grid-row.mobile-item-editor .cell-status {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .shopping-grid-row.mobile-item-editor .cell-delete {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .todo-grid-header {
+        grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+    }
+
+    .todo-grid-header > :first-child,
+    .todo-grid-header > :last-child {
+        display: none;
+    }
+
+    .todo-grid-header > :nth-child(2) {
+        grid-column: 1;
+    }
+
+    .todo-grid-header > :nth-child(3) {
+        grid-column: 2 / 4;
+    }
+
+    .todo-grid-row.mobile-item-editor {
+        grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+        grid-template-rows: auto auto !important;
+        column-gap: 10px;
+        row-gap: 8px;
+        align-items: start;
+        padding: 14px !important;
+    }
+
+    .todo-grid-row.mobile-item-editor .cell-status {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .todo-grid-row.mobile-item-editor .cell-name {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        padding: 0;
+    }
+
+    .todo-grid-row.mobile-item-editor .cell-delete {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .todo-grid-row.mobile-item-editor .cell-handle {
+        grid-column: 1;
+        grid-row: 2;
+        width: 44px;
+        height: 44px;
+    }
+
+    .todo-grid-row.mobile-item-editor .todo-item-content {
+        gap: 10px;
+        width: 100%;
+        padding: 0;
+    }
+
+    .todo-grid-row.mobile-item-editor .todo-item-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .todo-grid-row.mobile-item-editor .date-badge,
+    .todo-grid-row.mobile-item-editor .category-badge {
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .eco-edit-table .eco-grid-body {
+        gap: 12px;
+        padding: 12px;
+        background: var(--bg-input);
+    }
+
+    .eco-edit-table .eco-edit-card {
+        position: relative;
+        margin: 0;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 18px;
+        background: var(--bg-card) !important;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .eco-edit-card[data-editor-label]::before {
+        content: attr(data-editor-label);
+        position: absolute;
+        top: 28px;
+        left: 68px;
+        color: var(--text-muted);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-transform: uppercase;
+        transform: translateY(-50%);
+    }
+
+    .dashboard-edit-grid.eco-edit-card,
+    .categories-grid.category-edit-card,
+    .savings-grid.balance-edit-card {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        padding: 14px !important;
+    }
+
+    .eco-edit-card .eco-edit-handle,
+    .balance-edit-card > .eco-drag-handle {
+        grid-column: 1;
+        grid-row: 1;
+        width: 44px;
+        height: 44px;
+        justify-self: start;
+    }
+
+    .eco-edit-card .eco-edit-delete,
+    .balance-edit-card > .saving-delete-action {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    .eco-edit-card .eco-edit-status,
+    .eco-edit-card .eco-edit-spacer {
+        display: none !important;
+    }
+
+    .income-edit-card .edit-name,
+    .monthly-saving-edit-card .edit-name,
+    .monthly-saving-edit-card .edit-location,
+    .category-edit-card .edit-name {
+        grid-column: 1 / -1;
+    }
+
+    .income-edit-card .edit-name,
+    .monthly-saving-edit-card .edit-name,
+    .category-edit-card .edit-name {
+        grid-row: 2;
+    }
+
+    .income-edit-card .edit-recipient,
+    .income-edit-card .edit-amount {
+        grid-row: 3;
+    }
+
+    .monthly-saving-edit-card .edit-location {
+        grid-row: 3;
+    }
+
+    .monthly-saving-edit-card .edit-saver,
+    .monthly-saving-edit-card .edit-amount {
+        grid-row: 4;
+    }
+
+    .income-edit-card .edit-amount,
+    .monthly-saving-edit-card .edit-amount {
+        grid-column: 2;
+    }
+
+    .category-edit-card .category-edit-total {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: var(--bg-input);
+        text-align: left !important;
+    }
+
+    .category-edit-card .category-edit-total .mobile-label {
+        margin: 0;
+    }
+
+    .balance-edit-card .saving-primary-fields {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .balance-edit-card .saving-finance-fields {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px !important;
+    }
+
+    .expense-edit-card {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+        padding: 14px !important;
+    }
+
+    .expense-edit-card .eco-row-header {
+        min-height: 44px;
+        margin: 0 !important;
+    }
+
+    .expense-edit-card .eco-edit-card-title {
+        flex: 1;
+        padding: 0 10px;
+        color: var(--text-muted);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .expense-edit-card .eco-mobile-row {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .todo-grid-row.mobile-item-editor .todo-item-meta,
+    .balance-edit-card .saving-finance-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .income-edit-card .edit-recipient,
+    .income-edit-card .edit-amount,
+    .monthly-saving-edit-card .edit-saver,
+    .monthly-saving-edit-card .edit-amount {
+        grid-column: 1 / -1;
+    }
+
+    .income-edit-card .edit-amount,
+    .monthly-saving-edit-card .edit-amount {
+        grid-row: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

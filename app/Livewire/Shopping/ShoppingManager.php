@@ -2,15 +2,16 @@
 
 namespace App\Livewire\Shopping;
 
-use Livewire\Component;
-use App\Models\ShoppingList;
 use App\Models\ShoppingItem;
+use App\Models\ShoppingList;
 use App\Services\GrocerySortingService;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 class ShoppingManager extends Component
 {
     public $activeListId;
+
     public $newListNames = []; // For inline editing of list names
 
     protected $listeners = ['reorder' => 'handleReorder'];
@@ -18,7 +19,7 @@ class ShoppingManager extends Component
     public function mount()
     {
         $firstList = ShoppingList::orderBy('sort_order')->first();
-        if (!$firstList) {
+        if (! $firstList) {
             $firstList = ShoppingList::create(['name' => __('General Shopping')]);
         }
         $this->activeListId = $firstList->id;
@@ -44,14 +45,17 @@ class ShoppingManager extends Component
 
     public function selectList($id)
     {
-        $this->activeListId = $id;
+        $list = ShoppingList::find($id);
+        if ($list) {
+            $this->activeListId = $list->id;
+        }
     }
 
     public function addList()
     {
         $newList = ShoppingList::create([
             'name' => __('New List'),
-            'sort_order' => ShoppingList::max('sort_order') + 1
+            'sort_order' => ShoppingList::max('sort_order') + 1,
         ]);
         $this->activeListId = $newList->id;
     }
@@ -59,14 +63,14 @@ class ShoppingManager extends Component
     public function updateListName($id, $name)
     {
         $list = ShoppingList::find($id);
-        if ($list && trim($name) !== '') {
+        if ($list && is_string($name) && trim($name) !== '' && mb_strlen(trim($name)) <= 255) {
             $list->update(['name' => trim($name)]);
         }
     }
 
     public function deleteList($id)
     {
-        $list = ShoppingList::find($id);
+        $list = ShoppingList::whereKey($id)->whereKey($this->activeListId)->first();
         if ($list) {
             $list->delete();
             $this->mount(); // Reset to first available list
@@ -75,13 +79,15 @@ class ShoppingManager extends Component
 
     public function addItem()
     {
-        if (!$this->activeListId) return;
+        if (! ShoppingList::whereKey($this->activeListId)->exists()) {
+            return;
+        }
 
         $item = ShoppingItem::create([
             'shopping_list_id' => $this->activeListId,
             'name' => '',
             'quantity' => 1,
-            'sort_order' => ShoppingItem::where('shopping_list_id', $this->activeListId)->max('sort_order') + 1
+            'sort_order' => ShoppingItem::where('shopping_list_id', $this->activeListId)->max('sort_order') + 1,
         ]);
 
         $this->dispatch('shopping-item-added', itemId: $item->id);
@@ -89,23 +95,24 @@ class ShoppingManager extends Component
 
     public function updateItem($id, $field, $value)
     {
-        $item = ShoppingItem::find($id);
-        if ($item) {
-            $item->update([$field => $value]);
+        if ($field !== 'name' || ! is_string($value) || mb_strlen($value) > 255) {
+            return;
         }
+
+        $this->activeItem($id)?->update(['name' => trim($value)]);
     }
 
     public function incrementQuantity($id)
     {
-        $item = ShoppingItem::find($id);
-        if ($item) {
+        $item = $this->activeItem($id);
+        if ($item && $item->quantity < 999) {
             $item->increment('quantity');
         }
     }
 
     public function decrementQuantity($id)
     {
-        $item = ShoppingItem::find($id);
+        $item = $this->activeItem($id);
         if ($item && $item->quantity > 1) {
             $item->decrement('quantity');
         }
@@ -113,15 +120,15 @@ class ShoppingManager extends Component
 
     public function toggleCheck($id)
     {
-        $item = ShoppingItem::find($id);
+        $item = $this->activeItem($id);
         if ($item) {
-            $item->update(['is_checked' => !$item->is_checked]);
+            $item->update(['is_checked' => ! $item->is_checked]);
         }
     }
 
     public function deleteItem($id)
     {
-        $item = ShoppingItem::find($id);
+        $item = $this->activeItem($id);
         if ($item) {
             $item->delete();
         }
@@ -129,7 +136,7 @@ class ShoppingManager extends Component
 
     public function clearCheckedItems()
     {
-        if (!$this->activeListId) {
+        if (! ShoppingList::whereKey($this->activeListId)->exists()) {
             return;
         }
 
@@ -142,13 +149,18 @@ class ShoppingManager extends Component
         }
     }
 
-
-
     public function handleReorder($type, $ids)
     {
+        if (! is_array($ids)) {
+            return;
+        }
+        $ids = array_values(array_unique(array_filter($ids, 'is_numeric')));
+
         if ($type === 'items') {
             foreach ($ids as $index => $id) {
-                ShoppingItem::where('id', $id)->update(['sort_order' => $index]);
+                ShoppingItem::where('id', $id)
+                    ->where('shopping_list_id', $this->activeListId)
+                    ->update(['sort_order' => $index]);
             }
         } elseif ($type === 'lists') {
             foreach ($ids as $index => $id) {
@@ -160,10 +172,12 @@ class ShoppingManager extends Component
     public function sortItems(GrocerySortingService $sortingService)
     {
         $items = $this->items;
-        if ($items->isEmpty()) return;
+        if ($items->isEmpty()) {
+            return;
+        }
 
         // Sort items using the heuristic service
-        $sortedItems = $items->sortBy(function($item) use ($sortingService) {
+        $sortedItems = $items->sortBy(function ($item) use ($sortingService) {
             return $sortingService->getSortScore($item->name);
         });
 
@@ -171,7 +185,7 @@ class ShoppingManager extends Component
         foreach ($sortedItems->values() as $index => $item) {
             $item->update(['sort_order' => $index]);
         }
-        
+
         // Clear computed properties and refresh relationship
         unset($this->items);
         if ($this->activeList) {
@@ -184,5 +198,12 @@ class ShoppingManager extends Component
     public function render()
     {
         return view('livewire.shopping.shopping-manager');
+    }
+
+    private function activeItem($id): ?ShoppingItem
+    {
+        return ShoppingItem::whereKey($id)
+            ->where('shopping_list_id', $this->activeListId)
+            ->first();
     }
 }

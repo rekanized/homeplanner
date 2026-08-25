@@ -15,7 +15,7 @@ Homeplanner is a modern, high-performance web application designed to streamline
 Your command center. Get an instant overview of your monthly income/expenses, active shopping items, and pending tasks. Featuring a **Task Productivity Chart** to track your completion trends over time.
 
 ### 🛒 Smart Shopping Lists
-Never miss an item again. Create multiple lists with real-time synchronization, drag-and-drop sorting, and integrated **OpenFoodFacts** support for a truly intelligent grocery experience.
+Never miss an item again. Create multiple lists with real-time synchronization, drag-and-drop sorting, and fast local Swedish/English aisle sorting.
 
 ### 📝 Todo System
 Efficiently manage your household chores. Track due dates, prioritize tasks with ease, and get alerted on overdue items before they pile up.
@@ -64,4 +64,3 @@ volumes:
 
 ---
 Powered by [Rekanized](https://github.com/rekanized)
-

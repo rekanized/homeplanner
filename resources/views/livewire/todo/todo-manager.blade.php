@@ -182,7 +182,7 @@
                                 style="min-height: 40px;"
                             >
                                 @foreach($this->groupedPendingItems[$groupKey] as $item)
-                                    <div class="todo-grid-row" wire:key="item-{{ $item->id }}" data-id="{{ $item->id }}">
+                                    <div class="todo-grid-row mobile-item-editor" wire:key="item-{{ $item->id }}" data-id="{{ $item->id }}">
                                         <div class="cell-handle">
                                             <div class="eco-drag-handle" style="cursor: grab; display: flex; align-items: center; justify-content: center; color: var(--text-muted); opacity: 0.3; width: 100%; height: 100%;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
@@ -194,6 +194,7 @@
                                                 wire:click="toggleItem({{ $item->id }})"
                                                 class="completion-toggle"
                                                 title="{{ __('Click to complete task') }}"
+                                                aria-pressed="false"
                                             ></button>
                                         </div>
 
@@ -204,6 +205,7 @@
                                                     value="{{ $item->name }}" 
                                                     id="task-input-{{ $item->id }}"
                                                     class="eco-inline-input"
+                                                    aria-label="{{ __('Task Description') }}"
                                                     placeholder="{{ __('Task description...') }}"
                                                     @blur="$wire.updateItemName({{ $item->id }}, $event.target.value)"
                                                     @keydown.enter="$event.target.blur()"
@@ -212,6 +214,7 @@
                                                     <input type="date" 
                                                         value="{{ $item->due_date ? \Carbon\Carbon::parse($item->due_date)->format('Y-m-d') : '' }}"
                                                         class="date-badge {{ $groupKey === 'overdue' ? 'overdue' : ($groupKey === 'today' ? 'today' : ($item->due_date ? 'upcoming' : 'empty')) }}"
+                                                        aria-label="{{ __('Set due date') }}"
                                                         @change="$wire.updateItemDueDate({{ $item->id }}, $event.target.value)"
                                                         title="{{ __('Set due date') }}"
                                                     >
@@ -219,6 +222,7 @@
                                                         type="text" 
                                                         value="{{ $item->category }}" 
                                                         class="category-badge"
+                                                        aria-label="{{ __('Filter by Tag') }}"
                                                         placeholder="{{ __('+ tag') }}"
                                                         @blur="$wire.updateItemCategory({{ $item->id }}, $event.target.value)"
                                                         @keydown.enter="$event.target.blur()"
@@ -255,7 +259,7 @@
                 
                 <div class="eco-grid-body">
                     @foreach($this->completedItems as $item)
-                        <div class="todo-grid-row checked-row" wire:key="item-{{ $item->id }}" data-id="{{ $item->id }}">
+                        <div class="todo-grid-row mobile-item-editor checked-row" wire:key="item-{{ $item->id }}" data-id="{{ $item->id }}">
                             <div class="cell-handle" style="color: var(--text-muted); opacity: 0.1;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                             </div>
@@ -264,6 +268,7 @@
                                 <button 
                                     wire:click="toggleItem({{ $item->id }})"
                                     class="completion-toggle checked"
+                                    aria-pressed="true"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                 </button>

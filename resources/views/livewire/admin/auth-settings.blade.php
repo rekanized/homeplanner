@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-header settings-card-header">
         <h3 style="font-weight: 900;">{{ __('Authentication Settings') }}</h3>
         <p style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">{{ __('Configure how users sign in') }}</p>
     </div>
@@ -29,7 +29,8 @@
                     </div>
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--slate-500); text-transform: uppercase;">{{ __('Google Client Secret') }}</label>
-                        <input type="password" wire:model="clientSecret" class="eco-inline-input" style="border: 1px solid var(--border-color); background: var(--bg-input); height: 44px;" placeholder="{{ __('GOCSPX-...') }}">
+                        <input type="password" wire:model="clientSecret" autocomplete="new-password" class="eco-inline-input" style="border: 1px solid var(--border-color); background: var(--bg-input); height: 44px;" placeholder="{{ $hasClientSecret ? __('Configured — leave blank to keep it') : __('GOCSPX-...') }}">
+                        @error('clientSecret') <p style="font-size: 11px; color: var(--danger); margin-top: 4px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--slate-500); text-transform: uppercase;">{{ __('Redirect URI') }}</label>

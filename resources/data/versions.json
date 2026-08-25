@@ -1,5 +1,67 @@
 [
     {
+        "version": "v1.8.0",
+        "released_at": "2026-08-25 15:19:49",
+        "changes": [
+            {
+                "type": "added",
+                "description": "Added a redesigned Household Productivity dashboard that combines Todo and Kids chore completions across eight readable weekly trends"
+            },
+            {
+                "type": "added",
+                "description": "Added actionable productivity metrics for this week, week-over-week change, open workload, and the 30-day task completion rate"
+            },
+            {
+                "type": "improved",
+                "description": "Reorganized Shopping and Todo inline editing on mobile into clear primary and secondary rows with touch-friendly controls and accessible field labels"
+            },
+            {
+                "type": "improved",
+                "description": "Redesigned Economy income, monthly savings, category, and expense editors as structured mobile cards while preserving the desktop table layouts"
+            },
+            {
+                "type": "improved",
+                "description": "Redesigned Savings goal editing on mobile with grouped primary and financial fields, clearer actions, and improved narrow-screen spacing"
+            },
+            {
+                "type": "fixed",
+                "description": "Corrected Shopping and Todo completion controls so their visible checkboxes remain perfectly circular on desktop and mobile"
+            },
+            {
+                "type": "improved",
+                "description": "Completed an application-wide responsive layout pass covering narrow phones through large desktops, including Kids, History, Audit Log, and Admin screens"
+            },
+            {
+                "type": "improved",
+                "description": "Expanded keyboard and screen-reader accessibility with a skip link, visible focus states, semantic dialogs, focus trapping and restoration, Escape handling, switch semantics, and descriptive control labels"
+            },
+            {
+                "type": "improved",
+                "description": "Standardized touch targets, disabled states, modal behavior, reduced-motion support, and mobile form sizing throughout the application"
+            },
+            {
+                "type": "improved",
+                "description": "Updated initial setup with explicit labels, identifiers, autocomplete hints, and more appropriate input types"
+            },
+            {
+                "type": "fixed",
+                "description": "Converted Audit Log rows into complete mobile cards and corrected fixed-width History, Kids, Savings, and Admin layouts that could overflow on small screens"
+            },
+            {
+                "type": "fixed",
+                "description": "Prevented duplicate blank Economy categories by assigning unique default names when several categories are created"
+            },
+            {
+                "type": "improved",
+                "description": "Expanded English and Swedish localization for the new productivity, editor, accessibility, and category interface text"
+            },
+            {
+                "type": "improved",
+                "description": "Expanded feature and responsive regression coverage for dashboard metrics, Economy categories, interactive editing, accessibility, and horizontal overflow across the application"
+            }
+        ]
+    },
+    {
         "version": "v1.7.0",
         "released_at": "2026-04-18 12:45:00",
         "changes": [

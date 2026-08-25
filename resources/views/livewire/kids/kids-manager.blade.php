@@ -2,11 +2,11 @@
     <!-- Modals (Teleported to body for reliable viewport-fixed positioning) -->
     @if($showAddChoreModal)
     <template x-teleport="body" wire:key="modal-add-chore">
-        <div class="modal-overlay" @click.self="$wire.set('showAddChoreModal', false)">
-            <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-overlay" @click.self="$wire.set('showAddChoreModal', false)" @keydown.escape.window="$wire.set('showAddChoreModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Assign Chore') }}" style="max-width: 500px;">
                 <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
                     <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Assign Chore') }}</h3>
-                    <button @click="$wire.set('showAddChoreModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s;">×</button>
+                    <button type="button" @click="$wire.set('showAddChoreModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s;">×</button>
                 </div>
                 
                 <form wire:submit.prevent="addChore" class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
@@ -24,14 +24,14 @@
                     @endif
 
                     <div>
-                        <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Chore Title') }}</label>
-                        <input type="text" wire:model="title" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;" placeholder="{{ __('E.g. Vacuum the living room') }}" autofocus>
+                        <label for="chore-title" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Chore Title') }}</label>
+                        <input id="chore-title" type="text" wire:model="title" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;" placeholder="{{ __('E.g. Vacuum the living room') }}" autofocus>
                         @error('title') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Description (Optional)') }}</label>
-                        <textarea wire:model="description" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; min-height: 100px; resize: vertical;" placeholder="{{ __('Add some details...') }}"></textarea>
+                        <label for="chore-description" class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Description (Optional)') }}</label>
+                        <textarea id="chore-description" wire:model="description" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; min-height: 100px; resize: vertical;" placeholder="{{ __('Add some details...') }}"></textarea>
                     </div>
 
                     <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -49,9 +49,9 @@
                         </div>
                         <div>
                             <div style="margin-bottom: 24px;">
-                                <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Reward Points') }}</label>
+                                <label for="chore-score" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Reward Points') }}</label>
                                 <div style="position: relative;">
-                                    <input type="number" wire:model="score" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 800; outline: none;">
+                                    <input id="chore-score" type="number" wire:model="score" min="1" inputmode="numeric" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 800; outline: none;">
                                     <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 10px; font-weight: 900; color: var(--primary);">{{ __('PTS') }}</span>
                                 </div>
                                 @error('score') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
@@ -92,11 +92,11 @@
 
     @if($showAdjustPointsModal)
     <template x-teleport="body" wire:key="modal-adjust-points">
-        <div class="modal-overlay" @click.self="$wire.set('showAdjustPointsModal', false)">
-            <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-overlay" @click.self="$wire.set('showAdjustPointsModal', false)" @keydown.escape.window="$wire.set('showAdjustPointsModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Adjust Points') }}" style="max-width: 400px;">
                 <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
                     <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main); font-family: var(--font-heading);">{{ __('Adjust Points') }}</h3>
-                    <button @click="$wire.set('showAdjustPointsModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button type="button" @click="$wire.set('showAdjustPointsModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
                 <div class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
@@ -137,14 +137,14 @@
 
     @if($showUsePointsModal)
     <template x-teleport="body" wire:key="modal-use-points">
-        <div class="modal-overlay" @click.self="$wire.set('showUsePointsModal', false)">
-            <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-overlay" @click.self="$wire.set('showUsePointsModal', false)" @keydown.escape.window="$wire.set('showUsePointsModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Use Points') }}" style="max-width: 450px;">
                 <div class="modal-compact-header" style="padding: 28px 32px 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);">
                     <div>
                         <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary); font-family: var(--font-heading);">{{ __('Use Points') }}</h3>
                         <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __('Redeem points for rewards') }}</p>
                     </div>
-                    <button @click="$wire.set('showUsePointsModal', false)" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button type="button" @click="$wire.set('showUsePointsModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: var(--bg-card); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
                 <form wire:submit.prevent="usePoints" class="modal-compact-form" style="padding: 24px 32px 32px 32px; display: flex; flex-direction: column; gap: 24px;">
@@ -181,8 +181,8 @@
 
     @if($showManageTemplatesModal)
     <template x-teleport="body" wire:key="modal-manage-templates">
-        <div class="modal-overlay" @click.self="$wire.set('showManageTemplatesModal', false)">
-            <div class="modal-content templates-grid" style="max-width: 800px;">
+        <div class="modal-overlay" @click.self="$wire.set('showManageTemplatesModal', false)" @keydown.escape.window="$wire.set('showManageTemplatesModal', false)">
+            <div class="modal-content templates-grid" role="dialog" aria-modal="true" aria-label="{{ __('Manage Chore Templates') }}" style="max-width: 800px;">
                 <!-- Left Side: Template List -->
                 <div style="padding: 32px; border-right: 1px solid var(--border-color); background: rgba(0,0,0,0.01);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -235,7 +235,7 @@
 
                 <!-- Right Side: Editor -->
                 <div style="padding: 32px; position: relative;">
-                    <button @click="$wire.set('showManageTemplatesModal', false)" style="position: absolute; right: 24px; top: 24px; background: var(--bg-input); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button type="button" @click="$wire.set('showManageTemplatesModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="position: absolute; right: 24px; top: 24px; background: var(--bg-input); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                     
                     <div class="modal-compact-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                         <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--text-main);">
@@ -354,14 +354,14 @@
 
     @if($showQuickAssignModal)
     <template x-teleport="body" wire:key="modal-quick-assign">
-        <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)">
-            <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-overlay" @click.self="$wire.set('showQuickAssignModal', false)" @keydown.escape.window="$wire.set('showQuickAssignModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Quick Assign') }}" style="max-width: 500px;">
                 <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 163, 74, 0.05);">
                     <div>
                         <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--success);">{{ __('Quick Assign') }}</h3>
                         <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __('Assign to') }} {{ $quickAssignUserName }}</p>
                     </div>
-                    <button @click="$wire.set('showQuickAssignModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button type="button" @click="$wire.set('showQuickAssignModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
                 <div style="padding: 32px;">
@@ -406,14 +406,14 @@
 
     @if($showProofUploadModal)
     <template x-teleport="body" wire:key="modal-proof-upload">
-        <div class="modal-overlay" @click.self="$wire.set('showProofUploadModal', false)">
-            <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-overlay" @click.self="$wire.set('showProofUploadModal', false)" @keydown.escape.window="$wire.set('showProofUploadModal', false)">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-label="{{ __('Submit Proof') }}" style="max-width: 450px;">
                 <div class="modal-compact-header" style="padding: 24px 32px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(37, 99, 235, 0.05);">
                     <div>
                         <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">{{ __('Submit Proof') }}</h3>
                         <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px;">{{ __("Upload a photo of your work") }}</p>
                     </div>
-                    <button @click="$wire.set('showProofUploadModal', false)" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
+                    <button type="button" @click="$wire.set('showProofUploadModal', false)" class="modal-close-button" aria-label="{{ __('Cancel') }}" style="background: white; border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 20px;">×</button>
                 </div>
                 
                 <form wire:submit.prevent="submitChoreProof" class="modal-compact-form" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
@@ -556,9 +556,9 @@
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
                             @foreach($pendingApproval as $pending)
                                 <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: var(--shadow-sm);">
-                                    <div style="width: 80px; height: 80px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 1px solid var(--border-color); flex-shrink: 0; cursor: pointer;" onclick="window.open('{{ asset('storage/' . $pending->proof_image_path) }}', '_blank')">
+                                    <div style="width: 80px; height: 80px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 1px solid var(--border-color); flex-shrink: 0; cursor: pointer;" onclick="window.open('{{ route('kids.proofs.show', $pending) }}', '_blank', 'noopener')">
                                         @if($pending->proof_image_path)
-                                            <img src="{{ asset('storage/' . $pending->proof_image_path) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <img src="{{ route('kids.proofs.show', $pending) }}" alt="{{ __('Proof for :title', ['title' => $pending->title]) }}" style="width: 100%; height: 100%; object-fit: cover;">
                                         @else
                                             <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
@@ -671,8 +671,8 @@
                                 @forelse($completedChores as $chore)
                                     <div class="eco-grid-row finished-grid" style="padding: 12px 16px; display: flex; align-items: center; gap: 16px;">
                                         @if($chore->proof_image_path)
-                                            <div style="width: 48px; height: 48px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; cursor: pointer;" onclick="window.open('{{ asset('storage/' . $chore->proof_image_path) }}', '_blank')">
-                                                <img src="{{ asset('storage/' . $chore->proof_image_path) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <div style="width: 48px; height: 48px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; cursor: pointer;" onclick="window.open('{{ route('kids.proofs.show', $chore) }}', '_blank', 'noopener')">
+                                                <img src="{{ route('kids.proofs.show', $chore) }}" alt="{{ __('Proof for :title', ['title' => $chore->title]) }}" style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
                                         @endif
                                         <div style="flex: 1; min-width: 0;">

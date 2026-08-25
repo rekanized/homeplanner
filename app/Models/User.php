@@ -4,11 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\Auditable;
-use App\Models\Setting;
-use App\Models\Chore;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, Auditable;
+    use Auditable, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -48,7 +47,13 @@ class User extends Authenticatable
      */
     public function isMaster(): bool
     {
-        return $this->email === Setting::get('google_first_user_email');
+        $configuredMaster = Setting::get('google_first_user_email');
+
+        if (filled($configuredMaster)) {
+            return strcasecmp($this->email, $configuredMaster) === 0;
+        }
+
+        return $this->id === self::oldest('id')->value('id');
     }
 
     /**
@@ -64,7 +69,11 @@ class User extends Authenticatable
      */
     public function getMonthlyPointsAttribute(): int
     {
-        return \App\Models\Chore::where('user_id', $this->id)
+        if (array_key_exists('monthly_points', $this->attributes)) {
+            return (int) $this->attributes['monthly_points'];
+        }
+
+        return Chore::where('user_id', $this->id)
             ->where('is_completed', true)
             ->whereMonth('completed_at', now()->month)
             ->whereYear('completed_at', now()->year)
@@ -76,11 +85,12 @@ class User extends Authenticatable
      */
     public function getMonthlyGoalProgressAttribute(): int
     {
-        if (!$this->monthly_points_goal || $this->monthly_points_goal <= 0) {
+        if (! $this->monthly_points_goal || $this->monthly_points_goal <= 0) {
             return 0;
         }
         $progress = ($this->monthlyPoints / $this->monthly_points_goal) * 100;
-        return min(100, (int)$progress);
+
+        return min(100, (int) $progress);
     }
 
     /**
@@ -88,7 +98,7 @@ class User extends Authenticatable
      */
     public function getTotalFinishedTasksAttribute(): int
     {
-        return \App\Models\Chore::where('user_id', $this->id)
+        return Chore::where('user_id', $this->id)
             ->where('is_completed', true)
             ->count();
     }
@@ -98,10 +108,32 @@ class User extends Authenticatable
      */
     public function getMonthlyFinishedTasksAttribute(): int
     {
-        return \App\Models\Chore::where('user_id', $this->id)
+        if (array_key_exists('monthly_finished_tasks', $this->attributes)) {
+            return (int) $this->attributes['monthly_finished_tasks'];
+        }
+
+        return Chore::where('user_id', $this->id)
             ->where('is_completed', true)
             ->whereMonth('completed_at', now()->month)
             ->whereYear('completed_at', now()->year)
             ->count();
+    }
+
+    public function scopeWithMonthlyChoreStats(Builder $query): Builder
+    {
+        $start = now()->startOfMonth();
+        $end = now()->endOfMonth();
+
+        return $query
+            ->withSum([
+                'chores as monthly_points' => fn (Builder $query) => $query
+                    ->where('is_completed', true)
+                    ->whereBetween('completed_at', [$start, $end]),
+            ], 'score')
+            ->withCount([
+                'chores as monthly_finished_tasks' => fn (Builder $query) => $query
+                    ->where('is_completed', true)
+                    ->whereBetween('completed_at', [$start, $end]),
+            ]);
     }
 }

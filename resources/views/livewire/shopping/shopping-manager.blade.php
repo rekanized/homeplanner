@@ -129,7 +129,7 @@
             >
                 @forelse($this->items as $item)
                     <div 
-                        class="eco-grid-row shopping-grid-row {{ $item->is_checked ? 'checked-row' : '' }}" 
+                        class="eco-grid-row shopping-grid-row mobile-item-editor {{ $item->is_checked ? 'checked-row' : '' }}"
                         wire:key="item-{{ $item->id }}"
                         data-id="{{ $item->id }}"
                     >
@@ -146,28 +146,30 @@
                                 wire:click="toggleCheck({{ $item->id }})" 
                                 class="completion-toggle {{ $item->is_checked ? 'checked' : '' }}" 
                                 title="{{ __('Click to complete item') }}"
+                                aria-pressed="{{ $item->is_checked ? 'true' : 'false' }}"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="display: {{ $item->is_checked ? 'block' : 'none' }}"><polyline points="20 6 9 17 4 12"/></svg>
                             </button>
                         </div>
 
                         <!-- Name & Quantity -->
-                        <div class="cell-name" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-right: 12px;">
+                        <div class="cell-name shopping-item-editor" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-right: 12px;">
                             <input 
                                 type="text" 
                                 value="{{ $item->name }}" 
                                 id="shopping-item-input-{{ $item->id }}"
                                 class="eco-inline-input" 
+                                aria-label="{{ __('Item Name & Qty') }}"
                                 style="{{ $item->is_checked ? 'text-decoration: line-through; opacity: 0.5;' : '' }} flex: 1; min-width: 0;"
                                 @blur="$wire.updateItem({{ $item->id }}, 'name', $event.target.value)"
                                 @keydown.enter="$event.target.blur()"
                             >
                             <div class="quantity-stepper" style="flex-shrink: 0; transform: scale(0.9); transform-origin: right center;">
-                                <button wire:click="decrementQuantity({{ $item->id }})">
+                                <button wire:click="decrementQuantity({{ $item->id }})" aria-label="{{ __('Decrease quantity') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
                                 </button>
                                 <span class="qty-val">{{ $item->quantity }}x</span>
-                                <button wire:click="incrementQuantity({{ $item->id }})">
+                                <button wire:click="incrementQuantity({{ $item->id }})" aria-label="{{ __('Increase quantity') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                                 </button>
                             </div>
@@ -175,7 +177,7 @@
 
                         <!-- Delete -->
                         <div class="cell-delete">
-                            <button wire:click="deleteItem({{ $item->id }})" class="eco-delete-btn" style="opacity: 0.5;">
+                            <button wire:click="deleteItem({{ $item->id }})" wire:confirm="{{ __('Remove this shopping item?') }}" class="eco-delete-btn" style="opacity: 0.5;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                             </button>
                         </div>
@@ -222,4 +224,3 @@
     </template>
     @endif
 </div>
-

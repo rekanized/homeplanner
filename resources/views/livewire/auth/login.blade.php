@@ -5,6 +5,12 @@
             <p>{{ __('Please sign in to continue.') }}</p>
         </div>
 
+        @if(session('error'))
+            <div class="error" role="alert" style="margin-bottom: 20px; padding: 12px 14px; border-radius: 12px; background: var(--danger-soft);">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @if($authMode === 'google')
             <div class="setup-choices">
                 <button wire:click="loginWithGoogle" class="setup-choice-btn" style="justify-content: center;">
@@ -24,13 +30,13 @@
 
         <form wire:submit.prevent="login" class="setup-form">
             <div class="form-group">
-                <label>{{ __('Email Address') }}</label>
-                <input type="email" wire:model="email" placeholder="{{ __('magnus@example.com') }}">
+                <label for="login-email">{{ __('Email Address') }}</label>
+                <input id="login-email" type="email" wire:model="email" autocomplete="email" placeholder="{{ __('magnus@example.com') }}">
                 @error('email') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="form-group">
-                <label>{{ __('Password') }}</label>
-                <input type="password" wire:model="password" placeholder="••••••••">
+                <label for="login-password">{{ __('Password') }}</label>
+                <input id="login-password" type="password" wire:model="password" autocomplete="current-password" placeholder="••••••••">
                 @error('password') <span class="error">{{ $message }}</span> @enderror
             </div>
             <label style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; cursor: pointer;">

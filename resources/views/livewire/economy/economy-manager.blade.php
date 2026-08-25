@@ -61,7 +61,7 @@
                 </button>
                 @endif
             </div>
-            <div class="eco-grid-table {{ !$isEditing ? 'view-mode' : '' }}">
+            <div class="eco-grid-table {{ $isEditing ? 'eco-edit-table' : 'view-mode' }}">
                 <div class="eco-grid-header {{ $isEditing ? 'dashboard-edit-grid' : 'income-grid' }}">
                     @if($isEditing) 
                         <div></div> {{-- Drag handle space --}}
@@ -88,26 +88,38 @@
                         }
                     })">
                     @forelse($this->incomes as $income)
-                    <div class="eco-grid-row {{ $isEditing ? 'dashboard-edit-grid' : 'income-grid' }}" wire:key="income-{{ $income->id }}">
+                    <div class="eco-grid-row {{ $isEditing ? 'dashboard-edit-grid eco-edit-card income-edit-card' : 'income-grid' }}" wire:key="income-{{ $income->id }}" @if($isEditing) data-editor-label="{{ __('Income item') }}" @endif>
                         @if($isEditing)
-                            <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
+                            <div class="eco-drag-handle eco-edit-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                             </div>
-                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); justify-self: center;"></div>
-                            <input type="text" class="eco-inline-input" value="{{ $income->name }}" placeholder="{{ __('Name') }}"
-                                wire:change="updateIncome({{ $income->id }}, 'name', $event.target.value)" style="width: 100%;">
-                            <div></div> {{-- Spacer for Alignment with Savings --}}
-                            <select class="eco-inline-select" style="width: 100%;"
-                                wire:change="updateIncome({{ $income->id }}, 'recipient_id', $event.target.value)">
-                                <option value="" @if(!$income->recipient_id) selected @endif>{{ __('Recipient') }}</option>
-                                @foreach($this->users as $user)
-                                    <option value="{{ $user->id }}" @if($income->recipient_id == $user->id) selected @endif>{{ $user->name }}</option>
-                                @endforeach
-                            </select>
-                            <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $income->amount }}" placeholder="0" style="width: 100%;"
-                                wire:change="updateIncome({{ $income->id }}, 'amount', $event.target.value)">
-                            <div style="display: flex; justify-content: flex-end;">
-                                <button wire:click="deleteIncome({{ $income->id }})" class="eco-delete-btn">
+                            <div class="eco-edit-status" style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); justify-self: center;"></div>
+                            <div class="eco-field edit-name">
+                                <span class="mobile-label">{{ __('Name') }}</span>
+                                <input type="text" class="eco-inline-input" value="{{ $income->name }}" placeholder="{{ __('Name') }}"
+                                    aria-label="{{ __('Name') }}"
+                                    wire:change="updateIncome({{ $income->id }}, 'name', $event.target.value)" style="width: 100%;">
+                            </div>
+                            <div class="eco-edit-spacer"></div> {{-- Spacer for Alignment with Savings --}}
+                            <div class="eco-field edit-recipient">
+                                <span class="mobile-label">{{ __('Recipient') }}</span>
+                                <select class="eco-inline-select" style="width: 100%;"
+                                    aria-label="{{ __('Recipient') }}"
+                                    wire:change="updateIncome({{ $income->id }}, 'recipient_id', $event.target.value)">
+                                    <option value="" @if(!$income->recipient_id) selected @endif>{{ __('Recipient') }}</option>
+                                    @foreach($this->users as $user)
+                                        <option value="{{ $user->id }}" @if($income->recipient_id == $user->id) selected @endif>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="eco-field edit-amount">
+                                <span class="mobile-label">{{ __('Amount') }}</span>
+                                <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $income->amount }}" placeholder="0" style="width: 100%;"
+                                    aria-label="{{ __('Amount') }}"
+                                    wire:change="updateIncome({{ $income->id }}, 'amount', $event.target.value)">
+                            </div>
+                            <div class="eco-edit-delete" style="display: flex; justify-content: flex-end;">
+                                <button wire:click="deleteIncome({{ $income->id }})" wire:confirm="{{ __('Delete this income row?') }}" class="eco-delete-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </button>
                             </div>
@@ -150,7 +162,7 @@
                 </button>
                 @endif
             </div>
-            <div class="eco-grid-table {{ !$isEditing ? 'view-mode' : '' }}">
+            <div class="eco-grid-table {{ $isEditing ? 'eco-edit-table' : 'view-mode' }}">
                 <div class="eco-grid-header {{ $isEditing ? 'dashboard-edit-grid' : 'income-grid' }}">
                     @if($isEditing) 
                         <div></div> {{-- Drag handle space --}}
@@ -177,27 +189,43 @@
                         }
                     })">
                     @forelse($this->savings as $saving)
-                    <div class="eco-grid-row {{ $isEditing ? 'dashboard-edit-grid' : 'income-grid' }}" wire:key="saving-{{ $saving->id }}">
+                    <div class="eco-grid-row {{ $isEditing ? 'dashboard-edit-grid eco-edit-card monthly-saving-edit-card' : 'income-grid' }}" wire:key="saving-{{ $saving->id }}" @if($isEditing) data-editor-label="{{ __('Monthly saving') }}" @endif>
                         @if($isEditing)
-                            <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
+                            <div class="eco-drag-handle eco-edit-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                             </div>
-                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); justify-self: center;"></div>
-                            <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="{{ __('Purpose') }}"
-                                wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)" style="width: 100%;">
-                            <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="{{ __('Bank/App') }}"
-                                wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)" style="width: 100%;">
-                            <select class="eco-inline-select" style="width: 100%;"
-                                wire:change="updateSaving({{ $saving->id }}, 'saver_id', $event.target.value)">
-                                <option value="" @if(!$saving->saver_id) selected @endif>{{ __('Saver') }}</option>
-                                @foreach($this->users as $user)
-                                    <option value="{{ $user->id }}" @if($saving->saver_id == $user->id) selected @endif>{{ $user->name }}</option>
-                                @endforeach
-                            </select>
-                            <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
-                                wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
-                            <div style="display: flex; justify-content: flex-end;">
-                                <button wire:click="deleteSaving({{ $saving->id }})" class="eco-delete-btn">
+                            <div class="eco-edit-status" style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); justify-self: center;"></div>
+                            <div class="eco-field edit-name">
+                                <span class="mobile-label">{{ __('Purpose') }}</span>
+                                <input type="text" class="eco-inline-input" value="{{ $saving->name }}" placeholder="{{ __('Purpose') }}"
+                                    aria-label="{{ __('Purpose') }}"
+                                    wire:change="updateSaving({{ $saving->id }}, 'name', $event.target.value)" style="width: 100%;">
+                            </div>
+                            <div class="eco-field edit-location">
+                                <span class="mobile-label">{{ __('Bank/App') }}</span>
+                                <input type="text" class="eco-inline-input" value="{{ $saving->location }}" placeholder="{{ __('Bank/App') }}"
+                                    aria-label="{{ __('Bank/App') }}"
+                                    wire:change="updateSaving({{ $saving->id }}, 'location', $event.target.value)" style="width: 100%;">
+                            </div>
+                            <div class="eco-field edit-saver">
+                                <span class="mobile-label">{{ __('Saver') }}</span>
+                                <select class="eco-inline-select" style="width: 100%;"
+                                    aria-label="{{ __('Saver') }}"
+                                    wire:change="updateSaving({{ $saving->id }}, 'saver_id', $event.target.value)">
+                                    <option value="" @if(!$saving->saver_id) selected @endif>{{ __('Saver') }}</option>
+                                    @foreach($this->users as $user)
+                                        <option value="{{ $user->id }}" @if($saving->saver_id == $user->id) selected @endif>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="eco-field edit-amount">
+                                <span class="mobile-label">{{ __('Amount') }}</span>
+                                <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $saving->amount }}" placeholder="0" style="width: 100%;"
+                                    aria-label="{{ __('Amount') }}"
+                                    wire:change="updateSaving({{ $saving->id }}, 'amount', $event.target.value)">
+                            </div>
+                            <div class="eco-edit-delete" style="display: flex; justify-content: flex-end;">
+                                <button wire:click="deleteSaving({{ $saving->id }})" wire:confirm="{{ __('Delete this monthly saving row?') }}" class="eco-delete-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </button>
                             </div>
@@ -251,7 +279,7 @@
                 </button>
                 @endif
             </div>
-            <div class="eco-grid-table {{ !$isEditing ? 'view-mode' : '' }}">
+            <div class="eco-grid-table {{ $isEditing ? 'eco-edit-table' : 'view-mode' }}">
                 <div class="eco-grid-header categories-grid">
                     @if($isEditing) <div style="width: 20px;"></div> @endif
                     <div></div>
@@ -272,25 +300,30 @@
                     @php
                         $catTotal = $this->expenses->where('category', $category->name)->sum('amount');
                     @endphp
-                    <div class="eco-grid-row categories-grid" wire:key="category-{{ $category->id }}">
+                    <div class="eco-grid-row categories-grid {{ $isEditing ? 'eco-edit-card category-edit-card' : '' }}" wire:key="category-{{ $category->id }}" @if($isEditing) data-editor-label="{{ __('Category') }}" @endif>
                         @if($isEditing)
-                        <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
+                        <div class="eco-drag-handle eco-edit-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                         </div>
                         @endif
-                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); justify-self: center;"></div>
+                        <div class="eco-edit-status" style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); justify-self: center;"></div>
                         @if($isEditing)
-                            <input type="text" class="eco-inline-input" value="{{ $category->name }}" placeholder="{{ __('Category name') }}"
-                                wire:change="updateExpenseCategory({{ $category->id }}, 'name', $event.target.value)">
+                            <div class="eco-field edit-name">
+                                <span class="mobile-label">{{ __('Name') }}</span>
+                                <input type="text" class="eco-inline-input" value="{{ $category->name }}" placeholder="{{ __('Category name') }}"
+                                    aria-label="{{ __('Category name') }}"
+                                    wire:change="updateExpenseCategory({{ $category->id }}, 'name', $event.target.value)">
+                            </div>
                         @else
                             <span style="font-weight: 700; padding: 6px 0;">{{ $category->name ?: '—' }}</span>
                         @endif
-                        <div style="font-size: 12px; font-weight: 900; color: var(--text-main); text-align: right; font-family: var(--font-heading);">
+                        <div class="category-edit-total" style="font-size: 12px; font-weight: 900; color: var(--text-main); text-align: right; font-family: var(--font-heading);">
+                            @if($isEditing)<span class="mobile-label">{{ __('Current total') }}</span>@endif
                             {{ number_format($catTotal, 0, ',', ' ') }} kr
                         </div>
                         @if($isEditing)
-                        <div style="display: flex; justify-content: flex-end;">
-                            <button wire:click="deleteExpenseCategory({{ $category->id }})" class="eco-delete-btn">
+                        <div class="eco-edit-delete" style="display: flex; justify-content: flex-end;">
+                            <button wire:click="deleteExpenseCategory({{ $category->id }})" wire:confirm="{{ __('Delete this category? Existing expenses keep their current category text.') }}" class="eco-delete-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
@@ -335,7 +368,7 @@
             @endif
         </div>
 
-        <div class="eco-grid-table {{ !$isEditing ? 'view-mode' : '' }}">
+        <div class="eco-grid-table {{ $isEditing ? 'eco-edit-table' : 'view-mode' }}">
             <div class="eco-grid-header expenses-grid">
                 @if($isEditing) <div style="width: 20px;"></div> @endif
                 <div>{{ __('Name') }}</div>
@@ -356,14 +389,15 @@
                     }
                 })">
                 @forelse($this->expenses as $expense)
-                <div class="eco-grid-row expenses-grid" wire:key="expense-{{ $expense->id }}">
+                <div class="eco-grid-row expenses-grid {{ $isEditing ? 'eco-edit-card expense-edit-card' : '' }}" wire:key="expense-{{ $expense->id }}">
                     @if($isEditing)
                         {{-- Edit Mode: 7-column grid on desktop, functional fields on mobile --}}
                         <div class="eco-row-header">
                             <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
                             </div>
-                            <button wire:click="deleteExpense({{ $expense->id }})" class="eco-delete-btn mobile-only">
+                            <span class="eco-edit-card-title mobile-only">{{ __('Expense') }} {{ $loop->iteration }}</span>
+                            <button wire:click="deleteExpense({{ $expense->id }})" wire:confirm="{{ __('Delete this expense?') }}" class="eco-delete-btn mobile-only">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
@@ -457,7 +491,7 @@
                         </div>
                         {{-- Desktop Delete Button Column (7th child) --}}
                         <div class="desktop-only" style="display: flex; justify-content: flex-end; align-items: center;">
-                            <button wire:click="deleteExpense({{ $expense->id }})" class="eco-delete-btn">
+                            <button wire:click="deleteExpense({{ $expense->id }})" wire:confirm="{{ __('Delete this expense?') }}" class="eco-delete-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
@@ -548,4 +582,3 @@
         </div>
     </div>
 </div>
-
