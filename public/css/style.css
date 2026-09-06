@@ -2537,6 +2537,7 @@ tr:hover {
 
     .templates-grid {
         grid-template-columns: 1fr !important;
+        overflow-y: auto;
     }
 
     .templates-grid > div:first-child {
@@ -2562,6 +2563,95 @@ tr:hover {
 @media (max-width: 1200px) {
     .kids-main-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Current month: size the summary to its content area, including beside the sidebar. */
+.economy-overview {
+    container: economy-overview / inline-size;
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.economy-overview-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.economy-overview-title {
+    flex: 1 1 20rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.economy-overview-title h1 {
+    font-size: clamp(1.75rem, 4cqi, 2.25rem);
+    font-weight: 900;
+    margin-bottom: var(--space-1);
+}
+
+.economy-overview-title p {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.economy-edit-toggle {
+    min-height: 44px;
+    max-width: 100%;
+    font-weight: 800;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.economy-edit-toggle svg {
+    flex-shrink: 0;
+}
+
+.economy-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.economy-summary-grid .summary-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    overflow-wrap: anywhere;
+}
+
+.economy-summary-grid .summary-value {
+    margin-top: auto;
+    font-size: 1.25rem;
+    font-variant-numeric: tabular-nums;
+}
+
+@container economy-overview (min-width: 36rem) {
+    .economy-summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@container economy-overview (min-width: 64rem) {
+    .economy-summary-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+@container economy-overview (max-width: 28rem) {
+    .economy-edit-toggle {
+        width: 100%;
+    }
+}
+
+@container economy-overview (max-width: 17rem) {
+    .economy-summary-grid {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -3937,4 +4027,31 @@ textarea:disabled,
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* Keep long household names and list selectors within their available space. */
+.manager-actions-row > div,
+.manager-actions-row > div > div {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.manager-actions-row button.btn {
+    max-width: 100%;
+}
+
+.manager-actions-row button.btn > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.manager-actions-row button.btn > svg {
+    flex-shrink: 0;
+}
+
+.dashboard-child-box > div {
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }

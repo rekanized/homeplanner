@@ -98,7 +98,7 @@
                     </a>
                     @endif
 
-                    @if(!auth()->user()->is_child)
+                    @if(auth()->user()->isAdmin())
                     <div x-data="{ open: {{ request()->is('admin/*') ? 'true' : 'false' }} }">
                         <button @click="open = !open" class="nav-link {{ request()->is('admin/*') ? 'active' : '' }}" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 12px;">
@@ -272,7 +272,7 @@
                 </div>
                 @endif
 
-                @if(!auth()->user()->is_child)
+                @if(auth()->user()->isAdmin())
                 <div class="mobile-sheet-block">
                     <div class="mobile-sheet-block-head">
                         <div>

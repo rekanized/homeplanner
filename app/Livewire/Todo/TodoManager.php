@@ -120,6 +120,7 @@ class TodoManager extends Component
 
         $this->activeTodoId = $todo->id;
         $this->selectedItems = [];
+        $this->selectedTags = [];
     }
 
     public function addTodo($name)
@@ -132,6 +133,8 @@ class TodoManager extends Component
             'sort_order' => Todo::count(),
         ]);
         $this->activeTodoId = $todo->id;
+        $this->selectedItems = [];
+        $this->selectedTags = [];
     }
 
     public function addList()
@@ -141,6 +144,8 @@ class TodoManager extends Component
             'sort_order' => Todo::count(),
         ]);
         $this->activeTodoId = $todo->id;
+        $this->selectedItems = [];
+        $this->selectedTags = [];
     }
 
     public function updateListName($id, $newName)
@@ -156,6 +161,8 @@ class TodoManager extends Component
         Todo::whereKey($id)->whereKey($this->activeTodoId)->first()?->delete();
         if ($this->activeTodoId == $id) {
             $this->activeTodoId = Todo::orderBy('sort_order')->first()?->id;
+            $this->selectedItems = [];
+            $this->selectedTags = [];
         }
     }
 

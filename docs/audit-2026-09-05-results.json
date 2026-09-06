@@ -1,0 +1,1182 @@
+{
+  "audit_dates": [
+    "2026-09-05",
+    "2026-09-06"
+  ],
+  "browser": "Local isolated Playwright Chromium; shared VS Code browser unavailable through agent tools",
+  "layout": {
+    "checks": [
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 360,
+        "height": 800,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 375,
+        "height": 667,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 375,
+        "bodyScrollWidth": 375,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 412,
+        "height": 915,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 412,
+        "bodyScrollWidth": 412,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1366,
+        "height": 768,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 1366,
+        "bodyScrollWidth": 1366,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/economy",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/economy/savings",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/economy/history",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/economy/savings-history",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/shopping",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/todo",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/kids",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/admin/users",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/admin/settings",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/admin/logs",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "path": "/admin/versions",
+        "status": 200,
+        "scrollWidth": 844,
+        "bodyScrollWidth": 844,
+        "overflowers": []
+      }
+    ],
+    "consoleIssues": []
+  },
+  "crud": {
+    "results": [
+      {
+        "width": 390,
+        "name": "shopping CRUD, quantities, completion, sort, confirmation",
+        "passed": true
+      },
+      {
+        "width": 390,
+        "name": "todo edit, date, tag, complete, revert, delete and cancel",
+        "passed": true
+      },
+      {
+        "width": 390,
+        "name": "economy income, saving, expense edits and delete",
+        "passed": true
+      },
+      {
+        "width": 390,
+        "name": "savings and snapshots create/view/delete",
+        "passed": true
+      },
+      {
+        "width": 390,
+        "name": "audit pagination and page size",
+        "passed": true
+      },
+      {
+        "width": 1440,
+        "name": "shopping CRUD, quantities, completion, sort, confirmation",
+        "passed": true
+      },
+      {
+        "width": 1440,
+        "name": "todo edit, date, tag, complete, revert, delete and cancel",
+        "passed": true
+      },
+      {
+        "width": 1440,
+        "name": "economy income, saving, expense edits and delete",
+        "passed": true
+      },
+      {
+        "width": 1440,
+        "name": "savings and snapshots create/view/delete",
+        "passed": true
+      },
+      {
+        "width": 1440,
+        "name": "audit pagination and page size",
+        "passed": true
+      }
+    ],
+    "errors": []
+  },
+  "proof": {
+    "upload": true,
+    "rejectResubmitApprove": true,
+    "authenticatedProof": true,
+    "guestRedirect": true,
+    "childAdminDenied": true,
+    "errors": []
+  },
+  "templates": {
+    "keyboardSelection": true,
+    "createPersistsAfterReload": true,
+    "checks": [
+      {
+        "width": 360,
+        "overflowers": []
+      },
+      {
+        "width": 390,
+        "overflowers": []
+      },
+      {
+        "width": 768,
+        "overflowers": []
+      },
+      {
+        "width": 1440,
+        "overflowers": []
+      }
+    ],
+    "errors": []
+  },
+  "phpunit": {
+    "passed": 84,
+    "assertions": 300
+  }
+}

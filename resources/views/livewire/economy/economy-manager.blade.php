@@ -1,14 +1,14 @@
 <div>
-    <!-- Header & Summary Row -->
-    <div class="flex-header">
-        <div>
-            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 4px;">{{ __('Current month') }}</h1>
-            <p style="color: var(--text-muted); font-weight: 600;">{{ __('Track and manage your household finances.') }}</p>
-        </div>
+    <!-- Page controls and a separate, full-width summary -->
+    <header class="economy-overview">
+        <div class="economy-overview-heading">
+            <div class="economy-overview-title">
+                <h1>{{ __('Current month') }}</h1>
+                <p>{{ __('Track and manage your household finances.') }}</p>
+            </div>
 
-        <!-- View/Edit Toggle Button -->
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
-            <button wire:click="toggleEditMode" class="btn {{ $isEditing ? 'btn-success' : 'btn-primary' }}" style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; transition: all 0.2s;">
+            <!-- View/Edit Toggle Button -->
+            <button wire:click="toggleEditMode" class="btn economy-edit-toggle {{ $isEditing ? 'btn-success' : 'btn-primary' }}">
                 @if($isEditing)
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                     {{ __('Finish Editing') }}
@@ -19,34 +19,34 @@
             </button>
         </div>
 
-        <!-- Summary Cards (Top Right) -->
-        <div class="header-stats">
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+        <!-- Summary Cards -->
+        <div class="economy-summary-grid">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Direct (25th)') }}</p>
-                <h2 class="summary-value" style="color: var(--warning); font-size: 1.25rem;">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value" style="color: var(--warning);">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Delayed') }}</p>
-                <h2 class="summary-value" style="color: var(--slate-500); font-size: 1.25rem;">{{ number_format($this->totalDelayedExpenses, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value" style="color: var(--slate-500);">{{ number_format($this->totalDelayedExpenses, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Income') }}</p>
-                <h2 class="summary-value" style="color: var(--success); font-size: 1.25rem;">{{ number_format($this->totalIncome, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value" style="color: var(--success);">{{ number_format($this->totalIncome, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Expenses') }}</p>
-                <h2 class="summary-value" style="color: var(--danger); font-size: 1.25rem;">{{ number_format($this->totalExpenses, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value" style="color: var(--danger);">{{ number_format($this->totalExpenses, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Monthly Savings') }}</p>
-                <h2 class="summary-value" style="color: var(--primary); font-size: 1.25rem;">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value" style="color: var(--primary);">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
             </div>
-            <div class="summary-card" style="min-width: 140px; padding: 10px 16px;">
+            <div class="summary-card">
                 <p class="summary-label">{{ __('Remaining') }}</p>
-                <h2 class="summary-value" style="font-size: 1.25rem;">{{ number_format($this->remaining, 0, ',', ' ') }}</h2>
+                <h2 class="summary-value">{{ number_format($this->remaining, 0, ',', ' ') }}</h2>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- Income, Savings, and Categories -->
     <div class="flex-cards" style="margin-bottom: var(--space-8);">
@@ -313,6 +313,9 @@
                                 <input type="text" class="eco-inline-input" value="{{ $category->name }}" placeholder="{{ __('Category name') }}"
                                     aria-label="{{ __('Category name') }}"
                                     wire:change="updateExpenseCategory({{ $category->id }}, 'name', $event.target.value)">
+                                @error('categoryNames.'.$category->id)
+                                    <p role="alert" style="color: var(--danger); font-size: 12px;">{{ $message }}</p>
+                                @enderror
                             </div>
                         @else
                             <span style="font-weight: 700; padding: 6px 0;">{{ $category->name ?: '—' }}</span>

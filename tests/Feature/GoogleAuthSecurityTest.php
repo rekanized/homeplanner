@@ -69,4 +69,23 @@ class GoogleAuthSecurityTest extends TestCase
             && str_starts_with($request->header('Content-Type')[0] ?? '', 'application/x-www-form-urlencoded')
             && $request['client_secret'] === 'client-secret');
     }
+
+    public function test_google_network_failures_return_to_login_without_a_server_error(): void
+    {
+        User::factory()->create(['is_admin' => true]);
+        Setting::set('auth_mode', 'google', 'auth');
+        foreach (['token', 'userinfo'] as $failingEndpoint) {
+            Http::fake([
+                'oauth2.googleapis.com/token' => $failingEndpoint === 'token'
+                    ? Http::failedConnection()
+                    : Http::response(['access_token' => 'access-token']),
+                'openidconnect.googleapis.com/v1/userinfo' => Http::failedConnection(),
+            ]);
+            $this->withSession(['google_oauth_state' => 'valid-state'])
+                ->get(route('auth.google.callback', ['code' => 'code', 'state' => 'valid-state']))
+                ->assertRedirect(route('login'))
+                ->assertSessionHas('error', 'Google sign-in is temporarily unavailable. Please try again.');
+            $this->assertGuest();
+        }
+    }
 }

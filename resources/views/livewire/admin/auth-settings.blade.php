@@ -26,6 +26,7 @@
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--slate-500); text-transform: uppercase;">{{ __('Google Client ID') }}</label>
                         <input type="text" wire:model="clientId" class="eco-inline-input" style="border: 1px solid var(--border-color); background: var(--bg-input); height: 44px;" placeholder="{{ __('12345678-abcdef...') }}">
+                        @error('clientId') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--slate-500); text-transform: uppercase;">{{ __('Google Client Secret') }}</label>
@@ -57,19 +58,19 @@
                                     </span>
                                     
                                     @if($email !== $firstUserEmail)
-                                        <button type="button" wire:click="removeEmail('{{ $email }}')" style="background: var(--danger-soft); color: var(--danger); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; font-weight: 900;">×</button>
+                                        <button type="button" wire:click="removeEmail(@js($email))" style="background: var(--danger-soft); color: var(--danger); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; font-weight: 900;">×</button>
                                     @else
                                         <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); opacity: 0.5;">🔒</div>
                                     @endif
                                 </div>
                             @empty
-                                <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">{{ __('No specific accounts restricted. Anyone with a valid Gmail account in your household can sign in.') }}</p>
+                                <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">{{ __('Existing household members can sign in. Add an email address to allow a new member.') }}</p>
                             @endforelse
                         </div>
                         @if (session()->has('error'))
                             <p style="font-size: 11px; color: var(--danger); margin-top: 8px; font-weight: 700;">{{ session('error') }}</p>
                         @endif
-                        <p style="font-size: 10px; color: var(--text-muted); margin-top: 8px;">{{ __('Only the users listed above will be allowed to sign in via Google OAuth.') }}</p>
+                        <p style="font-size: 10px; color: var(--text-muted); margin-top: 8px;">{{ __('Existing household members and the email addresses listed above can sign in via Google OAuth.') }}</p>
                     </div>
                 </div>
             </div>

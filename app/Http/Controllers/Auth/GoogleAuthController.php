@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -71,13 +72,17 @@ class GoogleAuthController extends Controller
         $redirectUri = Setting::get('google_redirect_uri');
 
         // Exchange code for token
-        $response = Http::asForm()->connectTimeout(5)->timeout(15)->post('https://oauth2.googleapis.com/token', [
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
-            'code' => $code,
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => $redirectUri,
-        ]);
+        try {
+            $response = Http::asForm()->connectTimeout(5)->timeout(15)->post('https://oauth2.googleapis.com/token', [
+                'client_id' => $clientId,
+                'client_secret' => $clientSecret,
+                'code' => $code,
+                'grant_type' => 'authorization_code',
+                'redirect_uri' => $redirectUri,
+            ]);
+        } catch (ConnectionException) {
+            return redirect()->route('login')->with('error', 'Google sign-in is temporarily unavailable. Please try again.');
+        }
 
         if ($response->failed()) {
             return redirect()->route('login')->with('error', 'Google sign-in could not be completed.');
@@ -90,10 +95,14 @@ class GoogleAuthController extends Controller
         }
 
         // Get User Info
-        $userResponse = Http::withToken($accessToken)
-            ->connectTimeout(5)
-            ->timeout(15)
-            ->get('https://openidconnect.googleapis.com/v1/userinfo');
+        try {
+            $userResponse = Http::withToken($accessToken)
+                ->connectTimeout(5)
+                ->timeout(15)
+                ->get('https://openidconnect.googleapis.com/v1/userinfo');
+        } catch (ConnectionException) {
+            return redirect()->route('login')->with('error', 'Google sign-in is temporarily unavailable. Please try again.');
+        }
 
         if ($userResponse->failed()) {
             return redirect()->route('login')->with('error', 'Google user information could not be retrieved.');

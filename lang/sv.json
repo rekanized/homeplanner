@@ -420,5 +420,9 @@
     "Current total": "Nuvarande summa",
     "Savings goal": "Sparmål",
     "Decrease quantity": "Minska antal",
-    "Increase quantity": "Öka antal"
+    "Increase quantity": "Öka antal",
+    "This category name is already in use.": "Det här kategorinamnet används redan.",
+    "Existing household members can sign in. Add an email address to allow a new member.": "Befintliga hushållsmedlemmar kan logga in. Lägg till en e-postadress för att tillåta en ny medlem.",
+    "Existing household members and the email addresses listed above can sign in via Google OAuth.": "Befintliga hushållsmedlemmar och e-postadresserna ovan kan logga in via Google OAuth.",
+    "Max size 5MB (PNG, JPG, WebP)": "Maxstorlek 5 MB (PNG, JPG, WebP)"
 }

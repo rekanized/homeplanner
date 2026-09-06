@@ -26,6 +26,8 @@ class Login extends Component
 
     public function login()
     {
+        $this->email = is_string($this->email) ? Str::lower(trim($this->email)) : $this->email;
+
         $this->validate([
             'email' => 'required|email',
             'password' => 'required',

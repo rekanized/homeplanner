@@ -42,8 +42,8 @@
                 @foreach($users as $user)
                     <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.2s ease;">
                         <td data-label="{{ __('Member') }}" style="padding: 20px 24px;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 2px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 16px; min-width: 0; width: 100%;">
+                                <div style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 2px solid var(--border-color);">
                                     @if($user->avatar)
                                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
                                     @else
@@ -52,7 +52,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div>
+                                <div style="min-width: 0; overflow-wrap: anywhere;">
                                     <div style="font-size: 15px; font-weight: 800; color: var(--text-main);">{{ $user->name }}</div>
                                     <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">{{ $user->email }}</div>
                                 </div>
@@ -81,12 +81,12 @@
                                     @elseif(auth()->user()->isMaster())
                                         <!-- Interactive Role Toggle for Master -->
                                         <div style="display: flex; background: var(--bg-input); padding: 4px; border-radius: 100px; border: 1px solid var(--border-color); position: relative;">
-                                            <button wire:click="toggleChild({{ $user->id }})" 
+                                            <button wire:click="setChildStatus({{ $user->id }}, false)" aria-pressed="{{ !$user->is_child ? 'true' : 'false' }}"
                                                     style="padding: 6px 14px; border-radius: 100px; border: none; cursor: pointer; font-size: 10px; font-weight: 900; text-transform: uppercase; transition: all 0.2s; 
                                                     {{ !$user->is_child ? 'background: white; color: var(--success); box-shadow: var(--shadow-sm);' : 'background: transparent; color: var(--text-muted);' }}">
                                                 {{ __('Member') }}
                                             </button>
-                                            <button wire:click="toggleChild({{ $user->id }})" 
+                                            <button wire:click="setChildStatus({{ $user->id }}, true)" aria-pressed="{{ $user->is_child ? 'true' : 'false' }}"
                                                     style="padding: 6px 14px; border-radius: 100px; border: none; cursor: pointer; font-size: 10px; font-weight: 900; text-transform: uppercase; transition: all 0.2s; 
                                                     {{ $user->is_child ? 'background: #6366f1; color: white; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);' : 'background: transparent; color: var(--text-muted);' }}">
                                                 {{ __('Child') }}

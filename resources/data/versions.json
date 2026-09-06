@@ -1,5 +1,79 @@
 [
     {
+        "version": "v1.9.0",
+        "released_at": "2026-09-06 15:13:23",
+        "changes": [
+            {
+                "type": "improved",
+                "description": "Restructured the Current month header with page controls above a full-width summary grid that adapts to phones, tablets, desktops, long labels, and large amounts"
+            },
+            {
+                "type": "fixed",
+                "description": "Kept expenses linked to their category when it is renamed and added inline feedback for duplicate category names"
+            },
+            {
+                "type": "fixed",
+                "description": "Cleared Todo tag filters and item selections when switching, creating, or deleting lists so tasks are not unexpectedly hidden"
+            },
+            {
+                "type": "fixed",
+                "description": "Normalized email addresses during initial setup, user creation, and login to handle surrounding spaces and mixed-case addresses consistently"
+            },
+            {
+                "type": "fixed",
+                "description": "Handled Google sign-in connection failures with a return to login and a clear retry message instead of a server error"
+            },
+            {
+                "type": "fixed",
+                "description": "Made Member and Child role controls set the selected role consistently, including repeated clicks, while preserving master-user protections"
+            },
+            {
+                "type": "fixed",
+                "description": "Corrected weekly and monthly chore template scheduling, validated recurrence days, and reset template state when changing schedules or reopening the editor"
+            },
+            {
+                "type": "fixed",
+                "description": "Validated chore proof images before generating previews, displayed upload errors, and aligned file selection and help text with the supported PNG, JPG, and WebP formats and 5 MB limit"
+            },
+            {
+                "type": "improved",
+                "description": "Added missing Kids form validation feedback and cleared stale validation errors when reopening Kids and user creation dialogs"
+            },
+            {
+                "type": "improved",
+                "description": "Made chore Templates available on mobile, improved template modal scrolling, and added keyboard-accessible assignee buttons with selection states"
+            },
+            {
+                "type": "fixed",
+                "description": "Prevented long shopping and Todo list names, user names, and child names from overflowing selectors, cards, and template controls"
+            },
+            {
+                "type": "fixed",
+                "description": "Restored shared accessibility scripts, skip navigation, and the favicon on directly loaded Kids and Admin pages"
+            },
+            {
+                "type": "fixed",
+                "description": "Limited Admin navigation to administrators and refreshed module navigation immediately after module settings change"
+            },
+            {
+                "type": "fixed",
+                "description": "Corrected removal of allowed email addresses containing apostrophes and improved authentication settings help, validation feedback, and section navigation"
+            },
+            {
+                "type": "improved",
+                "description": "Updated the settings version display to use application history and expanded Swedish translations for category validation, authentication guidance, and upload limits"
+            },
+            {
+                "type": "improved",
+                "description": "Reused loaded child records when displaying chore template assignments to avoid repeated user lookups"
+            },
+            {
+                "type": "improved",
+                "description": "Added regression coverage and documented the application audit across authentication, permissions, list filtering, categories, chore templates, uploads, accessibility, and responsive layouts"
+            }
+        ]
+    },
+    {
         "version": "v1.8.0",
         "released_at": "2026-08-25 15:19:49",
         "changes": [

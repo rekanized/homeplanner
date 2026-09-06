@@ -3,6 +3,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ config('app.name', 'Homeplanner') }}</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
         <!-- Theme Engine (Instant & Flicker-Free) -->
         <script>
@@ -45,14 +46,16 @@
         @livewireStyles
     </head>
     <body class="antialiased">
+        <a href="#main-content" class="skip-link">{{ __('Skip to main content') }}</a>
         <div class="layout-container">
             <livewire:sidebar wire:persist="sidebar" />
 
-            <main class="main-content">
+            <main id="main-content" class="main-content" tabindex="-1">
                 {{ $slot }}
             </main>
         </div>
 
         @livewireScripts
+        <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}" defer></script>
     </body>
 </html>

@@ -7,7 +7,9 @@ use App\Models\ExpenseCategory;
 use App\Models\Income;
 use App\Models\Saving;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -232,7 +234,23 @@ class EconomyManager extends Component
             return;
         }
 
-        $category->update([$field => trim($value)]);
+        $errorKey = 'categoryNames.'.$category->id;
+        $this->resetValidation($errorKey);
+        $validator = Validator::make(
+            ['name' => trim($value)],
+            ['name' => [Rule::unique('expense_categories', 'name')->ignore($category->id)]]
+        );
+        if ($validator->fails()) {
+            $this->addError($errorKey, __('This category name is already in use.'));
+
+            return;
+        }
+
+        DB::transaction(function () use ($category, $value) {
+            $oldName = $category->name;
+            $category->update(['name' => trim($value)]);
+            Expense::where('category', $oldName)->update(['category' => $category->name]);
+        });
     }
 
     public function deleteExpenseCategory($id)

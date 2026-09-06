@@ -32,6 +32,7 @@
                     <div>
                         <label for="chore-description" class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Description (Optional)') }}</label>
                         <textarea id="chore-description" wire:model="description" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; min-height: 100px; resize: vertical;" placeholder="{{ __('Add some details...') }}"></textarea>
+                        @error('description') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                     </div>
 
                     <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -120,6 +121,7 @@
                             <input type="number" wire:model="adjustAmount" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 800; outline: none;" placeholder="{{ __('e.g. 10') }}">
                             <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 10px; font-weight: 900; color: var(--text-muted);">{{ __('PTS') }}</span>
                         </div>
+                        @error('adjustAmount') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="compact-footer" style="display: flex; gap: 12px;">
@@ -193,7 +195,7 @@
                         @forelse($templates as $template)
                             <div style="background: var(--bg-card); border: 1px solid @if($editingTemplateId == $template->id) var(--primary) @else var(--border-color) @endif; border-radius: 16px; padding: 16px; transition: all 0.2s; position: relative; @if($editingTemplateId == $template->id) box-shadow: 0 0 0 2px var(--primary-soft); @endif">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                    <div style="flex: 1; margin-right: 12px;">
+                                    <div style="flex: 1; min-width: 0; margin-right: 12px; overflow-wrap: anywhere;">
                                         <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">{{ $template->title }}</div>
                                         <div style="font-size: 11px; font-weight: 900; color: var(--primary); margin-top: 2px;">{{ $template->score }} {{ __('Points') }}</div>
                                         @if($template->recurrence_type && $template->recurrence_type !== 'none')
@@ -206,7 +208,7 @@
                                                 @endif
                                             </div>
                                         @endif
-                                        @php $assignedUsers = $template->assignedUsers(); @endphp
+                                        @php $assignedUsers = $children->whereIn('id', $template->assigned_user_ids ?? []); @endphp
                                         @if($assignedUsers->count() > 0)
                                             <div style="font-size: 9px; font-weight: 800; color: var(--text-muted); margin-top: 2px;">{{ __('Assigned to') }} {{ $assignedUsers->pluck('name')->implode(', ') }}</div>
                                         @endif
@@ -253,15 +255,16 @@
                         <div>
                             <label class="compact-label" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Default Description') }}</label>
                             <textarea wire:model.defer="templateDescription" class="compact-textarea" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; outline: none; min-height: 100px; resize: vertical;" placeholder="{{ __("Optional details...") }}"></textarea>
+                            @error('templateDescription') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">{{ __('Assigned To (Required)') }}</label>
                             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
-                                @foreach(\App\Models\User::where('is_child', true)->get() as $child)
-                                    <div wire:click="toggleChildSelection({{ $child->id }})" style="cursor: pointer; padding: 12px; border-radius: 12px; border: 2px solid @if(in_array($child->id, $templateAssignedUserIds)) var(--primary) @else var(--border-color) @endif; background: @if(in_array($child->id, $templateAssignedUserIds)) var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s; text-align: center;">
+                                @foreach($children as $child)
+                                    <button type="button" wire:click="toggleChildSelection({{ $child->id }})" aria-pressed="{{ in_array($child->id, $templateAssignedUserIds) ? 'true' : 'false' }}" style="min-width: 0; overflow-wrap: anywhere; cursor: pointer; padding: 12px; border-radius: 12px; border: 2px solid @if(in_array($child->id, $templateAssignedUserIds)) var(--primary) @else var(--border-color) @endif; background: @if(in_array($child->id, $templateAssignedUserIds)) var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s; text-align: center;">
                                         <div style="font-size: 12px; font-weight: 800; color: @if(in_array($child->id, $templateAssignedUserIds)) var(--primary) @else var(--text-main) @endif;">{{ $child->name }}</div>
-                                    </div>
+                                    </button>
                                 @endforeach
                             </div>
                             @error('templateAssignedUserIds') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ __("At least one child must be assigned.") }}</p> @enderror
@@ -274,6 +277,7 @@
                                     <input type="number" wire:model.defer="templateScore" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 44px 14px 18px; border-radius: 12px; width: 100%; font-size: 18px; font-weight: 900; outline: none;">
                                     <span style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 900; color: var(--primary);">{{ __('PTS') }}</span>
                                 </div>
+                                @error('templateScore') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
@@ -316,6 +320,7 @@
                                 </div>
                             </div>
 
+                            @error('templateRecurrenceDay') <p role="alert" style="font-size: 12px; color: var(--danger);">{{ $message }}</p> @enderror
                             @if($templateRecurrenceType == 'weekly')
                             <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
                                 <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">{{ __('Occurs on every:') }}</label>
@@ -426,12 +431,12 @@
                                 </div>
                             </div>
                         @else
-                            <input type="file" wire:model="proofImage" id="proof-upload" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+                            <input type="file" wire:model="proofImage" id="proof-upload" accept="image/jpeg,image/png,image/webp" aria-label="{{ __('Upload a photo of your work') }}" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
                             <div style="color: var(--primary); margin-bottom: 12px;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                             </div>
                             <div style="font-weight: 800; color: var(--text-main); font-size: 15px;">{{ __("Tap to capture or upload") }}</div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">{{ __("Max size 10MB (PNG, JPG)") }}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">{{ __("Max size 5MB (PNG, JPG, WebP)") }}</div>
                         @endif
                     </div>
 
@@ -458,9 +463,9 @@
                 <h2 class="responsive-title">{{ __('Kids System') }}</h2>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">{{ __('Manage chores and track rewards for the kids') }}</p>
             </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
                 @if(!auth()->user()->is_child)
-                    <button wire:click="openManageTemplatesModal" class="btn hidden-mobile" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 16px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted);">
+                    <button wire:click="openManageTemplatesModal" class="btn" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 16px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-muted);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                         <span>{{ __('Templates') }}</span>
                     </button>
@@ -486,7 +491,7 @@
                     <div class="hidden-mobile" style="width: 60px; height: 60px; border-radius: 20px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
                         {{ strtoupper(substr($child->name, 0, 1)) }}
                     </div>
-                    <div style="flex: 1;">
+                    <div style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
                             <div class="summary-label">{{ $child->name }}</div>
                         </div>

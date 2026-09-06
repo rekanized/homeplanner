@@ -17,6 +17,8 @@ class KidsManager extends Component
 {
     use WithFileUploads;
 
+    private const PROOF_IMAGE_RULES = 'required|image|mimes:jpg,jpeg,png,webp|max:5120';
+
     public $showAddChoreModal = false;
 
     public $title = '';
@@ -101,6 +103,7 @@ class KidsManager extends Component
     public function openAddChoreModal()
     {
         $this->ensureParent();
+        $this->resetValidation();
         $this->reset(['title', 'description', 'score', 'assigned_to', 'complete_immediately', 'needs_approval']);
         $this->showAddChoreModal = true;
     }
@@ -223,6 +226,7 @@ class KidsManager extends Component
     public function openAdjustPointsModal($userId)
     {
         $this->ensureParent();
+        $this->resetValidation();
         $child = $this->child($userId);
         if (! $child) {
             return;
@@ -271,6 +275,7 @@ class KidsManager extends Component
 
     public function openUsePointsModal($userId)
     {
+        $this->resetValidation();
         $child = $this->child($userId);
         if (! $child) {
             return;
@@ -327,8 +332,15 @@ class KidsManager extends Component
     public function openManageTemplatesModal()
     {
         $this->ensureParent();
-        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId', 'templateNeedsApproval']);
+        $this->resetValidation();
+        $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId', 'templateNeedsApproval', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds']);
         $this->showManageTemplatesModal = true;
+    }
+
+    public function updatedTemplateRecurrenceType()
+    {
+        $this->templateRecurrenceDay = $this->templateRecurrenceType === 'monthly' ? null : [];
+        $this->resetValidation('templateRecurrenceDay');
     }
 
     public function saveTemplate()
@@ -343,13 +355,20 @@ class KidsManager extends Component
             'templateAssignedUserIds.*' => 'distinct|exists:users,id,is_child,1',
         ];
 
+        if ($this->templateRecurrenceType === 'weekly') {
+            $rules['templateRecurrenceDay'] = 'required|array|min:1';
+            $rules['templateRecurrenceDay.*'] = 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday';
+        } elseif ($this->templateRecurrenceType === 'monthly') {
+            $rules['templateRecurrenceDay'] = 'required|integer|min:1|max:31';
+        }
+
         $this->validate($rules);
 
-        $recurrenceDay = $this->templateRecurrenceDay;
-        // If not weekly, it should be a single value (string) in DB but handled by cast
-        if ($this->templateRecurrenceType !== 'weekly' && is_array($recurrenceDay)) {
-            $recurrenceDay = reset($recurrenceDay) ?: '';
-        }
+        $recurrenceDay = match ($this->templateRecurrenceType) {
+            'weekly' => array_values($this->templateRecurrenceDay),
+            'monthly' => (int) $this->templateRecurrenceDay,
+            default => null,
+        };
 
         $data = [
             'title' => $this->templateTitle,
@@ -389,7 +408,9 @@ class KidsManager extends Component
         $this->templateDescription = $template->description;
         $this->templateScore = $template->score;
         $this->templateRecurrenceType = $template->recurrence_type;
-        $this->templateRecurrenceDay = is_array($template->recurrence_day) ? $template->recurrence_day : ($template->recurrence_day ? [$template->recurrence_day] : []);
+        $this->templateRecurrenceDay = $template->recurrence_type === 'weekly'
+            ? (is_array($template->recurrence_day) ? $template->recurrence_day : [])
+            : ($template->recurrence_day ?: null);
         $this->templateAssignedUserIds = is_array($template->assigned_user_ids) ? $template->assigned_user_ids : [];
         $this->templateNeedsApproval = $template->needs_approval;
     }
@@ -429,7 +450,7 @@ class KidsManager extends Component
         $this->ensureParent();
         PredefinedChore::destroy($id);
         if ($this->editingTemplateId == $id) {
-            $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId']);
+            $this->reset(['templateTitle', 'templateDescription', 'templateScore', 'editingTemplateId', 'templateNeedsApproval', 'templateRecurrenceType', 'templateRecurrenceDay', 'templateAssignedUserIds']);
         }
         session()->flash('message', __('Template deleted successfully!'));
     }
@@ -519,10 +540,25 @@ class KidsManager extends Component
         session()->flash('message', __('Redemption removed and points refunded.'));
     }
 
+    public function updatedProofImage()
+    {
+        $this->resetValidation('proofImage');
+        if (! $this->proofImage) {
+            return;
+        }
+
+        $validator = validator(['proofImage' => $this->proofImage], ['proofImage' => self::PROOF_IMAGE_RULES]);
+        if ($validator->fails()) {
+            // Reject unsupported files before the view attempts to generate a preview URL.
+            $this->proofImage = null;
+            $this->addError('proofImage', $validator->errors()->first('proofImage'));
+        }
+    }
+
     public function submitChoreProof()
     {
         $this->validate([
-            'proofImage' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'proofImage' => self::PROOF_IMAGE_RULES,
             'selectedChoreId' => 'required|exists:chores,id',
         ]);
 

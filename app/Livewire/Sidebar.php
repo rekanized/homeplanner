@@ -10,6 +10,8 @@ use Livewire\Component;
 
 class Sidebar extends Component
 {
+    protected $listeners = ['modules-updated' => '$refresh'];
+
     #[Session]
     public $darkMode = false;
 

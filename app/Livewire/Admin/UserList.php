@@ -21,11 +21,14 @@ class UserList extends Component
     public function openCreateModal()
     {
         $this->reset(['name', 'email', 'password']);
+        $this->resetValidation();
         $this->showCreateModal = true;
     }
 
     public function createUser()
     {
+        $this->email = is_string($this->email) ? Str::lower(trim($this->email)) : $this->email;
+
         $this->validate([
             'name' => 'required|string|min:2|max:255',
             'email' => 'required|email:rfc|max:255|unique:users,email',
@@ -67,7 +70,7 @@ class UserList extends Component
         session()->flash('message', __('User deleted successfully.'));
     }
 
-    public function toggleChild($id)
+    public function setChildStatus($id, bool $isChild)
     {
         // Only Master User can toggle child status
         if (! auth()->user()->isMaster()) {
@@ -88,7 +91,7 @@ class UserList extends Component
             return;
         }
 
-        $user->is_child = ! $user->is_child;
+        $user->is_child = $isChild;
         $user->save();
 
         $status = $user->is_child ? __('tagged as a child') : __('removed from children');

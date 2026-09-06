@@ -46,6 +46,8 @@ class InitialSetup extends Component
     {
         abort_if(User::exists(), 403);
 
+        $this->email = is_string($this->email) ? Str::lower(trim($this->email)) : $this->email;
+
         $this->validate([
             'name' => 'required|string|min:2|max:255',
             'email' => 'required|email:rfc|max:255|unique:users,email',
