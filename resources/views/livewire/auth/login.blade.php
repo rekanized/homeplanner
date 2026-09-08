@@ -1,6 +1,7 @@
 <div class="setup-container">
     <div class="setup-card">
         <div class="setup-header">
+            <x-logo size="64" class="setup-logo" />
             <h1>{{ __('Home Planner') }}</h1>
             <p>{{ __('Please sign in to continue.') }}</p>
         </div>

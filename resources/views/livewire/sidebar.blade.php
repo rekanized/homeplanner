@@ -11,9 +11,7 @@
     @endif
         <!-- Workspace Header -->
         <a href="/" wire:navigate class="sidebar-header" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6);">
-            <div class="sidebar-icon-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
-            </div>
+            <x-logo class="sidebar-icon-box" />
             <div>
                 <span class="badge badge-soft" style="color: var(--primary); background: var(--primary-soft);">{{ __('Workspace') }}</span>
                 <h1 style="font-size: 1.25rem; font-weight: 900; line-height: 1; margin: 0;">{{ __('Homeplanner') }}</h1>

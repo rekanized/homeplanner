@@ -1,6 +1,7 @@
 <div class="setup-container">
     <div class="setup-card">
         <div class="setup-header">
+            <x-logo size="64" class="setup-logo" />
             <h1>{{ __('Home Planner') }}</h1>
             <p>{{ __('Welcome! Let\'s get your household planner ready.') }}</p>
         </div>
