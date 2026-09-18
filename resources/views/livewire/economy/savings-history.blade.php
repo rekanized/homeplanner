@@ -18,24 +18,26 @@
         </div>
     @endif
 
+    <x-history-chart :data="$this->chartData" :selected-id="$selectedSnapshotId" :title="__('Savings over time')" />
+
     <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: start;">
         
         <!-- Sidebar: Snapshot List -->
         <div class="history-sidebar" style="min-width: 0; width: 100%; display: flex; flex-direction: column; gap: 12px;">
             <h3 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ __('Snapshots') }}</h3>
             @forelse($this->snapshots as $snapshot)
-            <div wire:click="selectSnapshot({{ $snapshot->id }})" 
+            <div class="history-snapshot-option"
                  style="padding: 16px; border-radius: 20px; background: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary-soft)' : 'var(--bg-card)' }}; border: 1px solid {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--border-color)' }}; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 16px; font-weight: 900; color: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--text-main)' }};">
+                    <button type="button" class="history-select-button" wire:click="selectSnapshot({{ $snapshot->id }})" aria-pressed="{{ $selectedSnapshotId == $snapshot->id ? 'true' : 'false' }}">
+                        <span style="display: block; font-size: 16px; font-weight: 900; color: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--text-main)' }};">
                             {{ ucfirst(\Carbon\Carbon::createFromDate($snapshot->year, $snapshot->month, 1)->translatedFormat('F')) }} {{ $snapshot->year }}
-                        </div>
-                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">
+                        </span>
+                        <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">
                             {{ $snapshot->created_at->format('Y-m-d H:i') }}
-                        </div>
-                    </div>
-                    <button wire:click.stop="deleteSnapshot({{ $snapshot->id }})" wire:confirm="{{ __('Permanently delete this savings snapshot?') }}"
+                        </span>
+                    </button>
+                    <button class="history-delete-button" wire:click.stop="deleteSnapshot({{ $snapshot->id }})" wire:confirm="{{ __('Permanently delete this savings snapshot?') }}"
                             style="padding: 6px; border-radius: 8px; background: var(--danger-soft); color: var(--danger); border: none; cursor: pointer;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                     </button>

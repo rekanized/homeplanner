@@ -25,7 +25,7 @@
 
                     <div>
                         <label for="chore-title" style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('Chore Title') }}</label>
-                        <input id="chore-title" type="text" wire:model="title" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;" placeholder="{{ __('E.g. Vacuum the living room') }}" autofocus>
+                        <input id="chore-title" type="text" wire:model="title" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;" placeholder="{{ __('E.g. Vacuum the living room') }}" data-dialog-autofocus>
                         @error('title') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
 
@@ -157,7 +157,7 @@
 
                     <div>
                         <label style="display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">{{ __('What are you using them for?') }}</label>
-                        <input type="text" wire:model="redemptionDescription" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none;" placeholder="{{ __('e.g. 1 hour of video games') }}" autofocus>
+                        <input type="text" wire:model="redemptionDescription" style="background: var(--bg-input); color: var(--text-main); border: 2px solid var(--border-color); padding: 14px 18px; border-radius: 16px; width: 100%; font-size: 15px; font-weight: 600; outline: none;" placeholder="{{ __('e.g. 1 hour of video games') }}" data-dialog-autofocus>
                         @error('redemptionDescription') <p style="font-size: 11px; color: var(--danger); margin-top: 6px; font-weight: 700;">{{ $message }}</p> @enderror
                     </div>
 
@@ -426,7 +426,7 @@
                         @if($proofImage)
                             <div style="position: relative; width: 100%; height: 200px; border-radius: 16px; overflow: hidden; margin-bottom: 20px;">
                                 <img src="{{ $proofImage->temporaryUrl() }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                <div class="proof-image-actions" style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
                                     <button type="button" wire:click="$set('proofImage', null)" class="btn" style="background: var(--danger); color: white; border: none; padding: 8px 16px; font-size: 11px; font-weight: 900;">{{ __('REMOVE') }}</button>
                                 </div>
                             </div>
@@ -558,9 +558,9 @@
                         <span class="badge" style="background: var(--primary); color: white;">{{ $pendingApproval->count() }} {{ __('Pending') }}</span>
                     </div>
                     <div class="card-body" style="padding: 20px;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px;">
                             @foreach($pendingApproval as $pending)
-                                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: var(--shadow-sm);">
+                                <div class="chore-approval-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: var(--shadow-sm);">
                                     <div style="width: 80px; height: 80px; border-radius: 12px; overflow: hidden; background: var(--bg-input); border: 1px solid var(--border-color); flex-shrink: 0; cursor: pointer;" onclick="window.open('{{ route('kids.proofs.show', $pending) }}', '_blank', 'noopener')">
                                         @if($pending->proof_image_path)
                                             <img src="{{ route('kids.proofs.show', $pending) }}" alt="{{ __('Proof for :title', ['title' => $pending->title]) }}" style="width: 100%; height: 100%; object-fit: cover;">

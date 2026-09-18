@@ -1,4 +1,4 @@
-<aside {{ $attributes->merge(['class' => 'sidebar']) }} x-data="{ mobileTray: null }" x-init="window.addEventListener('livewire:navigated', () => { mobileTray = null; })" @keydown.escape.window="mobileTray = null">
+<aside {{ $attributes->merge(['class' => 'sidebar']) }} x-data="{ mobileTray: null }" x-on:livewire:navigating.window="mobileTray = null" @resize.window="if (window.innerWidth > 1024) mobileTray = null" @keydown.escape.window="mobileTray = null">
     <div class="sidebar-desktop-shell">
     @if(session()->has('impersonator_id'))
         <div style="background: var(--warning); color: var(--slate-950); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid rgba(0,0,0,0.1);">
@@ -128,13 +128,9 @@
         <div class="sidebar-footer">
             <!-- Appearance -->
             <div x-data="{ 
-                    localDarkMode: localStorage.getItem('darkMode') === 'true'
+                    localDarkMode: document.documentElement.classList.contains('dark')
                 }"
-                x-init="
-                    window.addEventListener('apply-theme', e => {
-                        localDarkMode = e.detail.darkMode;
-                    });
-                "
+                @apply-theme.window="localDarkMode = $event.detail.darkMode"
                 wire:ignore
                 style="padding: 16px; border-radius: 20px; background: var(--bg-input); border: 1px solid var(--border-color); margin-bottom: 12px;">
                 <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 2px;">{{ __('Appearance') }}</h3>
@@ -201,7 +197,7 @@
     <div class="mobile-nav-backdrop" x-cloak x-show="mobileTray" x-transition.opacity @click="mobileTray = null"></div>
 
     <div class="mobile-nav-sheet-wrap" x-cloak x-show="mobileTray" x-transition.opacity>
-        <div class="mobile-nav-sheet" @click.outside="mobileTray = null" x-transition:enter="mobile-sheet-enter" x-transition:enter-start="mobile-sheet-enter-start" x-transition:enter-end="mobile-sheet-enter-end" x-transition:leave="mobile-sheet-leave" x-transition:leave-start="mobile-sheet-leave-start" x-transition:leave-end="mobile-sheet-leave-end">
+        <div id="mobile-navigation-sheet" class="mobile-nav-sheet" role="dialog" aria-modal="true" :aria-label="mobileTray === 'economy' ? @js(__('Economy')) : @js(__('More'))" tabindex="-1" @click.outside="mobileTray = null" x-transition:enter="mobile-sheet-enter" x-transition:enter-start="mobile-sheet-enter-start" x-transition:enter-end="mobile-sheet-enter-end" x-transition:leave="mobile-sheet-leave" x-transition:leave-start="mobile-sheet-leave-start" x-transition:leave-end="mobile-sheet-leave-end">
             <div x-show="mobileTray === 'economy'" x-cloak>
                 <div class="mobile-nav-sheet-header">
                     <div>
@@ -289,8 +285,8 @@
                 @endif
 
                 <div class="mobile-sheet-grid">
-                    <div x-data="{ localDarkMode: localStorage.getItem('darkMode') === 'true' }"
-                        x-init="window.addEventListener('apply-theme', e => { localDarkMode = e.detail.darkMode; });"
+                    <div x-data="{ localDarkMode: document.documentElement.classList.contains('dark') }"
+                        @apply-theme.window="localDarkMode = $event.detail.darkMode"
                         wire:ignore
                         class="mobile-sheet-block">
                         <div class="mobile-sheet-block-head">
@@ -347,7 +343,7 @@
         </a>
 
         @if($economyEnabled)
-        <button type="button" @click="mobileTray = mobileTray === 'economy' ? null : 'economy'" class="mobile-tabbar-item {{ request()->routeIs('economy.*') ? 'active' : '' }}" :class="{ 'open': mobileTray === 'economy' }">
+        <button type="button" aria-controls="mobile-navigation-sheet" aria-haspopup="dialog" :aria-expanded="mobileTray === 'economy'" @click="mobileTray = mobileTray === 'economy' ? null : 'economy'" class="mobile-tabbar-item {{ request()->routeIs('economy.*') ? 'active' : '' }}" :class="{ 'open': mobileTray === 'economy' }">
             <span class="mobile-tabbar-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
             </span>
@@ -382,7 +378,7 @@
         </a>
         @endif
 
-        <button type="button" @click="mobileTray = mobileTray === 'more' ? null : 'more'" class="mobile-tabbar-item {{ request()->is('admin/*') ? 'active' : '' }}" :class="{ 'open': mobileTray === 'more' }">
+        <button type="button" aria-controls="mobile-navigation-sheet" aria-haspopup="dialog" :aria-expanded="mobileTray === 'more'" @click="mobileTray = mobileTray === 'more' ? null : 'more'" class="mobile-tabbar-item {{ request()->is('admin/*') ? 'active' : '' }}" :class="{ 'open': mobileTray === 'more' }">
             <span class="mobile-tabbar-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
             </span>

@@ -18,24 +18,26 @@
         </div>
     @endif
 
+    <x-history-chart :data="$this->chartData" :selected-id="$selectedSnapshotId" :title="__('Monthly finances over time')" />
+
     <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: start;">
         
         <!-- Sidebar: Snapshot List -->
         <div class="history-sidebar" style="min-width: 0; width: 100%; display: flex; flex-direction: column; gap: 12px;">
             <h3 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ __('Snapshots') }}</h3>
             @forelse($this->snapshots as $snapshot)
-            <div wire:click="selectSnapshot({{ $snapshot->id }})" 
+            <div class="history-snapshot-option"
                  style="padding: 16px; border-radius: 20px; background: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary-soft)' : 'var(--bg-card)' }}; border: 1px solid {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--border-color)' }}; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 16px; font-weight: 900; color: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--text-main)' }};">
+                    <button type="button" class="history-select-button" wire:click="selectSnapshot({{ $snapshot->id }})" aria-pressed="{{ $selectedSnapshotId == $snapshot->id ? 'true' : 'false' }}">
+                        <span style="display: block; font-size: 16px; font-weight: 900; color: {{ $selectedSnapshotId == $snapshot->id ? 'var(--primary)' : 'var(--text-main)' }};">
                             {{ ucfirst(\Carbon\Carbon::createFromDate($snapshot->year, $snapshot->month, 1)->translatedFormat('F')) }} {{ $snapshot->year }}
-                        </div>
-                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">
+                        </span>
+                        <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">
                             {{ $snapshot->created_at->format('Y-m-d H:i') }}
-                        </div>
-                    </div>
-                    <button wire:click.stop="deleteSnapshot({{ $snapshot->id }})" wire:confirm="{{ __('Permanently delete this financial snapshot?') }}"
+                        </span>
+                    </button>
+                    <button class="history-delete-button" wire:click.stop="deleteSnapshot({{ $snapshot->id }})" wire:confirm="{{ __('Permanently delete this financial snapshot?') }}"
                             style="padding: 6px; border-radius: 8px; background: var(--danger-soft); color: var(--danger); border: none; cursor: pointer;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                     </button>
@@ -68,7 +70,7 @@
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">{{ __('Captured on') }} {{ $this->selectedSnapshot->created_at->translatedFormat('j M Y \k\l. H:i') }}</p>
                     </div>
                     
-                    <div style="display: flex; gap: 16px; flex-wrap: wrap; flex: 1; justify-content: flex-end; min-width: 280px;">
+                    <div class="history-summary" style="display: flex; gap: 16px; flex-wrap: wrap; flex: 1; justify-content: flex-end; min-width: 280px;">
                         <div class="summary-card" style="min-width: 140px; flex: 1;">
                             <p class="summary-label">{{ __('Income') }}</p>
                             <h3 class="summary-value" style="color: var(--success); font-size: 1.15rem;">{{ number_format($this->selectedSnapshot->total_income, 0, ',', ' ') }}</h3>
@@ -156,35 +158,37 @@
                         </div>
                         <div class="eco-grid-body">
                             @foreach($this->selectedSnapshot->snapshot_data['expenses'] as $exp)
-                            <div class="eco-grid-row frozen-expenses-grid" style="padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
-                                <div class="eco-field">
+                            <div class="eco-grid-row frozen-expenses-grid snapshot-expense-row" style="padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
+                                <div class="eco-field snapshot-expense-name">
                                     <span class="mobile-label">{{ __('Name') }}</span>
                                     <div style="font-weight: 700; color: var(--text-main);">{{ $exp['name'] }}</div>
                                 </div>
-                                <div class="eco-field">
-                                    <span class="mobile-label">{{ __('Category') }}</span>
-                                    <div style="color: var(--text-muted);">{{ $exp['category'] ?? '—' }}</div>
-                                </div>
-                                <div class="eco-field">
-                                    <span class="mobile-label">{{ __('Handling') }}</span>
-                                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                                        <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
-                                        @if(($exp['split'] ?? false) || ($exp['delayed'] ?? false) || ($exp['one_time_fee'] ?? false))
-                                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                                @if($exp['split'] ?? false)
-                                                    <span class="eco-payer-tag" style="background: var(--blue-500); color: white; font-size: 10px;">{{ __('DELA') }}</span>
-                                                @endif
-                                                @if($exp['delayed'] ?? false)
-                                                    <span class="eco-payer-tag" style="background: var(--amber-500); color: white; font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
-                                                @endif
-                                                @if($exp['one_time_fee'] ?? false)
-                                                    <span class="eco-payer-tag" style="background: var(--danger); color: white; font-size: 10px;">{{ __('ENGÅNGS') }}</span>
-                                                @endif
-                                            </div>
-                                        @endif
+                                <div class="snapshot-expense-meta">
+                                    <div class="eco-field snapshot-expense-category">
+                                        <span class="mobile-label">{{ __('Category') }}</span>
+                                        <div style="color: var(--text-muted);">{{ $exp['category'] ?? '—' }}</div>
+                                    </div>
+                                    <div class="eco-field snapshot-expense-handling">
+                                        <span class="mobile-label">{{ __('Handling') }}</span>
+                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                            <div style="color: var(--text-muted);">{{ $exp['handling'] ?? '—' }}</div>
+                                            @if(($exp['split'] ?? false) || ($exp['delayed'] ?? false) || ($exp['one_time_fee'] ?? false))
+                                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                                    @if($exp['split'] ?? false)
+                                                        <span class="eco-payer-tag" style="background: var(--blue-500); color: white; font-size: 10px;">{{ __('DELA') }}</span>
+                                                    @endif
+                                                    @if($exp['delayed'] ?? false)
+                                                        <span class="eco-payer-tag" style="background: var(--amber-500); color: white; font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
+                                                    @endif
+                                                    @if($exp['one_time_fee'] ?? false)
+                                                        <span class="eco-payer-tag" style="background: var(--danger); color: white; font-size: 10px;">{{ __('ENGÅNGS') }}</span>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="eco-field" style="text-align: right;">
+                                <div class="eco-field snapshot-expense-amount" style="text-align: right;">
                                     <span class="mobile-label">{{ __('Amount') }}</span>
                                     <div style="font-weight: 800; font-family: var(--font-heading);">{{ number_format($exp['amount'], 0, ',', ' ') }} kr</div>
                                 </div>

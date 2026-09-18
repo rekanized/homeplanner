@@ -8,7 +8,7 @@
     })">
     @if (session()->has('message'))
     <template x-teleport="body">
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
+        <div class="app-toast" role="status" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
             style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 2100; background: var(--success); color: white; padding: 12px 24px; border-radius: 16px; font-weight: 800; box-shadow: var(--shadow-xl); display: flex; align-items: center; gap: 12px;"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 -translate-y-4"
@@ -41,17 +41,17 @@
     </div>
 
     <!-- List Selection & Management -->
-    <div class="flex-cards" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
+    <div class="flex-cards list-toolbar" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
         <div class="manager-actions-row">
             <!-- List Selector Dropdown -->
             <div x-data="{ open: false }" style="position: relative;">
-                <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
+                <button @click="open = !open" :aria-expanded="open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
                     <span style="font-size: 14px;">{{ $this->activeList->name ?? __('Select List') }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
                 
-                <div x-show="open" @click.outside="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
+                <div class="list-selector-menu" x-show="open" @click.outside="open = false" @keydown.escape.window="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
                     <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px;">{{ __('Shopping Lists') }}</div>
                     <div style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;">
                         @foreach($this->lists as $list)
@@ -59,7 +59,7 @@
                                 wire:click="selectList({{ $list->id }})" 
                                 @click="open = false"
                                 style="padding: 10px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); {{ $activeListId == $list->id ? 'background: var(--primary-soft); color: var(--primary); font-weight: 700;' : 'font-weight: 600; color: var(--text-main);' }}"
-                                class="nav-link-item"
+                                class="nav-link-item" role="button" tabindex="0" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()"
                             >
                                 <span style="font-size: 13px;">{{ $list->name }}</span>
                                 @if($activeListId == $list->id)
@@ -160,7 +160,7 @@
                                 id="shopping-item-input-{{ $item->id }}"
                                 class="eco-inline-input" 
                                 aria-label="{{ __('Item Name & Qty') }}"
-                                style="{{ $item->is_checked ? 'text-decoration: line-through; opacity: 0.5;' : '' }} flex: 1; min-width: 0;"
+                                style="{{ $item->is_checked ? 'text-decoration: line-through; opacity: 1;' : '' }} flex: 1; min-width: 0;"
                                 @blur="$wire.updateItem({{ $item->id }}, 'name', $event.target.value)"
                                 @keydown.enter="$event.target.blur()"
                             >
@@ -177,7 +177,7 @@
 
                         <!-- Delete -->
                         <div class="cell-delete">
-                            <button wire:click="deleteItem({{ $item->id }})" wire:confirm="{{ __('Remove this shopping item?') }}" class="eco-delete-btn" style="opacity: 0.5;">
+                            <button wire:click="deleteItem({{ $item->id }})" wire:confirm="{{ __('Remove this shopping item?') }}" class="eco-delete-btn" style="opacity: 1;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                             </button>
                         </div>

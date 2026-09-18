@@ -136,3 +136,22 @@
     cursor: pointer;
 }
 .btn-primary:hover { opacity: 0.9; }
+
+/* Keep account setup and sign-in usable on phones and with a keyboard open. */
+.setup-container {
+    min-height: 100dvh;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.setup-card { min-width: 0; }
+.setup-choice-btn { min-width: 0; }
+.setup-choice-btn > * { min-width: 0; }
+@media (max-width: 480px) {
+    .setup-card { padding: 28px 20px; border-radius: 20px; }
+    .setup-header h1 { font-size: 1.75rem; }
+    .setup-choice-btn { padding: 16px; gap: 12px; overflow-wrap: anywhere; }
+    .setup-actions { flex-wrap: wrap; }
+    .setup-actions button { flex-basis: 100%; }
+}
+@media (max-height: 600px) {
+    .setup-container { align-items: flex-start; }
+}

@@ -41,7 +41,7 @@
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--slate-500); text-transform: uppercase;">{{ __('Allowed Gmail Accounts') }}</label>
                         
-                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <div class="auth-email-entry" style="display: flex; gap: 8px; margin-bottom: 12px;">
                             <input type="email" wire:model="newEmail" wire:keydown.enter.prevent="addEmail" class="eco-inline-input" style="border: 1px solid var(--border-color); background: var(--bg-input); height: 44px; flex: 1;" placeholder="{{ __('Enter email address...') }}">
                             <button type="button" wire:click="addEmail" class="btn-primary" style="padding: 0 20px; border-radius: 12px; height: 44px; font-size: 13px;">{{ __('Add User') }}</button>
                         </div>
@@ -49,7 +49,7 @@
 
                         <div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; background: var(--bg-input); border: 1px dashed var(--border-color); border-radius: 16px; min-height: 60px;">
                             @forelse($allowedEmailsArray as $email)
-                                <div style="display: flex; align-items: center; gap: 8px; background: var(--bg-card); padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                                <div class="auth-email-chip" style="display: flex; align-items: center; gap: 8px; background: var(--bg-card); padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
                                     <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">
                                         {{ $email }}
                                         @if($email === $firstUserEmail)
@@ -58,7 +58,7 @@
                                     </span>
                                     
                                     @if($email !== $firstUserEmail)
-                                        <button type="button" wire:click="removeEmail(@js($email))" style="background: var(--danger-soft); color: var(--danger); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; font-weight: 900;">×</button>
+                                        <button type="button" wire:click="removeEmail(@js($email))" aria-label="{{ __('Remove') }} {{ $email }}" style="background: var(--danger-soft); color: var(--danger); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; font-weight: 900;">×</button>
                                     @else
                                         <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); opacity: 0.5;">🔒</div>
                                     @endif

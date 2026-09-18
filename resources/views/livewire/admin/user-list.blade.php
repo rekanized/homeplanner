@@ -28,8 +28,8 @@
         </div>
     @endif
 
-    <div class="card" style="overflow: hidden;">
-        <table class="responsive-table" style="width: 100%; border-collapse: collapse;">
+    <div class="card user-list-card" style="overflow: hidden;">
+        <table class="responsive-table user-list-table" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: var(--bg-input); border-bottom: 2px solid var(--border-color);">
                     <th style="padding: 16px 24px; text-align: left; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">{{ __('Member') }}</th>
@@ -69,9 +69,11 @@
                                 </div>
                             @endif
                         </td>
-                         <td data-label="{{ __('Joined Date') }}" style="padding: 20px 24px;">
-                            <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">{{ $user->created_at->translatedFormat('M j, Y') }}</div>
-                            <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">{{ $user->created_at->format('H:i') }}</div>
+                        <td data-label="{{ __('Joined Date') }}" style="padding: 20px 24px;">
+                            <div class="user-joined-date">
+                                <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">{{ $user->created_at->translatedFormat('M j, Y') }}</div>
+                                <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">{{ $user->created_at->format('H:i') }}</div>
+                            </div>
                         </td>
                         <td class="user-role-cell" data-label="{{ __('Role') }}" style="padding: 20px 24px; text-align: right;">
                             <div class="user-role-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 16px;">

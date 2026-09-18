@@ -5,6 +5,7 @@ namespace App\Livewire\Economy;
 use App\Models\SavingsSnapshot;
 use App\Models\User;
 use App\Services\EconomySnapshotService;
+use App\Support\HistoryChartData;
 use Livewire\Component;
 
 class SavingsHistory extends Component
@@ -26,13 +27,10 @@ class SavingsHistory extends Component
 
     public function triggerManualSnapshot(EconomySnapshotService $service)
     {
-        $service->captureSavingsSnapshot();
+        $snapshot = $service->captureSavingsSnapshot();
         session()->flash('message', __('Savings snapshot captured successfully.'));
         
-        $newSnapshot = SavingsSnapshot::latest()->first();
-        if ($newSnapshot) {
-            $this->selectedSnapshotId = $newSnapshot->id;
-        }
+        $this->selectedSnapshotId = $snapshot->id;
     }
 
     public function deleteSnapshot($id)
@@ -40,7 +38,7 @@ class SavingsHistory extends Component
         SavingsSnapshot::destroy($id);
         
         if ($this->selectedSnapshotId == $id) {
-            $this->selectedSnapshotId = SavingsSnapshot::latest()->first()?->id;
+            $this->selectedSnapshotId = SavingsSnapshot::latest()->orderByDesc('id')->first()?->id;
         }
         
         session()->flash('message', __('Snapshot deleted.'));
@@ -48,7 +46,12 @@ class SavingsHistory extends Component
 
     public function getSnapshotsProperty()
     {
-        return SavingsSnapshot::latest()->get();
+        return SavingsSnapshot::latest()->orderByDesc('id')->get();
+    }
+
+    public function getChartDataProperty(): array
+    {
+        return HistoryChartData::savings($this->snapshots);
     }
 
     public function getSelectedSnapshotProperty()

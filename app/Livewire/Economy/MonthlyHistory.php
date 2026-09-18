@@ -6,6 +6,7 @@ use Livewire\Component;
 
 use App\Models\EconomySnapshot;
 use App\Services\EconomySnapshotService;
+use App\Support\HistoryChartData;
 use Livewire\Attributes\Computed;
 
 class MonthlyHistory extends Component
@@ -29,6 +30,12 @@ class MonthlyHistory extends Component
     public function selectSnapshot($id)
     {
         $this->selectedSnapshotId = $id;
+    }
+
+    #[Computed]
+    public function chartData(): array
+    {
+        return HistoryChartData::monthly($this->snapshots);
     }
 
     public function triggerManualSnapshot(EconomySnapshotService $service)

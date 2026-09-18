@@ -23,17 +23,17 @@
     </div>
 
     <!-- List Selection & Management -->
-    <div class="flex-cards" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
+    <div class="flex-cards list-toolbar" style="align-items: center; justify-content: space-between; margin-bottom: var(--space-8);">
         <div class="manager-actions-row">
             <!-- List Selector Dropdown -->
             <div x-data="{ open: false }" style="position: relative;">
-                <button @click="open = !open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
+                <button @click="open = !open" :aria-expanded="open" class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-main); height: 44px; box-shadow: var(--shadow-sm); cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
                     <span style="font-size: 14px;">{{ $this->activeTodo->name ?? __('Select List') }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
                 
-                <div x-show="open" @click.outside="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
+                <div class="list-selector-menu" x-show="open" @click.outside="open = false" @keydown.escape.window="open = false" style="position: absolute; top: calc(100% + 8px); left: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 8px; min-width: 240px; box-shadow: var(--shadow-lg); z-index: 100;" x-transition x-cloak>
                     <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 4px;">{{ __('My Lists') }}</div>
                     <div style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;">
                         @foreach($this->todos as $list)
@@ -41,7 +41,7 @@
                                 wire:click="selectTodo({{ $list->id }})" 
                                 @click="open = false"
                                 style="padding: 10px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); {{ $activeTodoId == $list->id ? 'background: var(--primary-soft); color: var(--primary); font-weight: 700;' : 'font-weight: 600; color: var(--text-main);' }}"
-                                class="nav-link-item"
+                                class="nav-link-item" role="button" tabindex="0" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()"
                             >
                                 <span style="font-size: 13px;">{{ $list->name }}</span>
                                 @if($activeTodoId == $list->id)
@@ -89,7 +89,7 @@
         <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
             @if($this->availableTags->isNotEmpty())
             <div style="position: relative;" x-data="{ open: false }">
-                <button @click="open = !open" class="btn" style="background: var(--bg-card); padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); height: 44px; cursor: pointer;">
+                <button @click="open = !open" :aria-expanded="open" class="btn" style="background: var(--bg-card); padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); height: 44px; cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                     {{ __('Filter') }}
                     @if(count($selectedTags) > 0)
@@ -181,6 +181,9 @@
                                 })"
                                 style="min-height: 40px;"
                             >
+                                @if($this->groupedPendingItems[$groupKey]->isEmpty())
+                                    <div class="todo-empty-group">{{ __('No Due Date') }}</div>
+                                @endif
                                 @foreach($this->groupedPendingItems[$groupKey] as $item)
                                     <div class="todo-grid-row mobile-item-editor" wire:key="item-{{ $item->id }}" data-id="{{ $item->id }}">
                                         <div class="cell-handle">
@@ -236,7 +239,7 @@
                                                 wire:confirm="{{ __('Are you sure you want to delete this task?') }}"
                                                 wire:click="deleteItem({{ $item->id }})" 
                                                 class="eco-delete-btn" 
-                                                style="opacity: 0.5;"
+                                                style="opacity: 1;"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                             </button>
@@ -251,7 +254,7 @@
 
             <!-- Completed Section -->
             @if($this->completedItems->isNotEmpty())
-            <div class="card" style="border-radius: 28px; overflow: hidden; opacity: 0.7;">
+            <div class="card" style="border-radius: 28px; overflow: hidden;">
                 <div style="padding: 16px 24px; background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
                     <div class="badge badge-soft" style="font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('Completed') }}</div>
                     <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
@@ -288,7 +291,7 @@
                                     wire:confirm="{{ __('Are you sure you want to delete this completed task?') }}"
                                     wire:click="deleteItem({{ $item->id }})" 
                                     class="eco-delete-btn" 
-                                    style="opacity: 0.4;"
+                                    style="opacity: 1;"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </button>

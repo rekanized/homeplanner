@@ -110,5 +110,14 @@
     "Current total": "Current total",
     "Savings goal": "Savings goal",
     "Decrease quantity": "Decrease quantity",
-    "Increase quantity": "Increase quantity"
+    "Increase quantity": "Increase quantity",
+    "Monthly finances over time": "Monthly finances over time",
+    "Savings over time": "Savings over time",
+    "Each point is a recorded snapshot. Select a point to view its details.": "Each point is a recorded snapshot. Select a point to view its details.",
+    "No history to graph yet.": "No history to graph yet.",
+    "Capture a snapshot to start your timeline.": "Capture a snapshot to start your timeline.",
+    "Snapshot timeline": "Snapshot timeline",
+    "Capture another snapshot to see the trend over time.": "Capture another snapshot to see the trend over time.",
+    "Hover or tap to explore your history.": "Hover or tap to explore your history.",
+    "View snapshot": "View snapshot"
 }

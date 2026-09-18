@@ -424,5 +424,14 @@
     "This category name is already in use.": "Det här kategorinamnet används redan.",
     "Existing household members can sign in. Add an email address to allow a new member.": "Befintliga hushållsmedlemmar kan logga in. Lägg till en e-postadress för att tillåta en ny medlem.",
     "Existing household members and the email addresses listed above can sign in via Google OAuth.": "Befintliga hushållsmedlemmar och e-postadresserna ovan kan logga in via Google OAuth.",
-    "Max size 5MB (PNG, JPG, WebP)": "Maxstorlek 5 MB (PNG, JPG, WebP)"
+    "Max size 5MB (PNG, JPG, WebP)": "Maxstorlek 5 MB (PNG, JPG, WebP)",
+    "Monthly finances over time": "Månadsekonomi över tid",
+    "Savings over time": "Sparande över tid",
+    "Each point is a recorded snapshot. Select a point to view its details.": "Varje punkt är en sparad ögonblicksbild. Välj en punkt för att se detaljerna.",
+    "No history to graph yet.": "Det finns ingen historik att visa ännu.",
+    "Capture a snapshot to start your timeline.": "Ta en ögonblicksbild för att starta din tidslinje.",
+    "Snapshot timeline": "Tidslinje för ögonblicksbilder",
+    "Capture another snapshot to see the trend over time.": "Ta en till ögonblicksbild för att se utvecklingen över tid.",
+    "Hover or tap to explore your history.": "Håll pekaren över eller tryck för att utforska din historik.",
+    "View snapshot": "Visa ögonblicksbild"
 }
