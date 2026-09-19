@@ -12,7 +12,7 @@
     "Shopping": "Shopping",
     "Shared grocery lists": "Shared grocery lists",
     "Todo": "Todo",
-    "Shared task lists": "Shared task lists",
+    "Shared task lists": "Shared tasks",
     "Kids System": "Kids System",
     "Kids": "Kids",
     "Points and rewards": "Points and rewards",
@@ -119,5 +119,14 @@
     "Snapshot timeline": "Snapshot timeline",
     "Capture another snapshot to see the trend over time.": "Capture another snapshot to see the trend over time.",
     "Hover or tap to explore your history.": "Hover or tap to explore your history.",
-    "View snapshot": "View snapshot"
+    "View snapshot": "View snapshot",
+    "Add tag": "Add tag",
+    "Choose a tag or type a new one": "Choose a tag or type a new one",
+    "Drag to reorder task": "Drag to reorder task",
+    "Delete task": "Delete task",
+    "Mark incomplete": "Mark incomplete",
+    "No tasks match these tags.": "No tasks match these tags.",
+    "Remove tag": "Remove tag",
+    "No pending tasks.": "No pending tasks.",
+    "No tasks yet. Add one to get started.": "No tasks yet. Add one to get started."
 }

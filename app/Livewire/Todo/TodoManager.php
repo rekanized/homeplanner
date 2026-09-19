@@ -4,63 +4,41 @@ namespace App\Livewire\Todo;
 
 use App\Models\Todo;
 use App\Models\TodoItem;
+use App\Models\TodoTag;
 use Carbon\Carbon;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class TodoManager extends Component
 {
-    public $activeTodoId;
-
-    public $newListNames = [];
-
-    public $selectedItems = [];
-
-    public $selectedTags = [];
+    public array $selectedTags = [];
 
     protected $listeners = ['reorder' => 'handleReorder'];
 
-    public function mount()
-    {
-        $firstTodo = Todo::orderBy('sort_order')->first();
-        if ($firstTodo) {
-            $this->activeTodoId = $firstTodo->id;
-        }
-    }
-
     #[Computed]
-    public function todos()
+    public function sharedTodo(): Todo
     {
-        return Todo::orderBy('sort_order')->get();
-    }
-
-    #[Computed]
-    public function activeTodo()
-    {
-        return Todo::find($this->activeTodoId);
+        return Todo::query()->orderBy('id')->firstOrCreate([
+            'name' => 'Tasks',
+        ], [
+            'color' => '#4f46e5',
+            'sort_order' => 0,
+        ]);
     }
 
     #[Computed]
     public function availableTags()
     {
-        if (! $this->activeTodo) {
-            return collect();
-        }
-
-        return collect($this->activeTodo->items()->whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category'));
+        return TodoTag::query()->has('items')->orderBy('name')->get();
     }
 
     #[Computed]
     public function items()
     {
-        if (! $this->activeTodo) {
-            return collect();
-        }
+        $query = $this->sharedTodo->items()->with('tags')->orderBy('sort_order');
 
-        $query = $this->activeTodo->items()->orderBy('sort_order');
-
-        if (! empty($this->selectedTags)) {
-            $query->whereIn('category', $this->selectedTags);
+        if ($this->selectedTags !== []) {
+            $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereIn('todo_tags.id', $this->selectedTags));
         }
 
         return $query->get();
@@ -85,21 +63,21 @@ class TodoManager extends Component
         $today = [];
         $upcoming = [];
         $noDate = [];
-
         $now = now()->startOfDay();
 
         foreach ($this->pendingItems as $item) {
             if (! $item->due_date) {
                 $noDate[] = $item;
+                continue;
+            }
+
+            $due = Carbon::parse($item->due_date)->startOfDay();
+            if ($due->isBefore($now)) {
+                $overdue[] = $item;
+            } elseif ($due->isSameDay($now)) {
+                $today[] = $item;
             } else {
-                $due = Carbon::parse($item->due_date)->startOfDay();
-                if ($due->isBefore($now)) {
-                    $overdue[] = $item;
-                } elseif ($due->isSameDay($now)) {
-                    $today[] = $item;
-                } else {
-                    $upcoming[] = $item;
-                }
+                $upcoming[] = $item;
             }
         }
 
@@ -111,80 +89,39 @@ class TodoManager extends Component
         ];
     }
 
-    public function selectTodo($id)
+    public function updatedSelectedTags(): void
     {
-        $todo = Todo::find($id);
-        if (! $todo) {
+        $tagIds = collect($this->selectedTags)
+            ->filter(fn ($id) => filter_var($id, FILTER_VALIDATE_INT) !== false)
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->selectedTags = TodoTag::whereIn('id', $tagIds)
+            ->pluck('id')
+            ->all();
+    }
+
+    public function addItem(string $name = ''): void
+    {
+        if (mb_strlen($name) > 255) {
             return;
         }
 
-        $this->activeTodoId = $todo->id;
-        $this->selectedItems = [];
-        $this->selectedTags = [];
-    }
-
-    public function addTodo($name)
-    {
-        if (! is_string($name) || trim($name) === '' || mb_strlen(trim($name)) > 255) {
-            return;
-        }
-        $todo = Todo::create([
-            'name' => trim($name),
-            'sort_order' => Todo::count(),
-        ]);
-        $this->activeTodoId = $todo->id;
-        $this->selectedItems = [];
-        $this->selectedTags = [];
-    }
-
-    public function addList()
-    {
-        $todo = Todo::create([
-            'name' => __('New List'),
-            'sort_order' => Todo::count(),
-        ]);
-        $this->activeTodoId = $todo->id;
-        $this->selectedItems = [];
-        $this->selectedTags = [];
-    }
-
-    public function updateListName($id, $newName)
-    {
-        $todo = Todo::find($id);
-        if ($todo && is_string($newName) && trim($newName) !== '' && mb_strlen(trim($newName)) <= 255) {
-            $todo->update(['name' => trim($newName)]);
-        }
-    }
-
-    public function deleteTodo($id)
-    {
-        Todo::whereKey($id)->whereKey($this->activeTodoId)->first()?->delete();
-        if ($this->activeTodoId == $id) {
-            $this->activeTodoId = Todo::orderBy('sort_order')->first()?->id;
-            $this->selectedItems = [];
-            $this->selectedTags = [];
-        }
-    }
-
-    public function addItem($name = '')
-    {
-        if (! Todo::whereKey($this->activeTodoId)->exists()) {
-            return;
-        }
-        if (! is_string($name) || mb_strlen($name) > 255) {
-            return;
-        }
-
+        $todo = $this->sharedTodo;
         $item = TodoItem::create([
-            'todo_id' => $this->activeTodoId,
+            'todo_id' => $todo->id,
             'name' => $name,
-            'sort_order' => TodoItem::where('todo_id', $this->activeTodoId)->count(),
+            'sort_order' => $todo->items()->count(),
         ]);
 
+        // A newly added, untagged task must remain visible and editable.
+        $this->selectedTags = [];
         $this->dispatch('task-added', itemId: $item->id);
     }
 
-    public function updateItemName($id, $newName)
+    public function updateItemName($id, $newName): void
     {
         $item = $this->activeItem($id);
         if ($item && is_string($newName) && trim($newName) !== '' && mb_strlen(trim($newName)) <= 255) {
@@ -192,7 +129,7 @@ class TodoManager extends Component
         }
     }
 
-    public function toggleItem($id)
+    public function toggleItem($id): void
     {
         $item = $this->activeItem($id);
         if ($item) {
@@ -203,12 +140,45 @@ class TodoManager extends Component
         }
     }
 
-    public function deleteItem($id)
+    public function deleteItem($id): void
     {
-        $this->activeItem($id)?->delete();
+        $item = $this->activeItem($id);
+        if (! $item) {
+            return;
+        }
+
+        $tagIds = $item->tags()->pluck('todo_tags.id');
+        $item->delete();
+        $this->removeUnusedTags($tagIds);
     }
 
-    public function handleReorder($itemIds)
+    public function attachTag($id, $name): void
+    {
+        $item = $this->activeItem($id);
+        $name = is_string($name) ? trim($name) : '';
+        if (! $item || $name === '' || mb_strlen($name) > 255) {
+            return;
+        }
+
+        $normalized = mb_strtolower($name);
+        $tag = TodoTag::where('normalized_name', $normalized)->first();
+        $tag ??= TodoTag::create(['name' => $name]);
+
+        $item->tags()->syncWithoutDetaching([$tag->id]);
+    }
+
+    public function removeTag($id, $tagId): void
+    {
+        $item = $this->activeItem($id);
+        if (! $item || ! filter_var($tagId, FILTER_VALIDATE_INT)) {
+            return;
+        }
+
+        $item->tags()->detach($tagId);
+        $this->removeUnusedTags(collect([(int) $tagId]));
+    }
+
+    public function handleReorder($itemIds): void
     {
         if (! is_array($itemIds)) {
             return;
@@ -216,20 +186,12 @@ class TodoManager extends Component
 
         foreach ($itemIds as $index => $id) {
             TodoItem::where('id', $id)
-                ->where('todo_id', $this->activeTodoId)
+                ->where('todo_id', $this->sharedTodo->id)
                 ->update(['sort_order' => $index]);
         }
     }
 
-    public function updateItemCategory($id, $category)
-    {
-        $item = $this->activeItem($id);
-        if ($item && is_string($category) && mb_strlen(trim($category)) <= 255) {
-            $item->update(['category' => trim($category) ?: null]);
-        }
-    }
-
-    public function updateItemDueDate($id, $date)
+    public function updateItemDueDate($id, $date): void
     {
         $item = $this->activeItem($id);
         if ($item) {
@@ -238,14 +200,14 @@ class TodoManager extends Component
         }
     }
 
-    public function moveItemToGroup($itemId, $targetGroup, $itemIdsInNewOrder)
+    public function moveItemToGroup($itemId, $targetGroup, $itemIdsInNewOrder): void
     {
         if (! in_array($targetGroup, ['overdue', 'today', 'upcoming', 'no_date'], true) || ! is_array($itemIdsInNewOrder)) {
             return;
         }
 
         $item = $this->activeItem($itemId);
-        if ($item && $targetGroup) {
+        if ($item) {
             $now = now()->startOfDay();
             if ($targetGroup === 'overdue' && (! $item->due_date || Carbon::parse($item->due_date)->isAfter($now->copy()->subDay()->endOfDay()))) {
                 $item->due_date = $now->copy()->subDay()->format('Y-m-d');
@@ -261,19 +223,8 @@ class TodoManager extends Component
 
         foreach ($itemIdsInNewOrder as $index => $id) {
             TodoItem::where('id', $id)
-                ->where('todo_id', $this->activeTodoId)
+                ->where('todo_id', $this->sharedTodo->id)
                 ->update(['sort_order' => $index]);
-        }
-    }
-
-    public function handleListReorder($listIds)
-    {
-        if (! is_array($listIds)) {
-            return;
-        }
-
-        foreach ($listIds as $index => $id) {
-            Todo::where('id', $id)->update(['sort_order' => $index]);
         }
     }
 
@@ -285,7 +236,17 @@ class TodoManager extends Component
     private function activeItem($id): ?TodoItem
     {
         return TodoItem::whereKey($id)
-            ->where('todo_id', $this->activeTodoId)
+            ->where('todo_id', $this->sharedTodo->id)
             ->first();
+    }
+
+    private function removeUnusedTags($tagIds): void
+    {
+        $unusedTagIds = TodoTag::whereIn('id', $tagIds)
+            ->doesntHave('items')
+            ->pluck('id');
+
+        TodoTag::whereKey($unusedTagIds)->delete();
+        $this->selectedTags = array_values(array_diff($this->selectedTags, $unusedTagIds->all()));
     }
 }

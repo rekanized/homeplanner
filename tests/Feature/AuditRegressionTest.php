@@ -15,6 +15,7 @@ use App\Models\PredefinedChore;
 use App\Models\Setting;
 use App\Models\Todo;
 use App\Models\TodoItem;
+use App\Models\TodoTag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -52,23 +53,22 @@ class AuditRegressionTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    public function test_switching_and_creating_lists_clear_previous_tag_filter(): void
+    public function test_clearing_a_global_tag_filter_restores_all_todo_tasks(): void
     {
         $user = User::factory()->create();
-        $first = Todo::factory()->create();
-        $second = Todo::factory()->create();
-        TodoItem::factory()->create(['todo_id' => $second->id, 'name' => 'Visible second task', 'category' => null, 'is_done' => false]);
+        $todo = Todo::sole();
+        $tagged = TodoItem::factory()->create(['todo_id' => $todo->id, 'name' => 'Tagged task', 'is_done' => false]);
+        $untagged = TodoItem::factory()->create(['todo_id' => $todo->id, 'name' => 'Visible untagged task', 'is_done' => false]);
+        $tag = TodoTag::create(['name' => 'First only']);
+        $tagged->tags()->attach($tag);
+
         Livewire::actingAs($user)->test(TodoManager::class)
-            ->set('selectedTags', ['first-only'])
-            ->call('selectTodo', $second->id)
-            ->assertSet('selectedTags', [])
-            ->assertSee('Visible second task')
-            ->set('selectedTags', ['first-only'])
-            ->call('addList')
-            ->assertSet('selectedTags', [])
-            ->set('selectedTags', ['first-only'])
-            ->call('addTodo', 'Another list')
-            ->assertSet('selectedTags', []);
+            ->set('selectedTags', [$tag->id])
+            ->assertSee('Tagged task')
+            ->assertDontSee('Visible untagged task')
+            ->set('selectedTags', [])
+            ->assertSee('Tagged task')
+            ->assertSee('Visible untagged task');
     }
 
     public function test_category_rename_rejects_duplicates_and_preserves_expense_totals(): void

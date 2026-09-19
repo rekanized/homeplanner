@@ -282,7 +282,7 @@
     "Set due date": "Ange slutdatum",
     "Settings": "Inställningar",
     "Shared grocery lists": "Delade inköpslistor",
-    "Shared task lists": "Delade att-göra-listor",
+    "Shared task lists": "Delade uppgifter",
     "Shopping": "Inköp",
     "Shopping List": "Inköpslista",
     "Shopping Lists": "Inköpslistor",
@@ -433,5 +433,14 @@
     "Snapshot timeline": "Tidslinje för ögonblicksbilder",
     "Capture another snapshot to see the trend over time.": "Ta en till ögonblicksbild för att se utvecklingen över tid.",
     "Hover or tap to explore your history.": "Håll pekaren över eller tryck för att utforska din historik.",
-    "View snapshot": "Visa ögonblicksbild"
+    "View snapshot": "Visa ögonblicksbild",
+    "Add tag": "Lägg till tagg",
+    "Choose a tag or type a new one": "Välj en tagg eller skriv en ny",
+    "Drag to reorder task": "Dra för att ändra ordning",
+    "Delete task": "Ta bort uppgift",
+    "Mark incomplete": "Markera som ej klar",
+    "No tasks match these tags.": "Inga uppgifter matchar dessa taggar.",
+    "Remove tag": "Ta bort tagg",
+    "No pending tasks.": "Inga pågående uppgifter.",
+    "No tasks yet. Add one to get started.": "Inga uppgifter ännu. Lägg till en för att komma igång."
 }
