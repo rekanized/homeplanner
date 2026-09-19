@@ -22,14 +22,6 @@
         <!-- Summary Cards -->
         <div class="economy-summary-grid">
             <div class="summary-card">
-                <p class="summary-label">{{ __('Direct (25th)') }}</p>
-                <h2 class="summary-value" style="color: var(--warning);">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>
-            </div>
-            <div class="summary-card">
-                <p class="summary-label">{{ __('Delayed') }}</p>
-                <h2 class="summary-value" style="color: var(--slate-500);">{{ number_format($this->totalDelayedExpenses, 0, ',', ' ') }}</h2>
-            </div>
-            <div class="summary-card">
                 <p class="summary-label">{{ __('Income') }}</p>
                 <h2 class="summary-value" style="color: var(--success);">{{ number_format($this->totalIncome, 0, ',', ' ') }}</h2>
             </div>
@@ -38,13 +30,27 @@
                 <h2 class="summary-value" style="color: var(--danger);">{{ number_format($this->totalExpenses, 0, ',', ' ') }}</h2>
             </div>
             <div class="summary-card">
-                <p class="summary-label">{{ __('Monthly Savings') }}</p>
-                <h2 class="summary-value" style="color: var(--primary);">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
-            </div>
-            <div class="summary-card">
                 <p class="summary-label">{{ __('Remaining') }}</p>
                 <h2 class="summary-value">{{ number_format($this->remaining, 0, ',', ' ') }}</h2>
             </div>
+            <div class="summary-card">
+                <p class="summary-label">{{ __('Direct (25th)') }}</p>
+                <h2 class="summary-value" style="color: var(--warning);">{{ number_format($this->totalDirectExpenses, 0, ',', ' ') }}</h2>
+            </div>
+            <div class="summary-card">
+                <p class="summary-label">{{ __('Delayed') }}</p>
+                <h2 class="summary-value" style="color: var(--slate-500);">{{ number_format($this->totalDelayedExpenses, 0, ',', ' ') }}</h2>
+            </div>
+            <div class="summary-card">
+                <p class="summary-label">{{ __('Monthly Savings') }}</p>
+                <h2 class="summary-value" style="color: var(--primary);">{{ number_format($this->totalSavings, 0, ',', ' ') }}</h2>
+            </div>
+            @foreach($this->individualExpenseTotals as $individualExpenseTotal)
+                <div class="summary-card">
+                    <p class="summary-label">{{ $individualExpenseTotal['label'] }}</p>
+                    <h2 class="summary-value" style="color: var(--danger);">{{ number_format($individualExpenseTotal['amount'], 0, ',', ' ') }}</h2>
+                </div>
+            @endforeach
             @foreach($this->sharedExpenseTotals as $sharedExpenseTotal)
                 <div class="summary-card">
                     <p class="summary-label">{{ $sharedExpenseTotal['label'] }}</p>

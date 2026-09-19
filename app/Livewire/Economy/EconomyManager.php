@@ -7,6 +7,7 @@ use App\Models\ExpenseCategory;
 use App\Models\Income;
 use App\Models\Saving;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -82,12 +83,7 @@ class EconomyManager extends Component
         $usersById = $this->users()->keyBy('id');
 
         return $this->expenses()->reduce(function ($totals, Expense $expense) use ($usersById) {
-            $payerIds = collect($expense->payer_ids ?? [])
-                ->map(fn ($payerId) => (int) $payerId)
-                ->filter(fn (int $payerId) => $payerId > 0 && $usersById->has($payerId))
-                ->unique()
-                ->sort()
-                ->values();
+            $payerIds = $this->validExpensePayerIds($expense, $usersById);
 
             if ($payerIds->count() < 2) {
                 return $totals;
@@ -106,6 +102,41 @@ class EconomyManager extends Component
 
             return $totals;
         }, collect());
+    }
+
+    #[Computed]
+    public function individualExpenseTotals()
+    {
+        $usersById = $this->users()->keyBy('id');
+
+        return $this->expenses()->reduce(function ($totals, Expense $expense) use ($usersById) {
+            $payerIds = $this->validExpensePayerIds($expense, $usersById);
+
+            if ($payerIds->count() !== 1) {
+                return $totals;
+            }
+
+            $payerId = $payerIds->first();
+            $summary = $totals->get($payerId, [
+                'label' => $usersById->get($payerId)->name,
+                'amount' => 0.0,
+            ]);
+
+            $summary['amount'] += (float) $expense->amount;
+            $totals->put($payerId, $summary);
+
+            return $totals;
+        }, collect());
+    }
+
+    private function validExpensePayerIds(Expense $expense, Collection $usersById): Collection
+    {
+        return collect($expense->payer_ids ?? [])
+            ->map(fn ($payerId) => (int) $payerId)
+            ->filter(fn (int $payerId) => $payerId > 0 && $usersById->has($payerId))
+            ->unique()
+            ->sort()
+            ->values();
     }
 
     #[Computed]

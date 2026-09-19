@@ -119,6 +119,29 @@ class EconomyDashboardTest extends TestCase
         $this->assertSame(125.0, $totals->get("{$anna->id},{$ben->id}")['amount']);
     }
 
+    public function test_individual_expense_summaries_include_only_single_payer_expenses(): void
+    {
+        $anna = User::factory()->create(['name' => 'Anna']);
+        $ben = User::factory()->create(['name' => 'Ben']);
+
+        Expense::factory()->create(['amount' => 100, 'payer_ids' => [$anna->id]]);
+        Expense::factory()->create(['amount' => 250, 'payer_ids' => [$anna->id]]);
+        Expense::factory()->create(['amount' => 300, 'payer_ids' => [$ben->id]]);
+        Expense::factory()->create(['amount' => 400, 'payer_ids' => [$anna->id, $ben->id]]);
+        Expense::factory()->create(['amount' => 500, 'payer_ids' => []]);
+
+        $component = Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Economy\EconomyManager::class);
+
+        $totals = $component->instance()->individualExpenseTotals();
+
+        $this->assertCount(2, $totals);
+        $this->assertSame('Anna', $totals->get($anna->id)['label']);
+        $this->assertSame(350.0, $totals->get($anna->id)['amount']);
+        $this->assertSame('Ben', $totals->get($ben->id)['label']);
+        $this->assertSame(300.0, $totals->get($ben->id)['amount']);
+    }
+
     public function test_invalid_updates_are_ignored()
     {
         $expense = Expense::factory()->create(['name' => 'Should Not Change']);

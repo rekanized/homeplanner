@@ -9,6 +9,14 @@
             },
             {
                 "type": "added",
+                "description": "Added per-person Current month expense summaries for expenses linked exclusively to one household member"
+            },
+            {
+                "type": "improved",
+                "description": "Prioritized Income, Expenses, and Remaining as the first cards in the Current month summary"
+            },
+            {
+                "type": "added",
                 "description": "Added interactive monthly finance and savings history charts with snapshot-aware data and responsive exploration"
             },
             {
