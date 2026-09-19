@@ -69,6 +69,56 @@ class EconomyDashboardTest extends TestCase
         $this->assertTrue($expense->refresh()->one_time_fee);
     }
 
+    public function test_shared_expense_summaries_group_exact_payer_combinations(): void
+    {
+        $anna = User::factory()->create(['name' => 'Anna']);
+        $ben = User::factory()->create(['name' => 'Ben']);
+        $chris = User::factory()->create(['name' => 'Chris']);
+        $dana = User::factory()->create(['name' => 'Dana']);
+
+        Expense::factory()->create(['amount' => 100, 'payer_ids' => [$anna->id, $ben->id]]);
+        Expense::factory()->create(['amount' => 250, 'payer_ids' => [$ben->id, $anna->id]]);
+        Expense::factory()->create(['amount' => 300, 'payer_ids' => [$anna->id, $ben->id, $chris->id]]);
+        Expense::factory()->create(['amount' => 400, 'payer_ids' => [$anna->id, $ben->id, $chris->id, $dana->id]]);
+        Expense::factory()->create(['amount' => 500, 'payer_ids' => [$anna->id]]);
+        Expense::factory()->create(['amount' => 600, 'payer_ids' => []]);
+
+        $component = Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
+            ->assertSee('Anna + Ben')
+            ->assertSee('350')
+            ->assertSee('Anna + Ben + Chris')
+            ->assertSee('300')
+            ->assertSee('Anna + Ben + Chris + Dana')
+            ->assertSee('400');
+
+        $totals = $component->instance()->sharedExpenseTotals();
+
+        $this->assertCount(3, $totals);
+        $this->assertSame(350.0, $totals->get("{$anna->id},{$ben->id}")['amount']);
+        $this->assertSame(300.0, $totals->get("{$anna->id},{$ben->id},{$chris->id}")['amount']);
+        $this->assertSame(400.0, $totals->get("{$anna->id},{$ben->id},{$chris->id},{$dana->id}")['amount']);
+    }
+
+    public function test_shared_expense_summaries_ignore_duplicate_and_missing_payers(): void
+    {
+        $anna = User::factory()->create(['name' => 'Anna']);
+        $ben = User::factory()->create(['name' => 'Ben']);
+
+        Expense::factory()->create(['amount' => 125, 'payer_ids' => [$anna->id, $anna->id, $ben->id, 999999]]);
+        Expense::factory()->create(['amount' => 200, 'payer_ids' => [$anna->id, 999999]]);
+
+        $component = Livewire::actingAs($this->user)
+            ->test(\App\Livewire\Economy\EconomyManager::class)
+            ->assertSee('Anna + Ben')
+            ->assertSee('125');
+
+        $totals = $component->instance()->sharedExpenseTotals();
+
+        $this->assertCount(1, $totals);
+        $this->assertSame(125.0, $totals->get("{$anna->id},{$ben->id}")['amount']);
+    }
+
     public function test_invalid_updates_are_ignored()
     {
         $expense = Expense::factory()->create(['name' => 'Should Not Change']);

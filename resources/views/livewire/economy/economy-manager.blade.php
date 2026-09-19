@@ -45,6 +45,12 @@
                 <p class="summary-label">{{ __('Remaining') }}</p>
                 <h2 class="summary-value">{{ number_format($this->remaining, 0, ',', ' ') }}</h2>
             </div>
+            @foreach($this->sharedExpenseTotals as $sharedExpenseTotal)
+                <div class="summary-card">
+                    <p class="summary-label">{{ $sharedExpenseTotal['label'] }}</p>
+                    <h2 class="summary-value" style="color: var(--danger);">{{ number_format($sharedExpenseTotal['amount'], 0, ',', ' ') }}</h2>
+                </div>
+            @endforeach
         </div>
     </header>
 

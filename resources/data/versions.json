@@ -1,5 +1,27 @@
 [
     {
+        "version": "v1.10.0",
+        "released_at": "2026-09-19 14:13:14",
+        "changes": [
+            {
+                "type": "added",
+                "description": "Added Current month shared-expense summaries that total each exact combination of two or more linked household members, including groups of three or four"
+            },
+            {
+                "type": "added",
+                "description": "Added interactive monthly finance and savings history charts with snapshot-aware data and responsive exploration"
+            },
+            {
+                "type": "improved",
+                "description": "Refined mobile layouts, navigation, and touch interactions across the application, with browser-based responsive regression coverage"
+            },
+            {
+                "type": "improved",
+                "description": "Refreshed the Homeplanner logo and favicon for consistent branding across the application and authentication screens"
+            }
+        ]
+    },
+    {
         "version": "v1.9.0",
         "released_at": "2026-09-06 15:13:23",
         "changes": [

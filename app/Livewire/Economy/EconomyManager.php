@@ -77,6 +77,38 @@ class EconomyManager extends Component
     }
 
     #[Computed]
+    public function sharedExpenseTotals()
+    {
+        $usersById = $this->users()->keyBy('id');
+
+        return $this->expenses()->reduce(function ($totals, Expense $expense) use ($usersById) {
+            $payerIds = collect($expense->payer_ids ?? [])
+                ->map(fn ($payerId) => (int) $payerId)
+                ->filter(fn (int $payerId) => $payerId > 0 && $usersById->has($payerId))
+                ->unique()
+                ->sort()
+                ->values();
+
+            if ($payerIds->count() < 2) {
+                return $totals;
+            }
+
+            $key = $payerIds->implode(',');
+            $summary = $totals->get($key, [
+                'label' => $payerIds
+                    ->map(fn (int $payerId) => $usersById->get($payerId)->name)
+                    ->implode(' + '),
+                'amount' => 0.0,
+            ]);
+
+            $summary['amount'] += (float) $expense->amount;
+            $totals->put($key, $summary);
+
+            return $totals;
+        }, collect());
+    }
+
+    #[Computed]
     public function totalSavings()
     {
         return $this->savings()->sum('amount');
