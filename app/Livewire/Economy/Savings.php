@@ -4,6 +4,7 @@ namespace App\Livewire\Economy;
 
 use App\Models\SavingsBalance;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -32,7 +33,7 @@ class Savings extends Component
     #[Computed]
     public function totalSavings()
     {
-        return $this->savings()->sum('amount');
+        return $this->savings->sum('amount');
     }
 
     public function addSavingRow()
@@ -77,12 +78,18 @@ class Savings extends Component
             return;
         }
 
-        foreach ($orderedIds as $index => $id) {
-            $record = SavingsBalance::find($id);
-            if ($record && $record->sort_order != $index) {
-                $record->update(['sort_order' => $index]);
+        $orderedIds = array_values(array_unique(array_filter($orderedIds, 'is_numeric')));
+
+        DB::transaction(function () use ($orderedIds) {
+            $records = SavingsBalance::whereKey($orderedIds)->get()->keyBy('id');
+            foreach ($orderedIds as $index => $id) {
+                $record = $records->get($id);
+                if ($record && $record->sort_order != $index) {
+                    // Keep model events so meaningful ordering changes remain audited.
+                    $record->update(['sort_order' => $index]);
+                }
             }
-        }
+        });
     }
 
     public function render()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,15 +16,15 @@ class RedirectToSetup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $userCount = \App\Models\User::count();
+        $hasUsers = User::exists();
 
         // If users already exist, don't allow access to setup routes
-        if ($userCount > 0 && $request->is('setup*')) {
+        if ($hasUsers && $request->is('setup*')) {
             return redirect('/');
         }
 
         // If no users exist, force redirect to setup (except for setup routes and essential paths)
-        if ($userCount === 0 && !$request->is('setup*') && !$request->is('livewire*') && !$request->is('auth/google*')) {
+        if (! $hasUsers && ! $request->is('setup*') && ! $request->is('livewire*') && ! $request->is('auth/google*')) {
             return redirect('/setup');
         }
 

@@ -118,8 +118,7 @@ class GoogleAuthController extends Controller
 
         // Enforce whitelist check
         $allowedEmails = Setting::get('google_allowed_emails', '');
-        $noAdminsExist = User::where('is_admin', true)->count() === 0;
-        $isFirstUser = $noAdminsExist || User::count() === 0;
+        $isFirstUser = ! User::where('is_admin', true)->exists();
 
         $allowedArray = collect(explode(',', $allowedEmails))
             ->map(fn ($allowedEmail) => Str::lower(trim($allowedEmail)))

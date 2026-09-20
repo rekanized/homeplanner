@@ -51,6 +51,56 @@ const output = process.env.TODO_REVIEW_OUTPUT || '/tmp/homeplanner-todo-review';
             }
         }
 
+        for (const width of [1440, 820, 390]) {
+            await page.setViewportSize({ width, height: 844 });
+            const input = page.locator('.todo-tag-input').first();
+            await input.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(250);
+            const before = await input.boundingBox();
+            await page.mouse.click(before.x + 15, before.y + before.height / 2);
+            await page.locator('.todo-task-tag-options').first().waitFor({ state: 'visible' });
+            assert(await input.evaluate(element => element === document.activeElement), 'A single click must focus the tag field');
+            const after = await input.boundingBox();
+            assert(Math.abs(before.x - after.x) < 1 && Math.abs(before.y - after.y) < 1, 'Opening tags must not move the input');
+            await input.press('ArrowDown');
+            await page.waitForFunction(() => document.activeElement?.hasAttribute('data-tag'));
+            await page.keyboard.press('Escape');
+            assert(await input.evaluate(element => element === document.activeElement), 'Escape must return focus to the tag input');
+            await page.locator('.todo-task-tag-options').first().waitFor({ state: 'hidden' });
+            if (width === 390) await input.tap();
+            else await input.click();
+            await input.pressSequentially('Gar');
+            assert.equal(await input.inputValue(), 'Gar');
+            const suggestion = page.locator('.todo-task-tag-options').first().getByRole('button', { name: 'Garden', exact: true });
+            await suggestion.click();
+            const firstRow = page.locator('.todo-task-row').first();
+            await firstRow.getByLabel('Remove tag Garden', { exact: true }).waitFor();
+            await firstRow.getByLabel('Remove tag Garden', { exact: true }).click();
+            await firstRow.getByLabel('Remove tag Garden', { exact: true }).waitFor({ state: 'detached' });
+            await input.click();
+            await page.locator('.responsive-title').click();
+            await page.locator('.todo-task-tag-options').first().waitFor({ state: 'hidden' });
+        }
+
+        await page.setViewportSize({ width: 1440, height: 844 });
+        const undated = page.locator('[data-group="no_date"] .todo-task-row');
+        assert(await undated.count() >= 2, 'Seed at least two undated tasks to exercise dragging');
+        // Exercise and then restore the order, verifying persistence after each drag.
+        for (let pass = 0; pass < 2; pass++) {
+            const movedId = await undated.nth(1).getAttribute('data-id');
+            await undated.first().scrollIntoViewIfNeeded();
+            const handle = await undated.nth(1).locator('.todo-task-drag').boundingBox();
+            const target = await undated.first().boundingBox();
+            await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+            await page.mouse.down();
+            await page.mouse.move(target.x + 30, target.y + 15, { steps: 15 });
+            await page.waitForTimeout(200);
+            await page.mouse.up();
+            await page.waitForTimeout(500);
+            await page.reload();
+            assert.equal(await undated.first().getAttribute('data-id'), movedId, 'Drag order must persist after reload');
+        }
+
         await page.setViewportSize({ width: 390, height: 844 });
         await page.evaluate(() => document.documentElement.classList.remove('dark'));
         await page.locator('.main-fab').click();
@@ -110,7 +160,7 @@ const output = process.env.TODO_REVIEW_OUTPUT || '/tmp/homeplanner-todo-review';
         await row().waitFor({ state: 'detached' });
         assert.deepEqual(errors, []);
         await fs.writeFile(output + '/report.json', JSON.stringify({ results, errors }, null, 2));
-        console.log('PASS: 20 light/dark viewport checks, task editing, tag creation/removal, dates, completion/reopen, filtering and deletion.');
+        console.log('PASS: 20 light/dark viewport checks, stable tag-input clicks, keyboard/touch interaction, persistent drag ordering, task editing, tag creation/removal, dates, completion/reopen, filtering and deletion.');
     } finally {
         await browser.close();
     }

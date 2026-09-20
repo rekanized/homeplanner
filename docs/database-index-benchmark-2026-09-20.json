@@ -1,0 +1,83 @@
+{
+    "sqlite_version": "3.45.1",
+    "synthetic_rows": {
+        "chores": 50000,
+        "audit_logs": 50000,
+        "users": 100
+    },
+    "iterations_per_query": 15,
+    "queries": {
+        "audit_page": {
+            "before": {
+                "median_ms": 11.1336,
+                "plan": [
+                    "SCAN audit_logs",
+                    "USE TEMP B-TREE FOR ORDER BY"
+                ]
+            },
+            "after": {
+                "median_ms": 0.0908,
+                "plan": [
+                    "SCAN audit_logs USING INDEX audit_logs_created_id_index"
+                ]
+            }
+        },
+        "child_history": {
+            "before": {
+                "median_ms": 4.3721,
+                "plan": [
+                    "SCAN chores",
+                    "USE TEMP B-TREE FOR ORDER BY"
+                ]
+            },
+            "after": {
+                "median_ms": 0.0901,
+                "plan": [
+                    "SEARCH chores USING INDEX chores_user_completed_created_index (user_id=? AND is_completed=?)"
+                ]
+            }
+        },
+        "monthly_points": {
+            "before": {
+                "median_ms": 4.253,
+                "plan": [
+                    "SCAN chores"
+                ]
+            },
+            "after": {
+                "median_ms": 0.0524,
+                "plan": [
+                    "SEARCH chores USING INDEX chores_user_completed_date_index (user_id=? AND is_completed=? AND completed_at>? AND completed_at<?)"
+                ]
+            }
+        },
+        "recurring_check": {
+            "before": {
+                "median_ms": 4.4649,
+                "plan": [
+                    "SCAN chores"
+                ]
+            },
+            "after": {
+                "median_ms": 0.0522,
+                "plan": [
+                    "SEARCH chores USING COVERING INDEX chores_template_user_created_index (source_template_id=? AND user_id=? AND created_at>? AND created_at<?)"
+                ]
+            }
+        },
+        "productivity_count": {
+            "before": {
+                "median_ms": 6.2177,
+                "plan": [
+                    "SCAN chores"
+                ]
+            },
+            "after": {
+                "median_ms": 0.2987,
+                "plan": [
+                    "SEARCH chores USING COVERING INDEX chores_completed_date_index (is_completed=? AND completed_at>? AND completed_at<?)"
+                ]
+            }
+        }
+    }
+}

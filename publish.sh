@@ -1,29 +1,13 @@
 #!/bin/sh
+set -eu
 
-# Exit on error
-set -e
+USERNAME="${USERNAME:-rekanized}"
+TAG="${1:-latest}"
 
-USERNAME="rekanized"
-TAG="latest"
+# Build both artifacts successfully before publishing either one.
+docker build --pull -t "$USERNAME/homeplanner-app:$TAG" .
+docker build --pull -t "$USERNAME/homeplanner-nginx:$TAG" -f Dockerfile.nginx .
+docker push "$USERNAME/homeplanner-app:$TAG"
+docker push "$USERNAME/homeplanner-nginx:$TAG"
 
-echo "🚀 Building Homeplanner images for $USERNAME..."
-
-# Build the application image
-echo "📦 Building App image..."
-docker build -t $USERNAME/homeplanner-app:$TAG .
-
-# Build the Nginx image
-echo "📦 Building Nginx image..."
-docker build -t $USERNAME/homeplanner-nginx:$TAG -f Dockerfile.nginx .
-
-echo "🔑 Please ensure you are logged into Docker Hub (run 'docker login')."
-
-# Push the images
-echo "📤 Pushing App image..."
-docker push $USERNAME/homeplanner-app:$TAG
-
-echo "📤 Pushing Nginx image..."
-docker push $USERNAME/homeplanner-nginx:$TAG
-
-echo "✅ Successfully published to Docker Hub!"
-echo "You can now deploy using: docker compose up -d"
+printf 'Published both images with tag %s.\n' "$TAG"

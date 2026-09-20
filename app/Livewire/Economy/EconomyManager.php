@@ -56,33 +56,33 @@ class EconomyManager extends Component
     #[Computed]
     public function totalIncome()
     {
-        return $this->incomes()->sum('amount');
+        return $this->incomes->sum('amount');
     }
 
     #[Computed]
     public function totalExpenses()
     {
-        return $this->expenses()->sum('amount');
+        return $this->expenses->sum('amount');
     }
 
     #[Computed]
     public function totalDirectExpenses()
     {
-        return $this->expenses()->where('delayed', false)->sum('amount');
+        return $this->expenses->where('delayed', false)->sum('amount');
     }
 
     #[Computed]
     public function totalDelayedExpenses()
     {
-        return $this->expenses()->where('delayed', true)->sum('amount');
+        return $this->expenses->where('delayed', true)->sum('amount');
     }
 
     #[Computed]
     public function sharedExpenseTotals()
     {
-        $usersById = $this->users()->keyBy('id');
+        $usersById = $this->users->keyBy('id');
 
-        return $this->expenses()->reduce(function ($totals, Expense $expense) use ($usersById) {
+        return $this->expenses->reduce(function ($totals, Expense $expense) use ($usersById) {
             $payerIds = $this->validExpensePayerIds($expense, $usersById);
 
             if ($payerIds->count() < 2) {
@@ -107,9 +107,9 @@ class EconomyManager extends Component
     #[Computed]
     public function individualExpenseTotals()
     {
-        $usersById = $this->users()->keyBy('id');
+        $usersById = $this->users->keyBy('id');
 
-        return $this->expenses()->reduce(function ($totals, Expense $expense) use ($usersById) {
+        return $this->expenses->reduce(function ($totals, Expense $expense) use ($usersById) {
             $payerIds = $this->validExpensePayerIds($expense, $usersById);
 
             if ($payerIds->count() !== 1) {
@@ -142,13 +142,13 @@ class EconomyManager extends Component
     #[Computed]
     public function totalSavings()
     {
-        return $this->savings()->sum('amount');
+        return $this->savings->sum('amount');
     }
 
     #[Computed]
     public function remaining()
     {
-        return $this->totalIncome() - $this->totalExpenses() - $this->totalSavings();
+        return $this->totalIncome - $this->totalExpenses - $this->totalSavings;
     }
 
     // --- Add Row Methods ---
@@ -256,12 +256,16 @@ class EconomyManager extends Component
             return;
         }
 
-        foreach ($orderedIds as $index => $id) {
-            $record = $model::find($id);
-            if ($record && $record->sort_order != $index) {
-                $record->update(['sort_order' => $index]);
+        DB::transaction(function () use ($orderedIds, $model) {
+            $records = $model::whereKey($orderedIds)->get()->keyBy('id');
+            foreach ($orderedIds as $index => $id) {
+                $record = $records->get($id);
+                if ($record && $record->sort_order != $index) {
+                    // Keep model events so meaningful ordering changes remain audited.
+                    $record->update(['sort_order' => $index]);
+                }
             }
-        }
+        });
     }
 
     public function addExpenseCategoryRow()

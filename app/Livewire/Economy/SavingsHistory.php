@@ -14,10 +14,7 @@ class SavingsHistory extends Component
 
     public function mount()
     {
-        $lastSnapshot = SavingsSnapshot::orderBy('id', 'desc')->first();
-        if ($lastSnapshot) {
-            $this->selectedSnapshotId = $lastSnapshot->id;
-        }
+        $this->selectedSnapshotId = SavingsSnapshot::orderByDesc('id')->value('id');
     }
 
     public function selectSnapshot($id)
@@ -29,24 +26,25 @@ class SavingsHistory extends Component
     {
         $snapshot = $service->captureSavingsSnapshot();
         session()->flash('message', __('Savings snapshot captured successfully.'));
-        
+
         $this->selectedSnapshotId = $snapshot->id;
     }
 
     public function deleteSnapshot($id)
     {
         SavingsSnapshot::destroy($id);
-        
+
         if ($this->selectedSnapshotId == $id) {
-            $this->selectedSnapshotId = SavingsSnapshot::latest()->orderByDesc('id')->first()?->id;
+            $this->selectedSnapshotId = SavingsSnapshot::latest()->orderByDesc('id')->value('id');
         }
-        
+
         session()->flash('message', __('Snapshot deleted.'));
     }
 
     public function getSnapshotsProperty()
     {
-        return SavingsSnapshot::latest()->orderByDesc('id')->get();
+        return SavingsSnapshot::latest()->orderByDesc('id')
+            ->get(['id', 'year', 'month', 'created_at', 'total_amount']);
     }
 
     public function getChartDataProperty(): array

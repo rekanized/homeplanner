@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Income;
+use App\Models\EconomySnapshot;
 use App\Models\Expense;
+use App\Models\ExpenseCategory;
+use App\Models\Income;
 use App\Models\Saving;
 use App\Models\SavingsBalance;
-use App\Models\ExpenseCategory;
-use App\Models\EconomySnapshot;
 use App\Models\SavingsSnapshot;
 use Illuminate\Support\Facades\DB;
 
@@ -19,10 +19,10 @@ class EconomySnapshotService
             $month = now()->month;
             $year = now()->year;
 
-            // Optional: Prevent duplicate manual snapshots if desired, 
-            // but usually manual means "I want one now". 
+            // Optional: Prevent duplicate manual snapshots if desired,
+            // but usually manual means "I want one now".
             // For simplicity, we'll allow multiple snapshots but they'll have different timestamps.
-            
+
             $data = [
                 'incomes' => Income::orderBy('sort_order')->get()->toArray(),
                 'expenses' => Expense::orderBy('sort_order')->get()->toArray(),
@@ -31,10 +31,9 @@ class EconomySnapshotService
                 'categories' => ExpenseCategory::orderBy('sort_order')->get()->toArray(),
             ];
 
-            $totalIncome = Income::sum('amount');
-            $totalExpenses = Expense::sum('amount');
-            $totalMonthlySavings = Saving::sum('amount');
-            $totalAccumulatedSavings = SavingsBalance::sum('amount');
+            $totalIncome = collect($data['incomes'])->sum('amount');
+            $totalExpenses = collect($data['expenses'])->sum('amount');
+            $totalMonthlySavings = collect($data['savings'])->sum('amount');
 
             $snapshot = EconomySnapshot::create([
                 'month' => $month,

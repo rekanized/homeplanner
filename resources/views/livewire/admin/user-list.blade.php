@@ -78,9 +78,9 @@
                         <td class="user-role-cell" data-label="{{ __('Role') }}" style="padding: 20px 24px; text-align: right;">
                             <div class="user-role-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 16px;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    @if($user->isMaster())
+                                    @if(in_array($user->id, $masterUserIds, true))
                                         <span class="badge" style="background: var(--primary); color: white; border: none; font-weight: 900; box-shadow: 0 4px 10px var(--primary-soft);">{{ __('System Master') }}</span>
-                                    @elseif(auth()->user()->isMaster())
+                                    @elseif($currentUserIsMaster)
                                         <!-- Interactive Role Toggle for Master -->
                                         <div style="display: flex; background: var(--bg-input); padding: 4px; border-radius: 100px; border: 1px solid var(--border-color); position: relative;">
                                             <button wire:click="setChildStatus({{ $user->id }}, false)" aria-pressed="{{ !$user->is_child ? 'true' : 'false' }}"
@@ -118,7 +118,7 @@
                                 <div class="user-role-divider" style="width: 1px; height: 24px; background: var(--border-color); margin: 0 4px;"></div>
 
                                 <div class="user-account-actions" style="display: flex; align-items: center; gap: 16px;">
-                                    @if($user->id !== auth()->id() && (!$user->isMaster() || auth()->user()->isMaster()))
+                                    @if($user->id !== auth()->id() && (!in_array($user->id, $masterUserIds, true) || $currentUserIsMaster))
                                     <button wire:click="impersonate({{ $user->id }})"
                                             title="{{ __('Impersonate User') }}"
                                             style="background: none; border: none; cursor: pointer; color: var(--primary); opacity: 0.6; transition: opacity 0.2s;"

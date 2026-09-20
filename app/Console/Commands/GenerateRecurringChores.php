@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 #[Signature('kids:generate-recurring')]
 #[Description('Generate due chores from recurring templates without creating duplicates for the same child and day')]
@@ -17,10 +18,12 @@ class GenerateRecurringChores extends Command
     {
         $templates = PredefinedChore::where('recurrence_type', '!=', 'none')
             ->whereNotNull('assigned_user_ids')
-            ->get();
+            ->lazyById(100);
 
         $count = 0;
-        $todayStr = now()->toDateString();
+        $today = now()->startOfDay();
+        $tomorrow = $today->copy()->addDay();
+        $childIds = null;
         $todayDayName = now()->format('l');
         $todayDayNum = now()->day;
 
@@ -43,18 +46,21 @@ class GenerateRecurringChores extends Command
             if ($shouldGenerate) {
                 $assignedIds = is_array($template->assigned_user_ids) ? $template->assigned_user_ids : [];
 
-                foreach ($assignedIds as $userId) {
-                    if (! User::whereKey($userId)->where('is_child', true)->exists()) {
-                        continue;
-                    }
+                $childIds ??= User::where('is_child', true)->pluck('id')->all();
+                $assignedIds = array_values(array_intersect(array_unique($assignedIds), $childIds));
+                if ($assignedIds === []) {
+                    continue;
+                }
 
-                    // Check if already generated today for THIS child
-                    $exists = Chore::where('source_template_id', $template->id)
-                        ->where('user_id', $userId)
-                        ->whereDate('created_at', $todayStr)
-                        ->exists();
+                $count += DB::transaction(function () use ($template, $assignedIds, $today, $tomorrow) {
+                    $generatedIds = Chore::where('source_template_id', $template->id)
+                        ->whereIn('user_id', $assignedIds)
+                        ->where('created_at', '>=', $today)
+                        ->where('created_at', '<', $tomorrow)
+                        ->pluck('user_id')->all();
+                    $missingIds = array_diff($assignedIds, $generatedIds);
 
-                    if (! $exists) {
+                    foreach ($missingIds as $userId) {
                         Chore::create([
                             'title' => $template->title,
                             'description' => $template->description,
@@ -63,11 +69,14 @@ class GenerateRecurringChores extends Command
                             'source_template_id' => $template->id,
                             'needs_approval' => $template->needs_approval,
                         ]);
-
-                        $template->update(['last_generated_at' => now()]);
-                        $count++;
                     }
-                }
+
+                    if ($missingIds !== []) {
+                        $template->update(['last_generated_at' => now()]);
+                    }
+
+                    return count($missingIds);
+                });
             }
         }
 

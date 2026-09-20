@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -151,8 +152,16 @@ class UserList extends Component
 
     public function render()
     {
+        $users = User::latest()->get();
+        $masterEmail = Setting::get('google_first_user_email');
+        $masterUserIds = filled($masterEmail)
+            ? $users->filter(fn (User $user) => strcasecmp($user->email, $masterEmail) === 0)->modelKeys()
+            : [$users->min('id')];
+
         return view('livewire.admin.user-list', [
-            'users' => User::latest()->get(),
+            'users' => $users,
+            'masterUserIds' => $masterUserIds,
+            'currentUserIsMaster' => in_array(auth()->id(), $masterUserIds, true),
         ])->layout('components.app-layout');
     }
 }

@@ -77,11 +77,18 @@ class Sidebar extends Component
         $versions = json_decode(file_get_contents(resource_path('data/versions.json')), true);
         $currentVersion = $versions[0]['version'] ?? 'v1.2.0';
 
+        $modules = Setting::getMany([
+            'module_economy_enabled' => true,
+            'module_shopping_enabled' => true,
+            'module_todo_enabled' => true,
+            'module_kids_enabled' => true,
+        ]);
+
         return view('livewire.sidebar', [
-            'economyEnabled' => filter_var(Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'shoppingEnabled' => filter_var(Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'todoEnabled' => filter_var(Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'kidsEnabled' => filter_var(Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'economyEnabled' => filter_var($modules['module_economy_enabled'], FILTER_VALIDATE_BOOLEAN),
+            'shoppingEnabled' => filter_var($modules['module_shopping_enabled'], FILTER_VALIDATE_BOOLEAN),
+            'todoEnabled' => filter_var($modules['module_todo_enabled'], FILTER_VALIDATE_BOOLEAN),
+            'kidsEnabled' => filter_var($modules['module_kids_enabled'], FILTER_VALIDATE_BOOLEAN),
             'appVersion' => $currentVersion,
         ]);
     }

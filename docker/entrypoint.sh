@@ -1,31 +1,38 @@
 #!/bin/sh
-set -e
+set -eu
 
-# 1. Setup Environment
-[ -f .env ] || cp .env.example .env
-
-# Determine SQLite path mapping to the isolated volume
-DB_PATH="${DB_DATABASE:-/data/database.sqlite}"
-DB_DIR=$(dirname "$DB_PATH")
-
-# 2. Automated File Provisioning
-mkdir -p "$DB_DIR" storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache
-[ -f "$DB_PATH" ] || touch "$DB_PATH"
-
-# 3. Laravel Setup
-# Generate a key only on the first boot when neither the environment nor .env provides one.
-# Rotating APP_KEY on restart would invalidate sessions and encrypted settings.
-if [ -z "${APP_KEY:-}" ] && ! grep -Eq '^APP_KEY=.+$' .env; then
-    php artisan key:generate --force --no-interaction
+# This image supports SQLite only. Reject other drivers before touching files.
+if [ "${DB_CONNECTION:-sqlite}" != sqlite ] || [ -n "${DB_URL:-}" ]; then
+    echo 'This image requires DB_CONNECTION=sqlite and an unset DB_URL.' >&2
+    exit 1
 fi
-php artisan migrate --force --no-interaction
-php artisan storage:link || true
-php artisan optimize
+export DB_CONNECTION=sqlite
+export DB_DATABASE="${DB_DATABASE:-/data/database.sqlite}"
+case "$DB_DATABASE" in
+    /*) ;;
+    *) echo 'DB_DATABASE must be an absolute path on a persistent volume.' >&2; exit 1 ;;
+esac
 
-# 4. Fix Permissions
-chown -R www-data:www-data storage bootstrap/cache "$DB_DIR"
-chmod -R 775 storage bootstrap/cache "$DB_DIR"
+mkdir -p "$(dirname "$DB_DATABASE")"
+if [ -z "${APP_KEY:-}" ]; then
+    APP_KEY=$(php docker/app-key.php)
+    export APP_KEY
+fi
 
-echo "🚀 Homeplanner is ready. Starting server..."
-php artisan schedule:work > /dev/null 2>&1 &
+mkdir -p storage/app/private storage/app/public storage/framework/sessions \
+    storage/framework/views storage/framework/cache/data storage/logs bootstrap/cache
+
+# Clear only the local configuration cache; do not flush shared application data.
+php artisan config:clear --no-interaction
+
+if [ "${1:-}" = /app/docker/start.sh ] || [ "${1:-}" = php-fpm ]; then
+    mkdir -p "$(dirname "$DB_DATABASE")"
+    [ -f "$DB_DATABASE" ] || touch "$DB_DATABASE"
+    php artisan migrate --force --no-interaction
+    php artisan optimize --no-interaction
+else
+    # One-off Artisan commands also use the current container environment.
+    php artisan config:cache --no-interaction
+fi
+
 exec "$@"

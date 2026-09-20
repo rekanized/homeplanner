@@ -19,8 +19,22 @@ class Setting extends Model
 
     public static function get(string $key, $default = null)
     {
-        $value = self::where('key', $key)->first()?->value;
+        return self::decodeValue($key, self::where('key', $key)->value('value'), $default);
+    }
 
+    public static function getMany(array $defaults): array
+    {
+        $values = self::whereIn('key', array_keys($defaults))->pluck('value', 'key');
+
+        foreach ($defaults as $key => $default) {
+            $defaults[$key] = self::decodeValue($key, $values->get($key), $default);
+        }
+
+        return $defaults;
+    }
+
+    private static function decodeValue(string $key, $value, $default)
+    {
         if ($value === null) {
             return $default;
         }

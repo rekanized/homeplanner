@@ -12,6 +12,7 @@ use App\Models\ShoppingItem;
 use App\Models\TodoItem;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -75,44 +76,43 @@ class Dashboard extends Component
 
     public function render()
     {
-        $totalIncome = Income::sum('amount');
-        $totalSavings = SavingsBalance::sum('amount');
-        $totalExpenses = Expense::sum('amount');
+        $modules = Setting::getMany([
+            'module_economy_enabled' => true,
+            'module_shopping_enabled' => true,
+            'module_todo_enabled' => true,
+            'module_kids_enabled' => true,
+        ]);
+        $economyEnabled = filter_var($modules['module_economy_enabled'], FILTER_VALIDATE_BOOLEAN);
+        $shoppingEnabled = filter_var($modules['module_shopping_enabled'], FILTER_VALIDATE_BOOLEAN);
+        $todoEnabled = filter_var($modules['module_todo_enabled'], FILTER_VALIDATE_BOOLEAN);
+        $kidsEnabled = filter_var($modules['module_kids_enabled'], FILTER_VALIDATE_BOOLEAN);
 
-        $economyEnabled = filter_var(Setting::get('module_economy_enabled', true), FILTER_VALIDATE_BOOLEAN);
-        $shoppingEnabled = filter_var(Setting::get('module_shopping_enabled', true), FILTER_VALIDATE_BOOLEAN);
-        $todoEnabled = filter_var(Setting::get('module_todo_enabled', true), FILTER_VALIDATE_BOOLEAN);
-        $kidsEnabled = filter_var(Setting::get('module_kids_enabled', true), FILTER_VALIDATE_BOOLEAN);
+        $totalIncome = $economyEnabled ? Income::sum('amount') : 0;
+        $totalSavings = $economyEnabled ? SavingsBalance::sum('amount') : 0;
+        $totalExpenses = $economyEnabled ? Expense::sum('amount') : 0;
+        $shoppingItemsCount = $shoppingEnabled ? ShoppingItem::where('is_checked', false)->count() : 0;
 
-        $shoppingItemsCount = ShoppingItem::where('is_checked', false)->count();
-        $todoItemsWaiting = TodoItem::where('is_done', false)->count();
-        $todoItemsOverdue = TodoItem::where('is_done', false)
-            ->whereNotNull('due_date')
-            ->where('due_date', '<', now()->startOfDay())
-            ->count();
+        $todoStats = $todoEnabled ? TodoItem::where('is_done', false)
+            ->selectRaw('COUNT(*) as waiting, SUM(CASE WHEN due_date < ? THEN 1 ELSE 0 END) as overdue', [now()->toDateString()])
+            ->toBase()->first() : null;
+        $todoItemsWaiting = (int) ($todoStats->waiting ?? 0);
+        $todoItemsOverdue = (int) ($todoStats->overdue ?? 0);
 
         $productivityStart = now()->startOfWeek(Carbon::MONDAY)->subWeeks(7);
-        $productivityEnd = now()->endOfDay();
+        $productivityEnd = now()->startOfDay()->addDay();
 
-        $completedTodoDates = $todoEnabled
-            ? TodoItem::where('is_done', true)
-                ->whereBetween('completed_at', [$productivityStart, $productivityEnd])
-                ->pluck('completed_at')
-                ->map(fn ($date) => Carbon::parse($date))
-            : collect();
+        $todoCompletions = $todoEnabled
+            ? $this->weeklyCompletions(TodoItem::where('is_done', true), $productivityStart, $productivityEnd)
+            : [];
+        $choreCompletions = $kidsEnabled
+            ? $this->weeklyCompletions(Chore::where('is_completed', true), $productivityStart, $productivityEnd)
+            : [];
 
-        $completedChoreDates = $kidsEnabled
-            ? Chore::where('is_completed', true)
-                ->whereBetween('completed_at', [$productivityStart, $productivityEnd])
-                ->pluck('completed_at')
-                ->map(fn ($date) => Carbon::parse($date))
-            : collect();
-
-        $productivityWeeks = collect(range(0, 7))->map(function (int $offset) use ($productivityStart, $completedTodoDates, $completedChoreDates) {
+        $productivityWeeks = collect(range(0, 7))->map(function (int $offset) use ($productivityStart, $todoCompletions, $choreCompletions) {
             $weekStart = $productivityStart->copy()->addWeeks($offset);
             $weekEnd = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
-            $todoCount = $completedTodoDates->filter(fn (Carbon $date) => $date->betweenIncluded($weekStart, $weekEnd))->count();
-            $choreCount = $completedChoreDates->filter(fn (Carbon $date) => $date->betweenIncluded($weekStart, $weekEnd))->count();
+            $todoCount = (int) ($todoCompletions['week_'.$offset] ?? 0);
+            $choreCount = (int) ($choreCompletions['week_'.$offset] ?? 0);
 
             return [
                 'week_start' => $weekStart->toDateString(),
@@ -141,11 +141,14 @@ class Dashboard extends Component
         $pendingChores = $kidsEnabled ? Chore::where('is_completed', false)->count() : 0;
 
         $completionWindowStart = now()->subDays(29)->startOfDay();
-        $recentTodoCount = $todoEnabled ? TodoItem::where('created_at', '>=', $completionWindowStart)->count() : 0;
-        $recentChoreCount = $kidsEnabled ? Chore::where('created_at', '>=', $completionWindowStart)->count() : 0;
-        $recentCompletedCount = ($todoEnabled ? TodoItem::where('created_at', '>=', $completionWindowStart)->where('is_done', true)->count() : 0)
-            + ($kidsEnabled ? Chore::where('created_at', '>=', $completionWindowStart)->where('is_completed', true)->count() : 0);
-        $recentTaskCount = $recentTodoCount + $recentChoreCount;
+        $recentTodos = $todoEnabled ? TodoItem::where('created_at', '>=', $completionWindowStart)
+            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN is_done = ? THEN 1 ELSE 0 END) as completed', [true])
+            ->toBase()->first() : null;
+        $recentChores = $kidsEnabled ? Chore::where('created_at', '>=', $completionWindowStart)
+            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN is_completed = ? THEN 1 ELSE 0 END) as completed', [true])
+            ->toBase()->first() : null;
+        $recentCompletedCount = (int) ($recentTodos->completed ?? 0) + (int) ($recentChores->completed ?? 0);
+        $recentTaskCount = (int) ($recentTodos->total ?? 0) + (int) ($recentChores->total ?? 0);
         $completionRate = $recentTaskCount > 0
             ? (int) round(($recentCompletedCount / $recentTaskCount) * 100)
             : 0;
@@ -170,8 +173,24 @@ class Dashboard extends Component
             'shoppingEnabled' => $shoppingEnabled,
             'todoEnabled' => $todoEnabled,
             'kidsEnabled' => $kidsEnabled,
-            'children' => User::where('is_child', true)->withMonthlyChoreStats()->get()->sortByDesc('accumulated_score'),
-            'templates' => PredefinedChore::all(),
+            'children' => $kidsEnabled ? User::where('is_child', true)->withMonthlyChoreStats()->orderByDesc('accumulated_score')->get() : collect(),
+            'templates' => $kidsEnabled && $this->showQuickAssignModal ? PredefinedChore::all() : collect(),
         ]);
+    }
+
+    private function weeklyCompletions(Builder $query, Carbon $start, Carbon $end): array
+    {
+        // Return eight counters instead of transferring and repeatedly scanning every completion.
+        for ($week = 0; $week < 8; $week++) {
+            $weekStart = $start->copy()->addWeeks($week);
+            $query->selectRaw(
+                "SUM(CASE WHEN completed_at >= ? AND completed_at < ? THEN 1 ELSE 0 END) as week_{$week}",
+                [$weekStart, $weekStart->copy()->addWeek()],
+            );
+        }
+
+        return (array) $query->where('completed_at', '>=', $start)
+            ->where('completed_at', '<', $end)
+            ->toBase()->first();
     }
 }

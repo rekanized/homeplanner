@@ -6,6 +6,7 @@ use App\Models\Todo;
 use App\Models\TodoItem;
 use App\Models\TodoTag;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -68,6 +69,7 @@ class TodoManager extends Component
         foreach ($this->pendingItems as $item) {
             if (! $item->due_date) {
                 $noDate[] = $item;
+
                 continue;
             }
 
@@ -184,11 +186,13 @@ class TodoManager extends Component
             return;
         }
 
-        foreach ($itemIds as $index => $id) {
-            TodoItem::where('id', $id)
-                ->where('todo_id', $this->sharedTodo->id)
-                ->update(['sort_order' => $index]);
-        }
+        DB::transaction(function () use ($itemIds) {
+            foreach ($itemIds as $index => $id) {
+                TodoItem::where('id', $id)
+                    ->where('todo_id', $this->sharedTodo->id)
+                    ->update(['sort_order' => $index]);
+            }
+        });
     }
 
     public function updateItemDueDate($id, $date): void
@@ -221,11 +225,7 @@ class TodoManager extends Component
             $item->save();
         }
 
-        foreach ($itemIdsInNewOrder as $index => $id) {
-            TodoItem::where('id', $id)
-                ->where('todo_id', $this->sharedTodo->id)
-                ->update(['sort_order' => $index]);
-        }
+        $this->handleReorder($itemIdsInNewOrder);
     }
 
     public function render()

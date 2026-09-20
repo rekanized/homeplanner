@@ -28,23 +28,16 @@ Engage children in household chores through a gamified reward economy. Parents c
 
 ## 🚀 Quick Deploy
 
-Create a `docker-compose.yml` and run `docker compose up -d`:
+Save this as `docker-compose.yml`:
 
 ```yaml
 services:
   app:
     image: rekanized/homeplanner-app:latest
     restart: unless-stopped
+    stop_grace_period: 90s
     environment:
-      - APP_NAME=Homeplanner
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - APP_URL=${APP_URL:-http://localhost:8080}
-      - DB_CONNECTION=sqlite
-      - DB_DATABASE=/data/database.sqlite
-      - SESSION_DRIVER=database
-      - CACHE_STORE=database
-      - QUEUE_CONNECTION=database
+      APP_URL: http://localhost:8080
     volumes:
       - db-data:/data
       - app-storage:/app/storage
@@ -54,13 +47,28 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    volumes:
+      - app-storage:/app/storage:ro
     depends_on:
-      - app
+      app:
+        condition: service_healthy
 
 volumes:
   db-data:
   app-storage:
 ```
+
+Start Homeplanner:
+
+```sh
+docker-compose up -d
+```
+
+Open **http://localhost:8080** to create your first account. If you access it through another hostname or IP address, change `APP_URL` to that address.
+
+`app` runs Homeplanner and its scheduled/background tasks; `nginx` serves the website. Database creation, migrations, and encryption-key generation happen automatically. The two volumes keep your database, key, and uploads between restarts. No `.env` file or manual setup commands are needed.
+
+With the Docker Compose plugin, the equivalent command is `docker compose up -d`.
 
 ---
 Powered by [Rekanized](https://github.com/rekanized)

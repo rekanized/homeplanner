@@ -34,7 +34,23 @@
                 @keydown.enter.prevent="$event.target.blur()">{{ $item->name }}</textarea>
         @endif
 
-        <div class="todo-task-meta">
+        <div class="todo-task-meta" wire:key="task-meta-{{ $item->id }}"
+            x-data="{ open: false, query: '', saving: false,
+                focusInput() { document.getElementById('task-tag-input-{{ $item->id }}')?.focus({ preventScroll: true }); },
+                async add(name) {
+                    if (!name.trim() || this.saving) return;
+                    this.saving = true;
+                    try {
+                        await $wire.attachTag({{ $item->id }}, name);
+                        this.query = '';
+                        this.focusInput();
+                        this.open = false;
+                    } finally { this.saving = false; }
+                }
+            }"
+            @click.outside="open = false"
+            @keydown.escape.stop.prevent="focusInput(); open = false"
+            @focusout="if (!$el.contains($event.relatedTarget)) open = false">
             @unless($item->is_done)
                 <div class="eco-drag-handle todo-task-drag" title="{{ __('Drag to reorder task') }}">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
@@ -60,38 +76,29 @@
             @endforeach
 
             @unless($item->is_done)
-                <div class="todo-task-tag-picker" wire:key="tag-picker-{{ $item->id }}" :class="{ 'is-open': open }"
-                    x-data="{ open: false, query: '', saving: false,
-                        async add(name) {
-                            if (!name.trim() || this.saving) return;
-                            this.saving = true;
-                            try { await $wire.attachTag({{ $item->id }}, name); this.query = ''; this.open = false; }
-                            finally { this.saving = false; }
-                        }
-                    }"
-                    @click.outside="open = false"
-                    @keydown.escape.stop.prevent="open = false; $refs.tagInput.focus()"
-                    @focusout="if (!$el.contains($event.relatedTarget)) open = false">
+                <div class="todo-task-tag-picker" wire:key="tag-picker-{{ $item->id }}">
                     <div class="todo-task-tag-search">
-                        <input type="text" x-ref="tagInput" x-model="query" maxlength="255" autocomplete="off"
+                        <input type="text" id="task-tag-input-{{ $item->id }}" x-model="query" maxlength="255" autocomplete="off"
                             @focus="open = true" @click="open = true" @input="open = true"
                             @keydown.enter.prevent="add(query)"
-                            @keydown.arrow-down.prevent="$el.closest('.todo-task-tag-picker').querySelector('.todo-task-tag-options button:not([style*=\'display: none\'])')?.focus()"
+                            @keydown.arrow-down.prevent="open = true; $nextTick(() => Array.from(document.getElementById('tag-options-{{ $item->id }}').querySelectorAll('button[data-tag], .todo-tag-create')).find(button => button.offsetHeight)?.focus())"
                             class="todo-tag-input" aria-label="{{ __('Add tag') }}" placeholder="{{ __('+ tag') }}"
                             :aria-expanded="open" aria-controls="tag-options-{{ $item->id }}">
-                        <button type="button" x-show="open" x-cloak @click="open = false; $refs.tagInput.blur()"
+                    </div>
+                </div>
+                <div x-show="open" x-cloak id="tag-options-{{ $item->id }}" class="todo-task-tag-options" wire:key="tag-options-{{ $item->id }}">
+                    <div class="todo-task-tag-options-header">
+                        <p>{{ __('Choose a tag or type a new one') }}</p>
+                        <button type="button" @click="focusInput(); open = false"
                             class="todo-tag-done">{{ __('Done') }}</button>
                     </div>
-                    <div x-show="open" x-cloak id="tag-options-{{ $item->id }}" class="todo-task-tag-options">
-                        <p>{{ __('Choose a tag or type a new one') }}</p>
-                        <button type="button" x-show="query.trim()" :disabled="saving" @click="add(query)"
-                            class="todo-tag-create">{{ __('Add tag') }}: <span x-text="query"></span></button>
-                        @foreach($this->availableTags->whereNotIn('id', $item->tags->modelKeys()) as $tag)
-                            <button type="button" wire:key="tag-option-{{ $item->id }}-{{ $tag->id }}" :disabled="saving"
-                                x-show="!query || $el.dataset.tag.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())"
-                                data-tag="{{ $tag->name }}" @click="add($el.dataset.tag)">{{ $tag->name }}</button>
-                        @endforeach
-                    </div>
+                    <button type="button" x-show="query.trim()" :disabled="saving" @click="add(query)"
+                        class="todo-tag-create">{{ __('Add tag') }}: <span x-text="query"></span></button>
+                    @foreach($this->availableTags->whereNotIn('id', $item->tags->modelKeys()) as $tag)
+                        <button type="button" wire:key="tag-option-{{ $item->id }}-{{ $tag->id }}" :disabled="saving"
+                            x-show="!query || $el.dataset.tag.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())"
+                            data-tag="{{ $tag->name }}" @click="add($el.dataset.tag)">{{ $tag->name }}</button>
+                    @endforeach
                 </div>
             @endunless
         </div>

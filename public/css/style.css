@@ -4498,7 +4498,6 @@ button, a, input, select, textarea { touch-action: manipulation; }
 .todo-task-row .eco-delete-btn:hover { color: var(--danger); }
 .todo-task-row .eco-delete-btn svg { flex-shrink: 0; }
 .todo-task-tag-picker { flex: 0 1 116px; min-width: 0; }
-.todo-task-tag-picker.is-open { flex: 1 1 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-input); }
 .todo-task-tag-search { display: flex; align-items: center; gap: 8px; }
 .todo-task-tag-search .todo-tag-input {
     width: 100%;
@@ -4512,7 +4511,9 @@ button, a, input, select, textarea { touch-action: manipulation; }
     font: 500 16px/1.4 var(--font-sans);
 }
 .todo-tag-done { min-height: 44px; min-width: 60px; border: 0; border-radius: 8px; padding: 8px; background: var(--primary-soft); color: var(--primary); font: inherit; cursor: pointer; }
-.todo-task-tag-options { max-height: 230px; overflow-y: auto; overscroll-behavior: contain; padding: 6px 3px; }
+.todo-task-tag-options { flex: 1 1 100%; min-width: 0; max-height: 260px; overflow-y: auto; overscroll-behavior: contain; padding: 6px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-input); }
+.todo-task-tag-options-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.todo-task-tag-options-header .todo-tag-done { width: auto; flex-shrink: 0; }
 .todo-task-tag-options p { margin: 8px 6px; color: var(--text-muted); font-size: 12px; }
 .todo-task-tag-options button { display: block; width: 100%; min-height: 44px; border: 0; border-radius: 8px; padding: 10px; text-align: left; background: transparent; color: var(--text-main); font: 500 14px/1.4 var(--font-sans); overflow-wrap: anywhere; cursor: pointer; }
 .todo-task-tag-options button:hover, .todo-task-tag-options button:focus-visible { background: var(--primary-soft); color: var(--primary); }

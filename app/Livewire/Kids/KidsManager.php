@@ -659,6 +659,11 @@ class KidsManager extends Component
                 ->latest()
                 ->take(10)
                 ->get();
+
+            // Every result belongs to the authenticated child; reuse that user in the view.
+            foreach ([$chores, $completedChores, $redemptions] as $records) {
+                $records->each->setRelation('user', $user);
+            }
         } else {
             // Admins/Parents see all
             $chores = Chore::where('is_completed', false)

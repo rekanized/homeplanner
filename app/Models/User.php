@@ -75,8 +75,8 @@ class User extends Authenticatable
 
         return Chore::where('user_id', $this->id)
             ->where('is_completed', true)
-            ->whereMonth('completed_at', now()->month)
-            ->whereYear('completed_at', now()->year)
+            ->where('completed_at', '>=', now()->startOfMonth())
+            ->where('completed_at', '<', now()->startOfMonth()->addMonth())
             ->sum('score');
     }
 
@@ -114,26 +114,28 @@ class User extends Authenticatable
 
         return Chore::where('user_id', $this->id)
             ->where('is_completed', true)
-            ->whereMonth('completed_at', now()->month)
-            ->whereYear('completed_at', now()->year)
+            ->where('completed_at', '>=', now()->startOfMonth())
+            ->where('completed_at', '<', now()->startOfMonth()->addMonth())
             ->count();
     }
 
     public function scopeWithMonthlyChoreStats(Builder $query): Builder
     {
         $start = now()->startOfMonth();
-        $end = now()->endOfMonth();
+        $end = $start->copy()->addMonth();
 
         return $query
             ->withSum([
                 'chores as monthly_points' => fn (Builder $query) => $query
                     ->where('is_completed', true)
-                    ->whereBetween('completed_at', [$start, $end]),
+                    ->where('completed_at', '>=', $start)
+                    ->where('completed_at', '<', $end),
             ], 'score')
             ->withCount([
                 'chores as monthly_finished_tasks' => fn (Builder $query) => $query
                     ->where('is_completed', true)
-                    ->whereBetween('completed_at', [$start, $end]),
+                    ->where('completed_at', '>=', $start)
+                    ->where('completed_at', '<', $end),
             ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Livewire\Shopping;
 use App\Models\ShoppingItem;
 use App\Models\ShoppingList;
 use App\Services\GrocerySortingService;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -156,17 +157,19 @@ class ShoppingManager extends Component
         }
         $ids = array_values(array_unique(array_filter($ids, 'is_numeric')));
 
-        if ($type === 'items') {
-            foreach ($ids as $index => $id) {
-                ShoppingItem::where('id', $id)
-                    ->where('shopping_list_id', $this->activeListId)
-                    ->update(['sort_order' => $index]);
+        DB::transaction(function () use ($type, $ids) {
+            if ($type === 'items') {
+                foreach ($ids as $index => $id) {
+                    ShoppingItem::where('id', $id)
+                        ->where('shopping_list_id', $this->activeListId)
+                        ->update(['sort_order' => $index]);
+                }
+            } elseif ($type === 'lists') {
+                foreach ($ids as $index => $id) {
+                    ShoppingList::where('id', $id)->update(['sort_order' => $index]);
+                }
             }
-        } elseif ($type === 'lists') {
-            foreach ($ids as $index => $id) {
-                ShoppingList::where('id', $id)->update(['sort_order' => $index]);
-            }
-        }
+        });
     }
 
     public function sortItems(GrocerySortingService $sortingService)
@@ -181,16 +184,15 @@ class ShoppingManager extends Component
             return $sortingService->getSortScore($item->name);
         });
 
-        // Batch update sort orders
-        foreach ($sortedItems->values() as $index => $item) {
-            $item->update(['sort_order' => $index]);
-        }
+        DB::transaction(function () use ($sortedItems) {
+            foreach ($sortedItems->values() as $index => $item) {
+                if ($item->sort_order != $index) {
+                    $item->update(['sort_order' => $index]);
+                }
+            }
+        });
 
-        // Clear computed properties and refresh relationship
         unset($this->items);
-        if ($this->activeList) {
-            $this->activeList->load('items');
-        }
 
         session()->flash('message', __('Shopping list sorted!'));
     }

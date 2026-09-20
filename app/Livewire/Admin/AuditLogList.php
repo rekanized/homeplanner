@@ -22,7 +22,7 @@ class AuditLogList extends Component
     public function render()
     {
         return view('livewire.admin.audit-log-list', [
-            'logs' => AuditLog::with('user')->latest()->paginate($this->perPage)->onEachSide(1)
+            'logs' => AuditLog::with('user')->latest()->orderByDesc('id')->paginate($this->perPage)->onEachSide(1),
         ])->layout('components.app-layout');
     }
 }

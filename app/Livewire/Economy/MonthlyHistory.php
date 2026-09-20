@@ -2,29 +2,26 @@
 
 namespace App\Livewire\Economy;
 
-use Livewire\Component;
-
 use App\Models\EconomySnapshot;
 use App\Services\EconomySnapshotService;
 use App\Support\HistoryChartData;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 class MonthlyHistory extends Component
 {
     public $selectedSnapshotId = null;
-    
+
     public function mount()
     {
-        $lastSnapshot = EconomySnapshot::orderBy('id', 'desc')->first();
-        if ($lastSnapshot) {
-            $this->selectedSnapshotId = $lastSnapshot->id;
-        }
+        $this->selectedSnapshotId = EconomySnapshot::orderByDesc('id')->value('id');
     }
 
     #[Computed]
     public function snapshots()
     {
-        return EconomySnapshot::orderBy('year', 'desc')->orderBy('month', 'desc')->get();
+        return EconomySnapshot::orderBy('year', 'desc')->orderBy('month', 'desc')->orderByDesc('id')
+            ->get(['id', 'year', 'month', 'created_at', 'total_income', 'total_expenses', 'total_savings']);
     }
 
     public function selectSnapshot($id)
