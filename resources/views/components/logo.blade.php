@@ -2,4 +2,5 @@
 
 <img src="{{ asset('logo.svg') }}?v={{ filemtime(public_path('logo.svg')) }}"
      width="{{ $size }}" height="{{ $size }}" alt="{{ $alt }}"
+     loading="eager" fetchpriority="high"
      {{ $attributes->merge(['class' => 'app-logo']) }}>
