@@ -78,7 +78,7 @@
 
             <!-- Active List Name Rename -->
             @if($activeListId)
-                <div style="display: flex; align-items: center; gap: 8px;" x-data="{ listName: '{{ addslashes($this->activeList->name) }}' }" wire:key="shopping-list-name-{{ $activeListId }}">
+                <div style="display: flex; align-items: center; gap: 8px;" x-data="{ listName: @js($this->activeList->name) }" wire:key="shopping-list-name-{{ $activeListId }}">
                     <div style="display: inline-grid; align-items: center; min-width: 120px; position: relative;">
                         <!-- Hidden span to measure text width and make the grid cell shrink/grow -->
                         <span x-text="listName || '{{ __('List name...') }}'" style="grid-area: 1/1; visibility: hidden; padding: 0 16px; white-space: pre; font-weight: 800; font-size: 14px; min-width: 120px;"></span>

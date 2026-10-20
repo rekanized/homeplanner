@@ -435,8 +435,8 @@
                         </div>
                         <div class="eco-field" style="overflow: visible;">
                             <span class="mobile-label">{{ __('Payer(s)') }}</span>
-                            <div class="eco-payer-dropdown" x-data="{ open: false, dropUp: false }" @click.outside="open = false" style="width: 100%;">
-                                <button type="button" class="eco-payer-trigger"
+                            <div class="eco-payer-dropdown" x-data="{ open: false, dropUp: false }" @click.outside="open = false" @keydown.escape.stop.prevent="open = false; $refs.trigger.focus()" style="width: 100%;">
+                                <button type="button" class="eco-payer-trigger" x-ref="trigger" :aria-expanded="open" aria-controls="expense-payers-{{ $expense->id }}"
                                     @click="open = !open; if(open) dropUp = (window.innerHeight - $el.getBoundingClientRect().bottom) < 220"
                                     style="width: 100%; justify-content: space-between;">
                                     @if(count($expense->payer_ids ?? []) > 0)
@@ -453,7 +453,7 @@
                                     @endif
                                     <svg class="eco-payer-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                                 </button>
-                                <div class="eco-payer-menu" x-show="open" :class="{ 'eco-drop-up': dropUp }" x-transition.opacity.duration.150ms>
+                                <div id="expense-payers-{{ $expense->id }}" class="eco-payer-menu" x-show="open" :class="{ 'eco-drop-up': dropUp }" x-transition.opacity.duration.150ms>
                                     @foreach($this->users as $user)
                                     <label class="eco-payer-option">
                                         <input type="checkbox"

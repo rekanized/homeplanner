@@ -217,7 +217,7 @@
                                         @endif
                                     </div>
                                     <div style="display: flex; gap: 8px;">
-                                        <button wire:click="editTemplate({{ $template->id }})" style="background: var(--bg-input); border: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <button wire:click="editTemplate({{ $template->id }})" aria-label="{{ __('Edit Template') }}" style="background: var(--bg-input); border: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                                         </button>
                                         <button wire:click="deleteTemplate({{ $template->id }})" style="background: var(--danger-soft); border: none; color: var(--danger); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
@@ -298,22 +298,22 @@
                             </div>
                             
                             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                                <div wire:click="$set('templateRecurrenceType', 'none')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div wire:click="$set('templateRecurrenceType', 'none')" role="button" tabindex="0" aria-pressed="{{ $templateRecurrenceType === 'none' ? 'true' : 'false' }}" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
                                     <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'none') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'none') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
                                         <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'none') var(--primary) @else var(--text-muted) @endif;">{{ __('None') }}</div>
                                     </div>
                                 </div>
-                                <div wire:click="$set('templateRecurrenceType', 'daily')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div wire:click="$set('templateRecurrenceType', 'daily')" role="button" tabindex="0" aria-pressed="{{ $templateRecurrenceType === 'daily' ? 'true' : 'false' }}" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
                                     <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'daily') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'daily') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
                                         <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'daily') var(--primary) @else var(--text-muted) @endif;">{{ __('Daily') }}</div>
                                     </div>
                                 </div>
-                                <div wire:click="$set('templateRecurrenceType', 'weekly')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div wire:click="$set('templateRecurrenceType', 'weekly')" role="button" tabindex="0" aria-pressed="{{ $templateRecurrenceType === 'weekly' ? 'true' : 'false' }}" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
                                     <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'weekly') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'weekly') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
                                         <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'weekly') var(--primary) @else var(--text-muted) @endif;">{{ __('Weekly') }}</div>
                                     </div>
                                 </div>
-                                <div wire:click="$set('templateRecurrenceType', 'monthly')" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
+                                <div wire:click="$set('templateRecurrenceType', 'monthly')" role="button" tabindex="0" aria-pressed="{{ $templateRecurrenceType === 'monthly' ? 'true' : 'false' }}" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()" style="flex: 1; min-width: 100px; cursor: pointer; text-align: center;">
                                     <div style="padding: 10px; border-radius: 12px; border: 2px solid @if($templateRecurrenceType == 'monthly') var(--primary) @else var(--border-color) @endif; background: @if($templateRecurrenceType == 'monthly') var(--primary-soft) @else var(--bg-card) @endif; transition: all 0.2s;">
                                         <div style="font-size: 12px; font-weight: 900; color: @if($templateRecurrenceType == 'monthly') var(--primary) @else var(--text-muted) @endif;">{{ __('Monthly') }}</div>
                                     </div>
@@ -485,9 +485,9 @@
         @endif
 
         <!-- Children Summary Grid -->
-        <div class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+        <div class="summary-grid kids-summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
             @foreach($children as $child)
-                <div class="summary-card" style="display: flex; align-items: center; gap: 20px; padding: 24px;">
+                <div class="summary-card child-summary-card" style="display: flex; align-items: center; gap: 20px; padding: 24px;">
                     <div class="hidden-mobile" style="width: 60px; height: 60px; border-radius: 20px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
                         {{ strtoupper(substr($child->name, 0, 1)) }}
                     </div>
@@ -517,7 +517,7 @@
                             </div>
                         </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px; width: 140px;">
+                    <div class="child-summary-actions" style="display: flex; flex-direction: column; gap: 8px; width: 140px;">
                         @if(auth()->id() == $child->id || !auth()->user()->is_child)
                             <button wire:click="openUsePointsModal({{ $child->id }})" class="btn" style="background: var(--primary-soft); color: var(--primary); padding: 8px 14px; font-size: 11px; font-weight: 800; border-radius: 10px; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; transition: all 0.2s;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>

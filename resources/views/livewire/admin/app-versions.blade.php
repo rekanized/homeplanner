@@ -1,4 +1,4 @@
-<div class="p-6 max-w-4xl mx-auto">
+<div class="app-versions">
     <!-- Header -->
     <div style="margin-bottom: 48px;">
         <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 12px;">{{ __('Application History') }}</h1>
@@ -19,7 +19,7 @@
             <div style="position: absolute; left: 160px; top: 0; bottom: 0; width: 2px; background: var(--border-color); z-index: 0;" class="hidden-mobile"></div>
 
             @foreach($this->versions as $version)
-                <div style="display: flex; gap: 32px; position: relative; z-index: 1;">
+                <div class="version-entry" style="display: flex; gap: 32px; position: relative; z-index: 1;">
                     <!-- Date Column -->
                     <div style="width: 140px; flex-shrink: 0; text-align: right; padding-top: 12px;" class="hidden-mobile">
                         <div style="font-size: 14px; font-weight: 900; color: var(--text-main);">{{ $version['released_at']->translatedFormat('M j, Y') }}</div>
@@ -27,13 +27,13 @@
                     </div>
 
                     <!-- Version Bubble -->
-                    <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--bg-body); border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 0 4px var(--bg-body);">
+                    <div class="version-marker" style="width: 42px; height: 42px; border-radius: 50%; background: var(--bg-body); border: 4px solid var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 0 4px var(--bg-body);">
                         <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
                     </div>
 
                     <!-- Content Card -->
-                    <div style="flex: 1; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="version-card" style="flex: 1; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                        <div class="version-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <h3 style="font-size: 1.25rem; font-weight: 900; font-family: var(--font-heading);">{{ $version['version'] }}</h3>
                                 <span class="badge badge-soft" style="font-size: 10px; font-weight: 800; background: var(--primary-soft); color: var(--primary);">{{ __('STABLE') }}</span>

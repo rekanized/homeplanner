@@ -1,7 +1,7 @@
 <div class="animate-in">
     <!-- Header -->
     <div class="flex-header">
-        <div style="min-width: 280px;">
+        <div style="min-width: 0;">
             <div class="badge badge-soft" style="color: var(--primary); background: var(--primary-soft); margin-bottom: var(--space-2);">{{ __('Overview') }}</div>
             <h2 style="font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1;">{{ __('Dashboard') }}</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-top: var(--space-1);">{{ __('Global management of your household ecosystems') }}</p>
@@ -152,7 +152,9 @@
             <div style="padding: var(--space-6) var(--space-8); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.01);">
                 <div>
                     <h3 style="font-size: 18px; font-weight: 900;">{{ __('Kids Points Overview') }}</h3>
+                    @if(!auth()->user()->is_child)
                     <p style="font-size: 11px; color: var(--text-muted);">{{ __('Click a child to quick-assign points') }}</p>
+                    @endif
                 </div>
                 <div style="text-align: right;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -160,9 +162,9 @@
             </div>
             <div style="padding: var(--space-6) var(--space-8); background: var(--bg-input); min-height: 200px;">
                 @if($children->count() > 0)
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="dashboard-children-grid">
                         @foreach($children as $child)
-                            <div @if(!auth()->user()->is_child) wire:click="openQuickAssignModal({{ $child->id }})" @endif class="dashboard-child-box" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 22px 16px; border-radius: 20px; cursor: {{ auth()->user()->is_child ? 'default' : 'pointer' }}; transition: all 0.2s; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; box-shadow: var(--shadow-sm);">
+                            <div @if(!auth()->user()->is_child) wire:click="openQuickAssignModal({{ $child->id }})" role="button" tabindex="0" @keydown.enter.prevent="$el.click()" @keydown.space.prevent="$el.click()" @endif class="dashboard-child-box" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 22px 16px; border-radius: 20px; cursor: {{ auth()->user()->is_child ? 'default' : 'pointer' }}; transition: all 0.2s; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; box-shadow: var(--shadow-sm);">
                                 <div style="width: 48px; height: 48px; border-radius: 16px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; box-shadow: 0 8px 16px -4px var(--primary-soft);">
                                     {{ strtoupper(substr($child->name, 0, 1)) }}
                                 </div>
@@ -181,12 +183,14 @@
                                     </div>
                                 </div>
                                 
+                                @if(!auth()->user()->is_child)
                                 <div class="hover-assign-overlay" style="position: absolute; inset: 0; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s; transform: translateY(100%);">
                                     <div style="display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                                         {{ __('Quick Assign') }}
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -239,7 +243,7 @@
                         @empty
                             <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border-color); border-radius: 20px;">
                                 <p style="font-size: 13px; font-weight: 800;">{{ __('No templates found') }}</p>
-                                <a href="{{ route('kids') }}" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">{{ __('Go to Kids System') }}</a>
+                                <a href="{{ route('kids.index') }}" class="btn" style="color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 8px;">{{ __('Go to Kids System') }}</a>
                             </div>
                         @endforelse
                     </div>

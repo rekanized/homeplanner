@@ -819,7 +819,7 @@ a {
 .eco-delete-btn {
     background: transparent;
     border: none;
-    color: var(--slate-300);
+    color: var(--text-muted);
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
@@ -4121,6 +4121,12 @@ textarea:disabled,
     flex-shrink: 0;
 }
 
+.dashboard-children-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: 16px;
+}
+
 .dashboard-child-box > div {
     max-width: 100%;
     overflow-wrap: anywhere;
@@ -4561,4 +4567,23 @@ button, a, input, select, textarea { touch-action: manipulation; }
         height: 22px !important;
     }
 
+}
+
+/* Preserve reading space for release notes and children's progress on phones. */
+.version-card { min-width: 0; }
+.version-card-header { gap: 12px; flex-wrap: wrap; }
+@media (max-width: 768px) {
+    .version-entry { gap: 12px !important; }
+    .version-card { padding: 16px !important; }
+}
+@media (max-width: 480px) {
+    .version-marker { display: none !important; }
+    .child-summary-card { flex-wrap: wrap; gap: 16px !important; }
+    .child-summary-card > div:nth-child(2) { flex-basis: 100% !important; }
+    .child-summary-actions {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100% !important;
+    }
+    .child-summary-actions .btn { padding: 8px !important; white-space: normal; }
 }
