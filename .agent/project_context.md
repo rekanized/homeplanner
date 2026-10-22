@@ -3,7 +3,7 @@
 A platform for planning and managing home-related tasks, including economy tracking, shopping lists, and kids points systems.
 
 ## Technical Stack
-- **Backend**: Laravel 13 (PHP 8.3)
+- **Backend**: Laravel 13 (PHP 8.5)
 - **Frontend**: Livewire 4.x (Standard Class + View), Alpine.js, Blade
 - **Styling**: Strictly Vanilla CSS (No Tailwind, Bootstrap, or build tools).
 - **Database**: SQLite (Optimized with WAL mode for concurrent access).

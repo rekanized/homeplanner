@@ -4,7 +4,7 @@
 HomePlanner is a premium internal family/household management system designed with professional-grade UI and robust backend architecture.
 
 ## Tech Stack
-- **Backend:** Laravel 13.x, PHP 8.3+
+- **Backend:** Laravel 13.x, PHP 8.5+
 - **Frontend Stack:** Livewire 4 (strictly class-based), Alpine.js, Blade templates.
 - **Styling:** Custom Vanilla CSS (`public/css/style.css`). The project actively explicitly avoids Tailwind CSS.
 - **Database:** Standard Eloquent ORM.

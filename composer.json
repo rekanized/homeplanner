@@ -6,7 +6,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.2"
@@ -32,8 +32,22 @@
         }
     },
     "scripts": {
+        "refresh-dependencies": [
+            "@php -r \"if (PHP_VERSION_ID < 80500) { fwrite(STDERR, 'PHP 8.5 or newer is required.'.PHP_EOL); exit(1); }\"",
+            "@composer update --with-all-dependencies --prefer-dist --no-interaction --optimize-autoloader",
+            "@composer audit --locked --no-interaction",
+            "@composer check-platform-reqs",
+            "@php artisan view:clear --no-interaction"
+        ],
+        "build": [
+            "@php -r \"if (PHP_VERSION_ID < 80500) { fwrite(STDERR, 'PHP 8.5 or newer is required.'.PHP_EOL); exit(1); }\"",
+            "@composer update --with-all-dependencies --prefer-dist --no-interaction --no-dev --optimize-autoloader",
+            "@composer audit --locked --no-interaction",
+            "@composer check-platform-reqs --no-dev",
+            "@php artisan view:clear --no-interaction"
+        ],
         "setup": [
-            "composer install",
+            "@refresh-dependencies",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force"
@@ -71,6 +85,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.5.0"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,

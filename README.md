@@ -72,3 +72,17 @@ With the Docker Compose plugin, the equivalent command is `docker compose up -d`
 
 ---
 Powered by [Rekanized](https://github.com/rekanized)
+
+## PHP and dependency updates
+
+PHP 8.5 or newer is required. Use `composer refresh-dependencies` for development
+and `composer build` for deployment without development packages. Both fetch
+the latest stable versions allowed by `composer.json`, update `composer.lock`,
+and fail if the security audit or real platform checks fail. Test the result
+before publishing and retain the resolved lock file with the release.
+`composer install` only reproduces an existing lock file; it does not fetch updates.
+Major upgrades outside the declared constraints require a separate compatibility update.
+
+Docker publishing uses `--pull --no-cache` to refresh base images and rerun
+dependency resolution. Run `./publish.sh` from this checkout. For manual builds,
+use `docker build --pull --no-cache` with the appropriate Dockerfile and tag.

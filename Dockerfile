@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
-FROM php:8.3-fpm-bookworm AS extensions
+FROM php:8.5-fpm-bookworm AS extensions
 
 # SQLite, mbstring, DOM and XML are already provided by the official PHP image.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libzip-dev libicu-dev \
-    && docker-php-ext-install -j"$(nproc)" zip bcmath pcntl intl opcache
+    && docker-php-ext-install -j"$(nproc)" zip bcmath pcntl intl
 
-FROM php:8.3-fpm-bookworm AS runtime
+FROM php:8.5-fpm-bookworm AS runtime
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libzip4 libicu72 \
@@ -33,7 +33,8 @@ FROM runtime AS dependencies
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --no-progress
+RUN composer update --with-all-dependencies --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --no-progress \
+    && composer audit --locked --no-interaction
 
 COPY app ./app
 COPY bootstrap ./bootstrap
