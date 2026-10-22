@@ -1,4 +1,4 @@
-<div>
+<div class="current-month {{ $isEditing ? 'current-month-editing' : '' }}">
     <!-- Page controls and a separate, full-width summary -->
     <header class="economy-overview">
         <div class="economy-overview-heading">
@@ -61,10 +61,10 @@
     </header>
 
     <!-- Income, Savings, and Categories -->
-    <div class="flex-cards" style="margin-bottom: var(--space-8);">
+    <div class="flex-cards economy-editor-cards" style="margin-bottom: var(--space-8);">
 
         <!-- Income Card -->
-        <div class="card" style="flex: 1 1 400px;">
+        <div class="card economy-income-card" style="flex: 1 1 400px;">
             <div class="card-header">
                 <h3 style="font-weight: 900;">{{ __('Income') }}</h3>
                 @if($isEditing)
@@ -79,7 +79,7 @@
                         <div></div> {{-- Drag handle space --}}
                         <div></div> {{-- Dot space --}}
                         <div style="font-size: 11px; text-transform: uppercase;">{{ __('Name') }}</div>
-                        <div></div> {{-- Empty space for alignment --}}
+                        <div class="eco-edit-spacer"></div>
                         <div style="font-size: 11px; text-transform: uppercase;">{{ __('Recipient') }}</div>
                         <div style="font-size: 11px; text-transform: uppercase; text-align: right;">{{ __('Amount') }}</div>
                         <div></div> {{-- Delete space --}}
@@ -165,7 +165,7 @@
         </div>
 
         <!-- Monthly Savings Card -->
-        <div class="card" style="flex: 1 1 400px;">
+        <div class="card economy-savings-card" style="flex: 1 1 400px;">
             <div class="card-header">
                 <h3 style="font-weight: 900;">{{ __('Monthly Savings') }}</h3>
                 @if($isEditing)
@@ -280,7 +280,7 @@
         </div>
 
         <!-- Categories Card -->
-        <div class="card" style="flex: 0 0 360px;">
+        <div class="card economy-categories-card" style="flex: 0 0 360px;">
             <div class="card-header">
                 <div>
                     <h3 style="font-weight: 900;">{{ __('Categories') }}</h3>
@@ -406,7 +406,7 @@
                 @forelse($this->expenses as $expense)
                 <div class="eco-grid-row expenses-grid {{ $isEditing ? 'eco-edit-card expense-edit-card' : '' }}" wire:key="expense-{{ $expense->id }}">
                     @if($isEditing)
-                        {{-- Edit Mode: 7-column grid on desktop, functional fields on mobile --}}
+                        {{-- Compact rows on desktop, labeled cards on mobile. --}}
                         <div class="eco-row-header">
                             <div class="eco-drag-handle" style="cursor: grab; color: var(--slate-300); display: flex; align-items: center; justify-content: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
@@ -416,7 +416,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
-                        <div class="eco-mobile-row">
+                        <div class="eco-mobile-row expense-primary-fields">
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Name') }}</span>
                                 <input type="text" class="eco-inline-input" value="{{ $expense->name }}" placeholder="{{ __('Expense name') }}"
@@ -433,7 +433,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="eco-field" style="overflow: visible;">
+                        <div class="eco-field expense-payers" style="overflow: visible;">
                             <span class="mobile-label">{{ __('Payer(s)') }}</span>
                             <div class="eco-payer-dropdown" x-data="{ open: false, dropUp: false }" @click.outside="open = false" @keydown.escape.stop.prevent="open = false; $refs.trigger.focus()" style="width: 100%;">
                                 <button type="button" class="eco-payer-trigger" x-ref="trigger" :aria-expanded="open" aria-controls="expense-payers-{{ $expense->id }}"
@@ -465,7 +465,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="eco-mobile-row">
+                        <div class="eco-mobile-row expense-payment-fields">
                             <div class="eco-field">
                                 <span class="mobile-label">{{ __('Handling') }}</span>
                                 <select class="eco-inline-select" style="width: 100%;"
@@ -497,7 +497,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="eco-field" style="text-align: right;">
+                        <div class="eco-field expense-amount" style="text-align: right;">
                             <span class="mobile-label">{{ __('Amount') }}</span>
                             <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
                                 <input type="number" class="eco-inline-input eco-inline-amount" value="{{ $expense->amount }}" placeholder="0" style="width: 100%;"
@@ -505,7 +505,7 @@
                             </div>
                         </div>
                         {{-- Desktop Delete Button Column (7th child) --}}
-                        <div class="desktop-only" style="display: flex; justify-content: flex-end; align-items: center;">
+                        <div class="desktop-only expense-delete" style="display: flex; justify-content: flex-end; align-items: center;">
                             <button wire:click="deleteExpense({{ $expense->id }})" wire:confirm="{{ __('Delete this expense?') }}" class="eco-delete-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>

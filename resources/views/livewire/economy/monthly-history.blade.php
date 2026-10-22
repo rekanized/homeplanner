@@ -1,4 +1,4 @@
-<div>
+<div class="monthly-history">
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-8);">
         <div>
@@ -20,10 +20,10 @@
 
     <x-history-chart :data="$this->chartData" :selected-id="$selectedSnapshotId" :title="__('Monthly finances over time')" />
 
-    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: start;">
+    <div class="monthly-history-layout">
         
         <!-- Sidebar: Snapshot List -->
-        <div class="history-sidebar" style="min-width: 0; width: 100%; display: flex; flex-direction: column; gap: 12px;">
+        <div class="history-sidebar monthly-history-list" role="region" tabindex="0" aria-label="{{ __('Snapshots') }}">
             <h3 style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ __('Snapshots') }}</h3>
             @forelse($this->snapshots as $snapshot)
             <div class="history-snapshot-option"
@@ -60,17 +60,17 @@
         </div>
 
         <!-- Main Content: Frozen View -->
-        <div style="flex: 1 1 500px; min-width: 0;">
+        <div class="monthly-history-details">
             @if($this->selectedSnapshot)
             <div class="animate-in">
-                <div style="margin-bottom: 24px; padding: 24px; border-radius: 24px; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; overflow: hidden;">
+                <div class="monthly-history-overview">
                     <div>
                         <span class="badge badge-soft" style="background: var(--primary-soft); color: var(--primary); font-weight: 800;">{{ __('FROZEN SNAPSHOT') }}</span>
                         <h2 style="font-size: 1.75rem; font-weight: 900; margin-top: 8px;">{{ ucfirst(\Carbon\Carbon::createFromDate($this->selectedSnapshot->year, $this->selectedSnapshot->month, 1)->translatedFormat('F')) }} {{ $this->selectedSnapshot->year }}</h2>
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">{{ __('Captured on') }} {{ $this->selectedSnapshot->created_at->translatedFormat('j M Y \k\l. H:i') }}</p>
                     </div>
                     
-                    <div class="history-summary" style="display: flex; gap: 16px; flex-wrap: wrap; flex: 1; justify-content: flex-end; min-width: 280px;">
+                    <div class="history-summary monthly-history-summary">
                         <div class="summary-card" style="min-width: 140px; flex: 1;">
                             <p class="summary-label">{{ __('Income') }}</p>
                             <h3 class="summary-value" style="color: var(--success); font-size: 1.15rem;">{{ number_format($this->selectedSnapshot->total_income, 0, ',', ' ') }}</h3>
@@ -101,7 +101,7 @@
                                     <span style="text-align: right;">{{ __('Amount') }}</span>
                                 </div>
                                 <div class="eco-grid-body">
-                                    @foreach($this->selectedSnapshot->snapshot_data['incomes'] as $inc)
+                                    @forelse($this->selectedSnapshot->snapshot_data['incomes'] as $inc)
                                     <div class="eco-grid-row frozen-income-grid">
                                         <div class="eco-field">
                                             <span class="mobile-label">{{ __('Source') }}</span>
@@ -112,7 +112,9 @@
                                             <span style="font-weight: 800; color: var(--success); font-size: 13px;">{{ number_format($inc['amount'], 0, ',', ' ') }} kr</span>
                                         </div>
                                     </div>
-                                    @endforeach
+                                    @empty
+                                    <p class="monthly-history-empty-row">{{ __('No income recorded.') }}</p>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
@@ -128,7 +130,7 @@
                                     <span style="text-align: right;">{{ __('Amount') }}</span>
                                 </div>
                                 <div class="eco-grid-body">
-                                    @foreach($this->selectedSnapshot->snapshot_data['savings'] as $sav)
+                                    @forelse($this->selectedSnapshot->snapshot_data['savings'] as $sav)
                                     <div class="eco-grid-row frozen-savings-grid">
                                         <div class="eco-field">
                                             <span class="mobile-label">{{ __('Purpose') }}</span>
@@ -139,7 +141,9 @@
                                             <span style="font-weight: 800; color: var(--primary); font-size: 13px;">{{ number_format($sav['amount'], 0, ',', ' ') }} kr</span>
                                         </div>
                                     </div>
-                                    @endforeach
+                                    @empty
+                                    <p class="monthly-history-empty-row">{{ __('No savings recorded.') }}</p>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
@@ -157,7 +161,7 @@
                             <div style="text-align: right;">{{ __('Amount') }}</div>
                         </div>
                         <div class="eco-grid-body">
-                            @foreach($this->selectedSnapshot->snapshot_data['expenses'] as $exp)
+                            @forelse($this->selectedSnapshot->snapshot_data['expenses'] as $exp)
                             <div class="eco-grid-row frozen-expenses-grid snapshot-expense-row" style="padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px;">
                                 <div class="eco-field snapshot-expense-name">
                                     <span class="mobile-label">{{ __('Name') }}</span>
@@ -175,10 +179,10 @@
                                             @if(($exp['split'] ?? false) || ($exp['delayed'] ?? false) || ($exp['one_time_fee'] ?? false))
                                                 <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                                                     @if($exp['split'] ?? false)
-                                                        <span class="eco-payer-tag" style="background: var(--blue-500); color: white; font-size: 10px;">{{ __('DELA') }}</span>
+                                                        <span class="eco-payer-tag" style="background: var(--primary-soft); color: var(--primary); font-size: 10px;">{{ __('DELA') }}</span>
                                                     @endif
                                                     @if($exp['delayed'] ?? false)
-                                                        <span class="eco-payer-tag" style="background: var(--amber-500); color: white; font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
+                                                        <span class="eco-payer-tag" style="background: var(--warning-soft); color: var(--warning); font-size: 10px;">{{ __('DRÖJSMÅL') }}</span>
                                                     @endif
                                                     @if($exp['one_time_fee'] ?? false)
                                                         <span class="eco-payer-tag" style="background: var(--danger); color: white; font-size: 10px;">{{ __('ENGÅNGS') }}</span>
@@ -193,14 +197,16 @@
                                     <div style="font-weight: 800; font-family: var(--font-heading);">{{ number_format($exp['amount'], 0, ',', ' ') }} kr</div>
                                 </div>
                             </div>
-                            @endforeach
+                            @empty
+                                <p class="monthly-history-empty-row">{{ __('No expenses recorded.') }}</p>
+                            @endforelse
                         </div>
                     </div>
 
                 </div>
             </div>
             @else
-            <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); opacity: 0.7;">
+            <div class="monthly-history-empty" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); opacity: 0.7;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 24px;"><path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5L4.5 5.5c-.3.3-.5.7-.5 1.1V20c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6.5c0-.4-.2-.8-.5-1.1s-.7-.5-1.1-.5h-2.9"></path><path d="M15.5 2v4a1 1 0 0 0 1 1h4"></path></svg>
                 <h3 style="font-size: 1.25rem; font-weight: 900; margin-bottom: 8px;">{{ __('Select a snapshot') }}</h3>
                 <p style="font-size: 13px; max-width: 320px;">{{ __('Choose a month from the list to view the historical snapshot data.') }}</p>

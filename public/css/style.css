@@ -3894,6 +3894,166 @@ textarea:disabled,
 
 /* Financial editors respond to the card width, including beside the desktop sidebar. */
 .eco-grid-table { container: financial-table / inline-size; }
+
+/* Keep the small editors beside Savings, using compact rows within narrow panels. */
+@media (min-width: 769px) {
+    .current-month-editing { container: current-month / inline-size; }
+
+    .current-month-editing .economy-editor-cards {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+    }
+
+    .current-month-editing .economy-savings-card { grid-column: 1 / -1; grid-row: 2; }
+
+    .current-month-editing .eco-grid-table {
+        container-name: current-month-table;
+    }
+
+    .current-month-editing .economy-editor-cards .eco-grid-header,
+    .current-month-editing .economy-editor-cards .eco-grid-row {
+        padding-inline: 10px;
+        gap: 4px !important;
+    }
+
+    .current-month-editing .dashboard-edit-grid {
+        grid-template-columns: 16px 8px minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.1fr) 84px 44px !important;
+    }
+
+    .current-month-editing .economy-income-card .dashboard-edit-grid {
+        grid-template-columns: 16px 8px minmax(0, 1.3fr) minmax(0, 1fr) 84px 44px !important;
+    }
+
+    .current-month-editing .economy-income-card .eco-edit-spacer { display: none; }
+
+    .current-month-editing .economy-categories-card .categories-grid {
+        grid-template-columns: 16px 8px minmax(0, 1fr) 80px 44px !important;
+        letter-spacing: 0.04em;
+    }
+
+    .current-month-editing .economy-categories-card .eco-grid-header > :last-child { width: auto !important; }
+
+    .current-month-editing .eco-edit-card .eco-field {
+        display: block !important;
+        min-width: 0;
+    }
+
+    .current-month-editing .eco-edit-card .eco-inline-input,
+    .current-month-editing .eco-edit-card .eco-inline-select {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .current-month-editing .economy-editor-cards .eco-inline-input {
+        padding-inline: 6px;
+        text-overflow: ellipsis;
+    }
+
+    .current-month-editing .eco-payer-tag {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .current-month-editing .expense-edit-card .eco-row-header {
+        display: contents;
+    }
+
+    .current-month-editing .expenses-grid {
+        grid-template-columns: 24px minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr) minmax(120px, 1fr) 100px 44px !important;
+    }
+}
+
+@container current-month (min-width: 880px) {
+    .economy-editor-cards {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 0.8fr) !important;
+    }
+    .current-month-editing .economy-savings-card { grid-column: auto; grid-row: auto; }
+}
+
+/* Narrow desktop panels need only two lines per entry, without the mobile card chrome. */
+@container current-month-table (max-width: 500px) {
+    .economy-savings-card .eco-grid-header { display: none !important; }
+    .monthly-saving-edit-card .mobile-label {
+        display: block !important;
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+    .monthly-saving-edit-card.dashboard-edit-grid {
+        grid-template-columns: 16px minmax(0, 1.3fr) minmax(0, 1fr) 44px !important;
+        padding-block: 8px;
+    }
+    .monthly-saving-edit-card .eco-edit-status { display: none; }
+    .monthly-saving-edit-card .eco-edit-handle { grid-column: 1; grid-row: 1 / 3; }
+    .monthly-saving-edit-card .edit-name { grid-column: 2; grid-row: 1; }
+    .monthly-saving-edit-card .edit-location { grid-column: 3; grid-row: 1; }
+    .monthly-saving-edit-card .edit-saver { grid-column: 2; grid-row: 2; }
+    .monthly-saving-edit-card .edit-amount { grid-column: 3; grid-row: 2; }
+    .monthly-saving-edit-card .eco-edit-delete { grid-column: 4; grid-row: 1 / 3; }
+}
+
+@container current-month-table (max-width: 460px) {
+    .economy-income-card .eco-grid-header { display: none !important; }
+    .economy-income-card .income-edit-card.dashboard-edit-grid {
+        grid-template-columns: 16px minmax(0, 1fr) 84px 44px !important;
+        padding-block: 8px;
+    }
+    .income-edit-card .eco-edit-status { display: none; }
+    .income-edit-card .eco-edit-handle { grid-column: 1; grid-row: 1 / 3; }
+    .income-edit-card .edit-name { grid-column: 2 / 4; grid-row: 1; }
+    .income-edit-card .edit-recipient { grid-column: 2; grid-row: 2; }
+    .income-edit-card .edit-amount { grid-column: 3; grid-row: 2; }
+    .income-edit-card .eco-edit-delete { grid-column: 4; grid-row: 1 / 3; }
+}
+
+@container current-month-table (max-width: 300px) {
+    .economy-categories-card .eco-grid-header { display: none !important; }
+    .economy-categories-card .category-edit-card.categories-grid {
+        grid-template-columns: 16px minmax(0, 1fr) 44px !important;
+        padding-block: 8px;
+    }
+    .category-edit-card .eco-edit-status { display: none; }
+    .category-edit-card .eco-edit-handle { grid-column: 1; grid-row: 1 / 3; }
+    .category-edit-card .edit-name { grid-column: 2; grid-row: 1; }
+    .category-edit-card .category-edit-total { grid-column: 2; grid-row: 2; text-align: left !important; padding-left: 6px; }
+    .category-edit-card .eco-edit-delete { grid-column: 3; grid-row: 1 / 3; }
+}
+
+/* Smaller desktop content areas keep expenses in two short rows with local labels. */
+@container current-month-table (max-width: 900px) {
+    .eco-grid-header.expenses-grid { display: none !important; }
+
+    .expense-edit-card.expenses-grid {
+        grid-template-columns: 24px minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.4fr) 100px 44px !important;
+        gap: 10px 8px;
+        padding-block: 12px;
+        align-items: end;
+    }
+
+    .expense-edit-card .mobile-label {
+        display: block !important;
+        margin-bottom: 4px;
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    .expense-edit-card .eco-drag-handle { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+    .expense-edit-card .expense-primary-fields > .eco-field:first-child { grid-column: 2 / 4; grid-row: 1; }
+    .expense-edit-card .expense-primary-fields > .eco-field:last-child { grid-column: 4 / 6; grid-row: 1; }
+    .expense-edit-card .expense-payers { grid-column: 2; grid-row: 2; }
+    .expense-edit-card .expense-payment-fields > .eco-field:first-child { grid-column: 3; grid-row: 2; }
+    .expense-edit-card .expense-payment-fields > .eco-field:last-child { grid-column: 4; grid-row: 2; }
+    .expense-edit-card .expense-amount { grid-column: 5; grid-row: 2; }
+    .expense-edit-card .expense-delete { grid-column: 6; grid-row: 1 / 3; align-self: center; }
+}
+
 @container financial-table (max-width: 760px) {
     .eco-edit-table .eco-grid-header { display: none !important; }
     .eco-edit-card .eco-field {
@@ -4133,6 +4293,68 @@ textarea:disabled,
 }
 
 /* Financial history timelines */
+.monthly-history { container: monthly-history / inline-size; }
+.monthly-history-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.monthly-history .monthly-history-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 12px;
+    max-height: 280px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 3px;
+    scroll-padding: 4px;
+    min-width: 0;
+}
+.monthly-history-list > h3 { grid-column: 1 / -1; }
+.monthly-history-list .history-snapshot-option > div:first-child {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 8px;
+    align-items: center;
+}
+.monthly-history-list .history-select-button { min-width: 0; overflow-wrap: anywhere; }
+.monthly-history-list .history-delete-button { width: 44px; height: 44px; }
+.monthly-history-list .history-snapshot-option > div:last-child { flex-wrap: wrap; }
+.monthly-history-details { min-width: 0; container: monthly-history-details / inline-size; }
+.monthly-history-overview { padding: 20px; margin-bottom: 24px; border: 1px solid var(--border-color); border-radius: 24px; background: var(--bg-card); }
+.monthly-history .monthly-history-summary { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; min-width: 0 !important; }
+.monthly-history-summary .summary-card { min-width: 0 !important; padding: 16px; }
+.monthly-history .monthly-history-summary .summary-card:last-child { grid-column: auto; }
+.monthly-history .summary-value { overflow-wrap: anywhere; }
+.monthly-history .eco-grid-row { overflow-wrap: anywhere; }
+.monthly-history .frozen-income-grid,
+.monthly-history .frozen-savings-grid { grid-template-columns: minmax(0, 1fr) minmax(90px, auto) !important; gap: 12px; }
+.monthly-history .eco-grid-row.frozen-income-grid,
+.monthly-history .eco-grid-row.frozen-savings-grid { padding: 12px 16px; align-items: start; }
+.monthly-history .frozen-expenses-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(90px, auto); }
+.monthly-history .eco-payer-tag { white-space: normal; overflow-wrap: anywhere; }
+.monthly-history-empty { min-height: 240px; padding: 24px; }
+.monthly-history-empty-row { padding: 20px; color: var(--text-muted); font-size: 13px; }
+
+@container monthly-history (min-width: 1000px) {
+    .monthly-history-layout { grid-template-columns: 300px minmax(0, 1fr); }
+    .monthly-history .monthly-history-list { grid-template-columns: minmax(0, 1fr); max-height: 640px; }
+}
+
+@container monthly-history-details (max-width: 460px) {
+    .monthly-history .monthly-history-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .monthly-history .monthly-history-summary .summary-card:last-child { grid-column: 1 / -1; }
+    .monthly-history-summary .summary-card { padding: 12px; }
+    .monthly-history-overview { padding: 16px; }
+}
+
+@container monthly-history-details (max-width: 620px) {
+    .eco-grid-header.frozen-expenses-grid { display: none !important; }
+    .monthly-history .snapshot-expense-row { grid-template-columns: minmax(0, 1fr) fit-content(45%) !important; gap: 8px 12px !important; align-items: start; padding: 16px !important; }
+    .monthly-history .snapshot-expense-row .eco-field { display: block !important; min-width: 0; }
+    .snapshot-expense-row .snapshot-expense-name { grid-column: 1; grid-row: 1; }
+    .snapshot-expense-row .snapshot-expense-amount { grid-column: 2; grid-row: 1; }
+    .snapshot-expense-row .snapshot-expense-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; }
+    .monthly-history .snapshot-expense-row .mobile-label { display: none !important; }
+    .monthly-history .snapshot-expense-handling::before { content: none; }
+}
+
 .history-chart {
     padding: clamp(18px, 3vw, 28px);
     margin-bottom: 32px;
